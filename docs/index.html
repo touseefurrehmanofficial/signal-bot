@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live Scanner</title>
+<style>
+/* Layout: status bar, your settings, the tested odds for the chosen target, then trade-plan cards grouped by what to look at first. */
+:root{--bg:#f4f6f4;--panel:#ffffff;--ink:#0f1512;--ink2:#4b534e;--ink3:#7b837e;--line:#dde2de;--chip:#edf0ed;--track:#e6eae7;
+  --go:#11794f;--go-bg:#e2f3ea;--stop:#b3372f;--stop-bg:#fbe9e7;--wait:#6d7570;--wait-bg:#eceeed;--warn:#a05a00;--warn-bg:#fff1d6;--accent:#2a78d6;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,"Cascadia Mono",Consolas,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#101312;--panel:#191c1a;--ink:#f1f4f2;--ink2:#bfc6c1;--ink3:#8b938d;--line:#2a2f2c;--chip:#222624;--track:#262b28;
+  --go:#45c08f;--go-bg:#173327;--stop:#ef7d74;--stop-bg:#3a1c19;--wait:#9aa29c;--wait-bg:#232725;--warn:#e7b04a;--warn-bg:#3a2c10;--accent:#5b9cf0;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans)}
+.wrap{max-width:1280px;margin:0 auto;padding:18px 20px 60px;display:flex;flex-direction:column;gap:16px}
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 22px}
+h1{font-size:22px;margin:0;font-weight:650}
+.status{display:flex;flex-wrap:wrap;gap:6px 18px;font:13px var(--mono);color:var(--ink2)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--wait);margin-right:6px}
+.dot.live{background:var(--go);animation:pulse 1.6s infinite}.dot.bad{background:var(--stop)}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.dot.live{animation:none}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.set{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:end}
+.set label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em}
+input,select{font:500 15px var(--sans);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 10px;width:170px;max-width:100%}
+select{width:auto;min-width:230px}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{font:500 14px var(--sans);padding:8px 14px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.btn[aria-pressed="true"]{background:var(--go-bg);color:var(--go);border-color:var(--go)}
+.banner{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--go-bg);color:var(--go);border:1px solid var(--go);border-radius:10px;padding:12px 16px;font-size:16px}
+.banner button{font:500 13px var(--sans);padding:5px 12px;border-radius:6px;border:1px solid var(--go);background:transparent;color:var(--go);cursor:pointer}
+.regime{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:14px;color:var(--ink2)}
+.odds{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px;margin-top:12px}
+.odds div{border-left:3px solid var(--line);padding-left:10px}
+.odds b{display:block;font:600 20px var(--mono);font-variant-numeric:tabular-nums}
+.odds span{font-size:12.5px;color:var(--ink3)}
+.oddsnote{font-size:13px;color:var(--ink2);margin:10px 0 0;max-width:90ch}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tabs button{font:500 13.5px var(--sans);padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink2);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs button span{font:12px var(--mono);opacity:.75;margin-left:5px}
+.hint{font-size:13.5px;color:var(--ink2);margin:0;max-width:95ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 14px;display:flex;flex-direction:column;gap:9px;min-width:0}
+.card.new{border-color:var(--go);box-shadow:0 0 0 1px var(--go) inset}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.name{font-weight:650;font-size:16px}
+.name small{display:block;font:12.5px var(--mono);font-weight:400;color:var(--ink3)}
+.price{font:600 19px var(--mono);font-variant-numeric:tabular-nums;text-align:right;transition:color .5s}
+.price.tu{color:var(--go)}.price.td{color:var(--stop)}
+.pill{display:inline-block;font:600 11.5px var(--mono);padding:3px 9px;border-radius:999px;letter-spacing:.03em;white-space:nowrap}
+.pill.new,.pill.target{background:var(--go-bg);color:var(--go)}.pill.open{background:var(--chip);color:var(--ink)}
+.pill.stopped{background:var(--stop-bg);color:var(--stop)}.pill.wait,.pill.trailed{background:var(--wait-bg);color:var(--wait)}
+.pill.late{background:var(--warn-bg);color:var(--warn)}
+.plan{display:grid;grid-template-columns:auto 1fr auto;gap:3px 10px;font-size:13.5px;align-items:baseline}
+.plan .k{color:var(--ink3);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.plan .v{font:600 14.5px var(--mono);font-variant-numeric:tabular-nums}
+.plan .d{font:12.5px var(--mono);color:var(--ink3);text-align:right}
+.v.stop{color:var(--stop)}.v.tgt{color:var(--go)}
+.rbar{position:relative;height:22px;margin:2px 0}
+.rbar .line{position:absolute;left:0;right:0;top:9px;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--stop) 0,var(--stop) var(--e),var(--go) var(--e),var(--go) 100%);opacity:.35}
+.rbar .tick{position:absolute;top:4px;width:2px;height:14px;background:var(--ink3)}
+.rbar .me{position:absolute;top:1px;width:12px;height:20px;border-radius:4px;background:var(--ink);border:2px solid var(--panel);transform:translateX(-50%);transition:left .6s}
+.rlab{display:flex;justify-content:space-between;font:11.5px var(--mono);color:var(--ink3)}
+.line2{font-size:13px;color:var(--ink2)}
+.line2 b{color:var(--ink);font-variant-numeric:tabular-nums}
+.note{font-size:12.5px;padding:6px 9px;border-radius:6px;background:var(--warn-bg);color:var(--warn)}
+.empty{grid-column:1/-1;border:1px dashed var(--line);border-radius:10px;padding:18px;color:var(--ink2);background:var(--panel)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+summary{cursor:pointer;font-weight:600}
+details ul{margin:10px 0 0;padding-left:20px;color:var(--ink2);font-size:14px;max-width:90ch}
+details li{margin-bottom:6px}
+.scroll{overflow-x:auto;margin-top:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--ink3);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.foot{font-size:12.5px;color:var(--ink3);max-width:95ch}
+</style></head><body><div class="wrap">
+
+<div class="bar">
+  <h1>Live Scanner</h1>
+  <div class="status">
+    <span><span class="dot" id="pdot"></span><span id="pstat">connecting to price stream…</span></span>
+    <span id="clock"></span><span id="next"></span>
+  </div>
+</div>
+
+<div class="panel regime" id="regime" hidden><span class="pill" id="regpill"></span><span id="regtext"></span></div>
+
+<div class="banner" id="banner" hidden><b id="bannertext"></b><button id="bannerx" aria-label="Dismiss">Dismiss</button></div>
+
+<div class="panel">
+  <div class="set">
+    <label for="acct">Your account size ($)<input id="acct" type="number" min="0" step="50" value="1000"></label>
+    <label for="riskp">Risk per trade (%)<input id="riskp" type="number" min="0.1" max="5" step="0.1" value="1"></label>
+    <label for="tp">Target style
+      <select id="tp">
+        <option value="0.5">Half the stop distance (most wins)</option>
+        <option value="1" selected>Same as the stop distance (balanced)</option>
+        <option value="2">Twice the stop distance</option>
+        <option value="3">Three times the stop distance</option>
+        <option value="trail">No target, trail the exit (biggest average)</option>
+      </select></label>
+    <label for="mkt">Market<select id="mkt" style="min-width:150px"><option value="all">Crypto and stocks</option><option value="crypto">Crypto only</option><option value="stock">US stocks only</option></select></label>
+    <button class="btn" id="snd" aria-pressed="false">Sound alerts: off</button>
+    <button class="btn" id="sndtest">Test sound</button>
+  </div>
+  <div class="odds" id="odds"></div>
+  <p class="oddsnote" id="oddsnote"></p>
+</div>
+
+<div class="tabs" role="group" aria-label="Which plans to show">
+  <button data-f="new" aria-pressed="true">New signals<span id="n-new"></span></button>
+  <button data-f="open" aria-pressed="false">Open plans<span id="n-open"></span></button>
+  <button data-f="wait" aria-pressed="false">Close to a signal<span id="n-wait"></span></button>
+  <button data-f="done" aria-pressed="false">Finished recently<span id="n-done"></span></button>
+  <button data-f="all" aria-pressed="false">Everything<span id="n-all"></span></button>
+  <button data-f="dip" aria-pressed="false">Dip signals (US stocks)<span id="n-dip"></span></button>
+  <button data-f="demo" aria-pressed="false">Demo account</button>
+</div>
+<p class="hint" id="hint"></p>
+
+<div id="dip" hidden>
+  <div class="panel">
+    <div class="set" style="justify-content:space-between">
+      <div><b style="font-size:17px">Dip rule on US stocks and funds</b><div class="hint" id="dipsub"></div></div>
+      <div class="tabs" role="group" aria-label="Which dip plans">
+        <button data-q="new" aria-pressed="true">New<span id="q-new"></span></button><button data-q="open" aria-pressed="false">Open<span id="q-open"></span></button>
+        <button data-q="done" aria-pressed="false">Finished recently<span id="q-done"></span></button>
+        <button class="btn" id="mexconly" aria-pressed="false" style="border-radius:999px">Only what MEXC lists: off</button>
+        <button class="btn" id="mktonly" aria-pressed="false" style="border-radius:999px">Market-wide dips only: off</button>
+      </div>
+    </div>
+    <div class="odds" id="dipodds"></div>
+    <p class="oddsnote" id="dipnote"></p>
+  </div>
+  <div class="grid" id="dipgrid" style="margin-top:12px"></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div id="demo" hidden>
+  <div class="panel">
+    <div class="set" style="justify-content:space-between">
+      <div><b style="font-size:17px">Demo account</b><div class="hint" id="demosub"></div></div>
+      <div class="tabs" role="group" aria-label="Which record"><button data-d="live" aria-pressed="true">Live record</button><button data-d="replay" aria-pressed="false">Replay: last 120 days</button></div>
+    </div>
+    <div class="odds" id="demostats"></div>
+    <p class="oddsnote" id="demonote"></p>
+  </div>
+  <div class="panel" style="margin-top:12px"><div class="scroll" style="margin-top:0"><table id="demotable"></table></div></div>
+</div>
+
+<details>
+  <summary>How the plan is built, and what the test showed</summary>
+  <ul>
+    <li><b>Signal:</b> a day closes above the coin's highest close of the previous 55 days.</li>
+    <li><b>Entry:</b> that day's closing price. Daily candles close at 00:00 UTC. A signal is only real once the day has closed.</li>
+    <li><b>Stop:</b> the lowest close of the 20 days before the signal. It is a real order sitting in the market, and it is usually far away (20–30% on average), which is why the position has to be small.</li>
+    <li><b>Target:</b> entry plus the stop distance multiplied by the style you picked. "R" means one stop distance: +1R is a gain equal to what you risked.</li>
+    <li><b>Position size:</b> your account × risk % ÷ the stop distance %. With a 25% stop and 1% risk the position is 4% of the account. No leverage is needed.</li>
+    <li><b>Bitcoin filter:</b> a signal only counts on a day Bitcoin closes above its own 200-day average. Since 2022 the signals this filter rejects won 47% and lost money; the ones it keeps won 65%. When Bitcoin is below the average there will be no new signals at all, sometimes for months (all of 2022).</li>
+    <li><b>US stocks:</b> the same rule on 40 large US stocks and 12 index funds, tested from 2005. Their signals appear after the US close (about 21:00 UTC, weekdays) and prices on those cards update at each scan, not every second. About half of the stock result comes from the stock market's own long rise; random entry days made +0.12R against +0.23R for breakout days. The 40 stocks are today's giants, which is hindsight. Stops are closer (about 10%), so positions are larger: about 10% of the account at 1% risk.</li>
+    <li><b>Dip rule (its own tab):</b> a US stock or fund that is above its 200-day average closes below its lower band (20-day average minus 2 standard deviations). On a day when the whole market is down (the S&P 500 more than 1.5 standard deviations below its own 20-day average) a smaller dip of 1 standard deviation also counts. Entry is that close. The stop is 3 average daily ranges below, about 7%. The exit is the first later daily close above the 20-day average, or 20 trading days. Tested on 583 stocks and funds from 2005; the figures are at the top of the dip tab. Winners are smaller than losers, and about 1 trade in 4 hits the full stop. Signals come in bursts: about a third of days have none, and on a market-wide dip day there can be hundreds. The single-company list is today's S&P 500, which is hindsight.</li>
+    <li><b>Market-wide and stock-only dips:</b> the same dip signal did better when the whole market was down with the stock: 72% won, averaging +1.1% of the position from 2016 on. When only the stock was falling and the market was not, 64% won and the average was +0.4%. Market-wide dip days are about 1 day in 8, with dozens of signals each, so an account limited to 10 positions can take only a few of them. A further variant with the stop 5 ranges away won 75% but loses about 11% of the position when it fails; it is in the test files, not on this page.</li>
+    <li><b>MEXC:</b> a card marked MEXC means that stock is listed there as a perpetual futures contract. The test used real stock closing prices with no leverage. A futures contract adds funding payments, its own price, and liquidation if leverage is used; none of that was tested.</li>
+    <li><b>One plan at a time per coin:</b> as in the test, a coin gets a new plan only on a breakout day that comes after its previous plan has finished.</li>
+    <li><b>Late entries:</b> the test bought at the signal day's close. If price has since moved more than a quarter of the stop distance above entry, the card says so, because that is no longer the trade that was tested.</li>
+  </ul>
+  <div class="scroll"><table id="evtable"></table></div>
+  <ul>
+    <li>The scanner follows the 40 most heavily traded coins. The rule was tested on 380: it held up on large coins and failed on small ones (about zero since 2022, a loss since 2024), so small coins are left out. The 40 were picked by today's trading volume, which is hindsight and flatters the numbers a little.</li>
+    <li>Since 2022 the edge is much thinner than before (about a third of the long-run average). Expect long flat stretches.</li>
+    <li>Signals arrive in clusters, because coins move together. Ten open plans are not ten independent bets; a market drop can stop most of them at once.</li>
+    <li>Only coins that still trade today were tested. Dead coins are missing, which makes every number here look better than it was.</li>
+  </ul>
+</details>
+
+<p class="foot">Prices: Binance spot for crypto; Yahoo Finance daily data for US stocks (updated at each scan, not live). This page places no trades and is not financial advice. It shows the levels a tested rule produces; whether to act on them, and with how much, is your decision. Past results do not guarantee future results.</p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let S=null,LIVE={},TAB="new",lastTick=0,wsOk=false;
+const f=x=>x==null?"–":x>=1000?x.toLocaleString(undefined,{maximumFractionDigits:1}):x>=100?x.toFixed(2):x>=1?x.toFixed(3):x>=0.01?x.toFixed(4):x.toPrecision(3);
+const pc=(x,d=1)=>(x>=0?"+":"−")+Math.abs(x).toFixed(d)+"%";
+const day=t=>new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+const money=x=>"$"+(x>=100?Math.round(x).toLocaleString():x.toFixed(2));
+const tpv=()=>$("tp").value;
+try{for(const k of ["acct","riskp","tp"]){const v=localStorage.getItem("ls_"+k);if(v)$(k).value=v}}catch(e){}
+
+function classify(c,price){
+  const s=(c.plans||{})[tpv()];if(!s)return{kind:"wait"};
+  if(s.status!=="open")return{kind:(Date.now()-s.when)<14*864e5?"done":"wait",st:s.status,r:s,s};
+  return{kind:s.age_days<=2?"new":"open",st:"open",r:s,s};
+}
+function waitNear(c,price){return (c.next_entry/price-1)*100<5}
+
+function card(c,price,cl){
+  const s=cl.s,tp=tpv(),risk$=(+$("acct").value||0)*(+$("riskp").value||0)/100;
+  if(cl.kind==="wait"){
+    const gap=(c.next_entry/price-1)*100,rp=(c.next_entry-c.next_stop)/c.next_entry*100;
+    return `<div class="top"><div class="name">${c.coin}${c.market==="stock"?' <span class="pill wait">US STOCK</span>':""}<small>${s?"last plan "+s.status+" "+day(s.when):"no open plan"}</small></div><div class="price" id="px-${c.coin}">${f(price)}</div></div>
+      <div><span class="pill wait">WAITING</span></div>
+      <div class="plan"><span class="k">Signal if day closes above</span><span class="v">${f(c.next_entry)}</span><span class="d">${gap>0?gap.toFixed(1)+"% away":"above it now"}</span>
+      <span class="k">Stop would be</span><span class="v stop">${f(c.next_stop)}</span><span class="d">−${rp.toFixed(1)}%</span>
+      <span class="k">Position for your risk</span><span class="v">${money(risk$/(rp/100))}</span><span class="d">risk ${money(risk$)}</span></div>
+      ${gap<=0?`<div class="note">Price is above the signal level right now. It only counts if the day closes there (00:00 UTC).</div>`:""}`}
+  const R=s.entry-s.stop,nowR=(price-s.entry)/R,tgt=tp==="trail"?null:s.entry+parseFloat(tp)*R,maxR=tp==="trail"?3:Math.max(parseFloat(tp),1);
+  const pos=x=>Math.max(0,Math.min(100,(x+1)/(maxR+1)*100));
+  const size=risk$/(s.risk_pct/100),late=cl.kind==="new"&&nowR>0.25,st=cl.st;
+  const pill=st==="target"?`<span class="pill target">TARGET REACHED ${day(cl.r.when)}</span>`:st==="stopped"?`<span class="pill stopped">STOPPED ${day(cl.r.when)}</span>`:st==="trailed out"?`<span class="pill trailed">TRAILED OUT ${day(cl.r.when)}</span>`:
+    cl.kind==="new"?`<span class="pill new">NEW SIGNAL · ${s.age_days===0?"last close":s.age_days+" day"+(s.age_days>1?"s":"")+" ago"}</span>`:`<span class="pill open">OPEN · day ${s.age_days}</span>`;
+  return `<div class="top"><div class="name">${c.coin}${c.market==="stock"?' <span class="pill wait">US STOCK</span>':""}<small>signal ${day(s.day+864e5)}${c.market==="stock"?" · price as of last scan":""}</small></div><div class="price" id="px-${c.coin}">${f(price)}</div></div>
+    <div>${pill}${late?` <span class="pill late">MOVED AWAY FROM ENTRY</span>`:""}</div>
+    <div class="plan">
+      <span class="k">Entry</span><span class="v">${f(s.entry)}</span><span class="d">now ${pc((price/s.entry-1)*100)}</span>
+      <span class="k">Stop</span><span class="v stop">${f(s.stop)}</span><span class="d">−${s.risk_pct.toFixed(1)}%</span>
+      ${tgt?`<span class="k">Target</span><span class="v tgt">${f(tgt)}</span><span class="d">+${(s.risk_pct*parseFloat(tp)).toFixed(1)}%</span>`:`<span class="k">Exit if day closes below</span><span class="v">${f(cl.r.trail_level)}</span><span class="d">trailing</span>`}
+    </div>
+    <div class="rbar" style="--e:${pos(0)}%"><div class="line"></div><div class="tick" style="left:${pos(0)}%"></div><div class="me" style="left:${pos(nowR)}%"></div></div>
+    <div class="rlab"><span>stop −1R</span><span>entry</span><span>${tp==="trail"?"+3R →":"target +"+tp+"R"}</span></div>
+    <div class="line2">${st==="open"?`Right now <b>${nowR>=0?"+":"−"}${Math.abs(nowR).toFixed(2)}R</b> · `:""}Position for your risk: <b>${money(size)}</b> (risking ${money(risk$)})</div>
+    ${late?`<div class="note">Price is already ${nowR.toFixed(2)}R above the tested entry. Entering here is a different trade from the one that was tested: the stop is further away and the target closer.</div>`:""}`;
+}
+
+function paint(full){
+  if(!S)return;const counts={new:0,open:0,wait:0,done:0,all:0},items=[];
+  const MK=$("mkt").value;
+  for(const n of S.order){const c=S.coins[n];if(!c||(MK!=="all"&&(c.market||"crypto")!==MK))continue;const price=(c.market!=="stock"&&LIVE[n])?LIVE[n].p:c.price,cl=classify(c,price);
+    counts.all++;if(cl.kind==="wait"){if(waitNear(c,price))counts.wait++}else counts[cl.kind]++;
+    const show=TAB==="all"||(TAB==="wait"?cl.kind==="wait"&&waitNear(c,price):cl.kind===TAB);
+    if(show)items.push({c,price,cl})}
+  for(const k in counts)$("n-"+k).textContent=counts[k];
+  items.sort((a,b)=>TAB==="wait"?(a.c.next_entry/a.price)-(b.c.next_entry/b.price):(a.cl.s?a.cl.s.age_days:999)-(b.cl.s?b.cl.s.age_days:999));
+  const sig=items.map(x=>x.c.coin+x.cl.kind+(x.cl.st||"")).join(",")+TAB+tpv()+$("acct").value+$("riskp").value;
+  if(full||sig!==paint.sig){paint.sig=sig;
+    $("grid").innerHTML=items.length?items.map(x=>`<article class="card ${x.cl.kind==="new"?"new":""}" id="card-${x.c.coin}">${card(x.c,x.price,x.cl)}</article>`).join(""):
+      `<div class="empty">${{new:"No new signals in the last two daily closes. That is common: signals only appear at the daily close (00:00 UTC), and they come in bunches.",open:"No open plans for this target style.",wait:"No coin is within 5% of a signal level.",done:"Nothing finished in the last 14 days.",all:"Loading…"}[TAB]}</div>`}
+  else for(const x of items){const el=$("card-"+x.c.coin);if(el){const old=+(el.dataset.p||x.price);if(old!==x.price){el.innerHTML=card(x.c,x.price,x.cl);const pe=$("px-"+x.c.coin);if(pe){pe.className="price "+(x.price>old?"tu":"td");setTimeout(()=>{if(pe)pe.className="price"},800)}}el.dataset.p=x.price}}
+  $("hint").textContent={new:"Coins whose signal day closed within the last two days. These are the only cards where the tested entry price is still recent.",
+    open:"Plans from earlier signals that have not yet reached the target or the stop. The marker shows where price sits between the two.",
+    wait:"Coins with no open plan that are within 5% of the level a daily close must beat. Nothing to do until a day actually closes above it.",
+    done:"Plans that hit the target or the stop in the last 14 days, wins and losses together.",all:"Every coin the scanner follows."}[TAB];
+}
+
+function regime(){
+  const m=S&&S.market;if(!m)return;$("regime").hidden=false;
+  $("regpill").className="pill "+(m.on?"target":"stopped");$("regpill").textContent=m.on?"SIGNALS ON":"SIGNALS OFF";
+  $("regtext").textContent=(m.on?"Bitcoin closed above its 200-day average, so new breakout signals count. ":"Bitcoin closed below its 200-day average, so new breakout signals are ignored until it closes back above. Open plans keep running. ")+
+    "BTC "+f(m.btc_close)+" vs average "+f(m.btc_avg200)+" · "+m.days+" day"+(m.days>1?"s":"")+" in this state.";
+}
+function odds(){
+  const stockView=$("mkt").value==="stock",ev=(S.evidence||{})[stockView?"stocks":"top40"]||{},key={"0.5":"TP_0.5R","1":"TP_1R","2":"TP_2R","3":"TP_3R","trail":"TRAIL"}[tpv()],a=(ev[key]||{}).ALL,b=(ev[key]||{}).SINCE_2022;
+  if(!a){$("odds").innerHTML="";return}
+  $("odds").innerHTML=[[a.win_pct+"%","of tested trades won"],[(a.avg_R>=0?"+":"")+a.avg_R+"R","average result per trade"],[b.trades_per_week+" / week",stockView?"signals on 52 US stocks and index funds":"signals on these 40 coins"],[a.median_days+" days","typical trade length"],[a.trades.toLocaleString(),"trades in the test"],
+    [b.win_pct+"% · "+(b.avg_R>=0?"+":"")+b.avg_R+"R","the same, since 2022 only"]].map(x=>`<div><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+  $("oddsnote").textContent=`With this target, about ${Math.round(100-a.win_pct)} trades in every 100 lose the full risk. At ${$("riskp").value}% risk per trade, the average result of +${a.avg_R}R is about +${(a.avg_R*(+$("riskp").value)).toFixed(2)}% of the account per trade over the long run, and less than that since 2022. A run of five or more losses in a row is normal.`;
+  const names={"TP_0.5R":"Half the stop distance","TP_1R":"Same as the stop distance","TP_2R":"Twice","TP_3R":"Three times","HALF_1R_TRAIL":"Half off at +1R, trail the rest","TRAIL":"No target, trail"};
+  $("evtable").innerHTML="<tr><th>Target style</th><th>Won</th><th>Avg per trade</th><th>Won since 2022</th><th>Avg since 2022</th><th>Trades / week</th><th>Typical days</th></tr>"+
+    Object.keys(names).filter(k=>ev[k]).map(k=>{const A=ev[k].ALL,B=ev[k].SINCE_2022;
+      return `<tr><td>${names[k]}</td><td>${A.win_pct}%</td><td>+${A.avg_R}R</td><td>${B.win_pct}%</td><td>+${B.avg_R}R</td><td>${B.trades_per_week}</td><td>${A.median_days}</td></tr>`}).join("");
+}
+
+// ---- dip rule tab
+let DTAB="new",MEXCONLY=false,MKTONLY=false;
+try{MEXCONLY=localStorage.getItem("ls_mexconly")==="1";MKTONLY=localStorage.getItem("ls_mktonly")==="1"}catch(e){}
+const mktKind=s=>s.mkt_z==null?"":s.mkt_z<-1.5?"wide":s.mkt_z>-0.5?"solo":"";
+const dipKind=p=>{const s=p.last;if(!s)return null;if(s.status==="open")return s.age_days<=1?"new":"open";return Date.now()-s.when<14*864e5?"done":null};
+function dipCard(p,kind){
+  const s=p.last,risk$=(+$("acct").value||0)*(+$("riskp").value||0)/100,R=s.entry-s.stop,nowR=(p.price-s.entry)/R,exR=(p.ma20-s.entry)/R,maxR=Math.max(1.5,exR+0.3);
+  const pos=x=>Math.max(0,Math.min(100,(x+1)/(maxR+1)*100)),size=risk$/(s.risk_pct/100),mx=(S.mexc||{})[p.coin],late=kind==="new"&&nowR>0.25,sg=x=>(x>=0?"+":"−")+Math.abs(x).toFixed(2)+"R";
+  const pill=s.status==="stopped"?`<span class="pill stopped">STOPPED ${day(s.when)} · −1R</span>`:s.status!=="open"?`<span class="pill ${s.R>0?"target":"stopped"}">${s.status==="exited"?"EXITED":"TIME LIMIT"} ${day(s.when)} · ${sg(s.R)}</span>`:
+    kind==="new"?`<span class="pill new">NEW DIP SIGNAL · ${s.age_days===0?"last close":"1 day ago"}</span>`:`<span class="pill open">OPEN · day ${s.age_days} of 20</span>`;
+  return `<div class="top"><div class="name">${p.coin} ${mx?`<span class="pill late" title="${mx}">MEXC</span>`:""}<small>signal ${day(s.day)} · price as of last scan</small></div><div class="price">${f(p.price)}</div></div>
+    <div>${pill}${mktKind(s)==="wide"?` <span class="pill target" title="The S&P 500 was ${s.mkt_z} sd from its 20-day average">MARKET-WIDE DIP · 72% tested</span>`:mktKind(s)==="solo"?` <span class="pill wait" title="The S&P 500 was ${s.mkt_z} sd from its 20-day average">STOCK-ONLY DIP · 64% tested</span>`:""}${late?` <span class="pill late">MOVED AWAY FROM ENTRY</span>`:""}</div>
+    <div class="plan">
+      <span class="k">Entry</span><span class="v">${f(s.entry)}</span><span class="d">now ${pc((p.price/s.entry-1)*100)}</span>
+      <span class="k">Stop</span><span class="v stop">${f(s.stop)}</span><span class="d">−${s.risk_pct.toFixed(1)}%</span>
+      ${s.status==="open"?`<span class="k">Exit when a day closes above</span><span class="v tgt">${f(p.ma20)}</span><span class="d">${pc((p.ma20/s.entry-1)*100)} · moves daily</span>`:""}
+    </div>
+    <div class="rbar" style="--e:${pos(0)}%"><div class="line"></div><div class="tick" style="left:${pos(0)}%"></div><div class="tick" style="left:${pos(exR)}%"></div><div class="me" style="left:${pos(s.status==="open"?nowR:s.R)}%"></div></div>
+    <div class="rlab"><span>stop −1R</span><span>entry</span><span>20-day average ${sg(exR)}</span></div>
+    <div class="line2">${s.status==="open"?`Right now <b>${sg(nowR)}</b> · ${Math.max(0,20-s.age_days)} trading days left · `:""}Position for your risk: <b>${money(size)}</b> (risking ${money(risk$)})${mx?` · MEXC contract <b>${mx.replace("_USDT","")}</b>`:""}</div>
+    ${late?`<div class="note">Price is already ${nowR.toFixed(2)}R above the tested entry, so most of the tested gain has gone.</div>`:""}`;
+}
+function paintDip(){
+  if(!S)return;const all=Object.values(S.dips||{}).map(p=>({p,k:dipKind(p)})).filter(x=>x.k&&(!MEXCONLY||(S.mexc||{})[x.p.coin])&&(!MKTONLY||mktKind(x.p.last)==="wide")),n={new:0,open:0,done:0};
+  for(const x of all)n[x.k]++;for(const k in n)$("q-"+k).textContent=n[k];$("n-dip").textContent=n.new;
+  if(TAB!=="dip")return;
+  const d=(S.evidence||{}).dip,items=all.filter(x=>x.k===DTAB).sort((a,b)=>DTAB==="done"?b.p.last.when-a.p.last.when:(!!(S.mexc||{})[b.p.coin]-!!(S.mexc||{})[a.p.coin])||a.p.last.age_days-b.p.last.age_days||a.p.last.risk_pct-b.p.last.risk_pct);
+  $("mexconly").textContent="Only what MEXC lists: "+(MEXCONLY?"on":"off");$("mexconly").setAttribute("aria-pressed",MEXCONLY);
+  $("mktonly").textContent="Market-wide dips only: "+(MKTONLY?"on":"off");$("mktonly").setAttribute("aria-pressed",MKTONLY);
+  $("dipsub").textContent=S.dips_updated?`${d?d.instruments:""} stocks and funds checked ${new Date(S.dips_updated).toLocaleString([], {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})} · ${Object.keys(S.mexc||{}).length} US stocks are listed on MEXC · signals appear after the US close (about 21:00 UTC, weekdays)`:"Loading stock data (takes a minute or two)…";
+  if(d){const a=d.ALL,b=d.SINCE_2022,c=d.capped_account_10_open_half_pct_risk;
+    $("dipodds").innerHTML=[[a.win_pct+"%","of tested trades won"],["+"+a.avg_R+"R","average result per trade"],[b.trades_per_week+" / week","signals across all "+d.instruments],[a.median_days+" days","typical trade length"],
+      [b.win_pct+"% · +"+b.avg_R+"R","the same, since 2022 only"],["+"+a.avg_winner_R+"R / "+a.avg_loser_R+"R","average winner / average loser"]].map(x=>`<div><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+    $("dipnote").textContent=`Stops are about ${a.avg_stop_pct}% away, so at ${$("riskp").value}% risk one position is about ${Math.round((+$("riskp").value)/a.avg_stop_pct*100)}% of the account, and many signals arrive together. `+
+      `The tested account held at most 10 at once at 0.5% risk each: it took about ${c.taken_per_week} trades a week and made about +${c.avg_return_per_year_pct}% a year, with a worst year of ${c.worst_year_pct}% (${c.worst_year}) and a deepest fall of ${c.deepest_fall_pct}%. About ${a.full_stop_pct} trades in 100 hit the full stop.`}
+  $("dipgrid").innerHTML=!S.dips_updated?`<div class="empty">Loading stock data…</div>`:items.length?items.map(x=>`<article class="card ${x.k==="new"?"new":""}">${dipCard(x.p,x.k)}</article>`).join(""):
+    `<div class="empty">${{new:"No new dip signals at the last two US closes"+(MEXCONLY?" among the stocks MEXC lists":"")+". About a third of days have none; they come in bursts when the market drops.",open:"No open dip plans.",done:"Nothing finished in the last 14 days."}[DTAB]}</div>`;
+}
+document.querySelectorAll(".tabs button[data-q]").forEach(b=>b.onclick=()=>{DTAB=b.dataset.q;document.querySelectorAll(".tabs button[data-q]").forEach(x=>x.setAttribute("aria-pressed",x===b));paintDip()});
+$("mktonly").onclick=()=>{MKTONLY=!MKTONLY;try{localStorage.setItem("ls_mktonly",MKTONLY?"1":"0")}catch(e){}paintDip()};
+$("mexconly").onclick=()=>{MEXCONLY=!MEXCONLY;try{localStorage.setItem("ls_mexconly",MEXCONLY?"1":"0")}catch(e){}paintDip()};
+
+const LOCAL=["localhost","127.0.0.1"].includes(location.hostname);
+async function pull(){try{const s=await (await fetch(LOCAL?"/api/state":"state.json?"+Date.now(),{cache:"no-store"})).json();const first=!S;S=s;if(first)odds();regime();paint(true);paintDip();checkNew()}catch(e){}}
+
+// ---- sound and on-screen alert for new signals
+let SOUND=false,SEEN=null,SEEND=null,KNOWN=new Set(),ctx=null;
+try{SOUND=localStorage.getItem("ls_sound")==="1"}catch(e){}
+function beep(){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==="suspended")ctx.resume();
+  [0,0.22,0.44].forEach((t,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=[880,1100,1320][i];o.connect(g);g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.0001,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(0.35,ctx.currentTime+t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+t+0.2);
+    o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+0.22)})}catch(e){}}
+function soundUI(){const b=$("snd");b.textContent=SOUND?"Sound alerts: on":"Sound alerts: off";b.setAttribute("aria-pressed",SOUND)}
+function checkNew(){
+  if(!S)return;const now=new Set();
+  for(const n of S.order){const c=S.coins[n],p=c&&c.plans&&c.plans[tpv()];if(p&&p.status==="open"&&p.age_days<=2)now.add(n+":"+p.day)}
+  const nowD=S.dips_updated?new Set(Object.values(S.dips||{}).filter(p=>p.last&&p.last.status==="open"&&p.last.age_days<=1).map(p=>p.coin+":"+p.last.day)):null;
+  // a coin that has only just finished loading is not a new signal
+  const fresh=SEEN?[...now].filter(k=>!SEEN.has(k)).map(k=>k.split(":")[0]).filter(n=>KNOWN.has(n)):[],freshD=SEEND&&nowD?[...nowD].filter(k=>!SEEND.has(k)).map(k=>k.split(":")[0]):[];
+  if(fresh.length||freshD.length){const names=fresh.concat(freshD.map(x=>x+" (dip)"));$("banner").hidden=false;
+    $("bannertext").textContent="New signal"+(names.length>1?"s":"")+": "+names.slice(0,8).join(", ")+(names.length>8?" and "+(names.length-8)+" more":"");
+    document.title="("+names.length+") New signal · Live Scanner";if(SOUND)beep();
+    document.querySelector('.tabs button[data-f="'+(fresh.length?"new":"dip")+'"]').click()}
+  SEEN=now;KNOWN=new Set(S.order);if(nowD)SEEND=nowD}
+function connect(){
+  if(!S||!S.order.length){setTimeout(connect,500);return}
+  // one stream carries every symbol's last price once a second, so the coin list can be any length
+  const ws=new WebSocket("wss://stream.binance.com:9443/ws/!miniTicker@arr");
+  ws.onopen=()=>{wsOk=true};
+  ws.onmessage=m=>{const a=JSON.parse(m.data);if(!Array.isArray(a))return;for(const d of a){if(d.s.endsWith("USDT")){const k=d.s.slice(0,-4);if(S.coins[k])LIVE[k]={p:+d.c,o:+d.o}}}lastTick=Date.now()};
+  ws.onclose=()=>{wsOk=false;setTimeout(connect,2000)};ws.onerror=()=>ws.close();
+}
+function clock(){
+  const now=new Date(),secD=86400-(now.getUTCHours()*3600+now.getUTCMinutes()*60+now.getUTCSeconds());
+  $("clock").textContent=now.toLocaleTimeString();
+  $("next").textContent="next daily close in "+Math.floor(secD/3600)+"h "+String(Math.floor(secD%3600/60)).padStart(2,"0")+"m "+String(secD%60).padStart(2,"0")+"s";
+  const fresh=Date.now()-lastTick<5000;$("pdot").className="dot "+(wsOk&&fresh?"live":"bad");
+  $("pstat").textContent=(wsOk&&fresh?"prices live":wsOk?"waiting for ticks…":"price stream reconnecting… (showing last known prices)")+(S&&S.updated?" · levels checked "+new Date(S.updated).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}):" · loading levels…");
+}
+document.querySelectorAll(".tabs button[data-f]").forEach(b=>b.onclick=()=>{TAB=b.dataset.f;document.querySelectorAll(".tabs button[data-f]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  const d=TAB==="demo",q=TAB==="dip";$("demo").hidden=!d;$("dip").hidden=!q;$("grid").hidden=d||q;$("hint").hidden=d||q;if(d)demo();else if(q)paintDip();else paint(true)});
+let DMODE="live",PAPERJ=null;
+document.querySelectorAll(".tabs button[data-d]").forEach(b=>b.onclick=()=>{DMODE=b.dataset.d;document.querySelectorAll(".tabs button[data-d]").forEach(x=>x.setAttribute("aria-pressed",x===b));demo()});
+async function pullPaper(){try{PAPERJ=await (await fetch(LOCAL?"/api/paper?style="+tpv():"paper.json?"+Date.now(),{cache:"no-store"})).json()}catch(e){}if(TAB==="demo")demo()}
+function demo(){
+  if(!S)return;const style=tpv();let trades=[],since=null;
+  if(DMODE==="live"){const L=PAPERJ||{};since=L.started;trades=Object.values(L.trades||{});
+    $("demosub").textContent=since?("Started "+new Date(since).toLocaleString()+". Only signals that appear after this moment are counted"+(L.style&&L.style!==style?" (the saved record uses a different target style: "+L.style+")":"")+"."):"Starting…"}
+  else{for(const n of S.order){const c=S.coins[n];for(const t of ((c.recent||{})[style]||[]))trades.push({coin:n,...t})}
+    for(const p of Object.values(S.dips||{}))for(const t of p.recent||[])trades.push({coin:p.coin,rule:"dip",...t});
+    $("demosub").textContent="What the demo account would show if it had been running for the last 120 days (60 days for dip trades). This is a replay of history, not a live record."}
+  const px=t=>t.rule==="dip"?(S.dips[t.coin]||{}).price:((S.coins[t.coin]||{}).market!=="stock"&&LIVE[t.coin])?LIVE[t.coin].p:(S.coins[t.coin]||{}).price;
+  trades.sort((a,b)=>b.day-a.day);
+  const closed=trades.filter(t=>t.status!=="open"),wins=closed.filter(t=>t.R>0),sumR=closed.reduce((a,t)=>a+t.R,0);
+  const c50=trades.filter(t=>t.x50.status!=="open"),liq=c50.filter(t=>t.x50.status==="liquidated"),sum50=c50.reduce((a,t)=>a+t.x50.pnl,0);
+  const openR=trades.filter(t=>t.status==="open").reduce((a,t)=>{const lp=px(t);return a+(lp?(lp-t.entry)/(t.entry-t.stop):0)},0);
+  $("demostats").innerHTML=[
+    ["$"+(100+sumR).toFixed(2),"balance, risking $1 per trade (the tested way)"],
+    [closed.length?Math.round(100*wins.length/closed.length)+"%":"–","success rate · "+wins.length+" won, "+(closed.length-wins.length)+" lost"],
+    [trades.length-closed.length,"open trades · "+(openR>=0?"+":"−")+"$"+Math.abs(openR).toFixed(2)+" unrealised"],
+    ["$"+(100+sum50).toFixed(2),"balance, $1 margin at 50× per trade"],
+    [c50.length?liq.length+" of "+c50.length:"–","of those wiped out at 50× (2% dip)"]
+  ].map(x=>`<div><b>${x[0]}</b><span>${x[1]}</span></div>`).join("");
+  $("demonote").textContent="Two ways of taking the same signals. Risking $1 means the position is sized so that hitting the stop loses exactly $1; the stop is usually 20–30% away, so the position is only a few dollars and needs no leverage. "+
+    "$1 of margin at 50× is a $50 position that is wiped out by a 2% dip, which nearly always comes before a target that is 20% or more away. Both are shown so you can watch the difference with real signals.";
+  $("demotable").innerHTML="<tr><th>Coin</th><th>Signal day</th><th>Entry</th><th>Stop</th><th>Status</th><th>Result ($1 risk)</th><th>At 50× ($1 margin)</th></tr>"+
+    (trades.length?trades.map(t=>{const lp=px(t),r=t.status==="open"?(lp-t.entry)/(t.entry-t.stop):t.R;
+      return `<tr><td><b>${t.coin}</b>${t.rule==="dip"?' <span class="pill wait">DIP</span>':""}</td><td>${day(t.rule==="dip"?t.day:t.day+864e5)}</td><td>${f(t.entry)}</td><td>${f(t.stop)}</td><td><span class="pill ${t.status==="target"||(t.rule==="dip"&&t.R>0)?"target":t.status==="stopped"?"stopped":t.status==="open"?"open":"trailed"}">${t.status}${t.when?" "+day(t.when):""}</span></td>
+        <td style="color:${r>=0?"var(--go)":"var(--stop)"}">${r>=0?"+":"−"}$${Math.abs(r).toFixed(2)}${t.status==="open"?" (open)":""}</td>
+        <td style="color:${t.x50.pnl==null?"var(--ink3)":t.x50.pnl>=0?"var(--go)":"var(--stop)"}">${t.x50.status==="liquidated"?"liquidated "+day(t.x50.when)+" · −$1.00":t.x50.pnl==null?"open":(t.x50.pnl>=0?"+":"−")+"$"+Math.abs(t.x50.pnl).toFixed(2)}</td></tr>`}).join("")
+      :`<tr><td colspan="7" style="text-align:left;color:var(--ink2)">${DMODE==="live"?"No signals yet since the demo account started. New signals appear at the daily close (00:00 UTC); the 40-coin list produces about two a week. Use Replay to see what it looks like with trades in it.":"No trades in the last 120 days."}</td></tr>`);
+}
+$("mkt").addEventListener("input",()=>{odds();paint(true)});
+for(const k of ["acct","riskp","tp"])$(k).addEventListener("input",()=>{try{localStorage.setItem("ls_"+k,$(k).value)}catch(e){}if(k==="tp"){SEEN=null;pullPaper()}if(S){odds();paint(true);paintDip();checkNew()}});
+$("snd").onclick=()=>{SOUND=!SOUND;try{localStorage.setItem("ls_sound",SOUND?"1":"0")}catch(e){}soundUI();if(SOUND)beep()};
+$("sndtest").onclick=beep;$("bannerx").onclick=()=>{$("banner").hidden=true;document.title="Live Scanner"};soundUI();
+pull().then(pullPaper);setInterval(pull,LOCAL?15000:120000);setInterval(pullPaper,LOCAL?30000:120000);connect();setInterval(()=>{clock();paint(false)},1000);clock();
+</script></body></html>

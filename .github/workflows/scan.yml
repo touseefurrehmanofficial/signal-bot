@@ -1,0 +1,42 @@
+name: scan
+
+# Runs with your laptop off. Daily candles close at 00:00 UTC, so new signals can only appear then;
+# the other runs catch targets and stops being hit during the day.
+on:
+  schedule:
+    - cron: "6 0 * * *"        # 00:06 UTC every day: new signals
+    - cron: "20 6,12,18 * * *" # three more checks a day: targets and stops
+    - cron: "25 21 * * 1-5"    # 21:25 UTC on weekdays: after the US stock market close, for stock and dip signals
+  workflow_dispatch: {}        # lets you press "Run workflow" by hand
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet pandas numpy requests yfinance
+      - name: Scan and alert
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TARGET_STYLE: ${{ vars.TARGET_STYLE || '1' }}
+          ACCOUNT_SIZE: ${{ vars.ACCOUNT_SIZE || '1000' }}
+          RISK_PCT: ${{ vars.RISK_PCT || '1' }}
+        run: python scan.py
+      - name: Save the new state for the dashboard
+        run: |
+          git config user.name "scan-bot"
+          git config user.email "scan-bot@users.noreply.github.com"
+          git add docs/state.json docs/paper.json
+          git diff --cached --quiet || git commit -m "scan $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
