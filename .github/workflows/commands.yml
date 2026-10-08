@@ -1,0 +1,34 @@
+name: commands
+
+# Answers /signal, /demo_trade and /help sent to the Telegram bot.
+# Starts every 5 minutes and listens for about 4 minutes, so replies usually come within seconds.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: commands
+  cancel-in-progress: false
+
+jobs:
+  listen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet requests
+      - name: Listen for commands
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TARGET_STYLE: ${{ vars.TARGET_STYLE || '1' }}
+          ACCOUNT_SIZE: ${{ vars.ACCOUNT_SIZE || '1000' }}
+          RISK_PCT: ${{ vars.RISK_PCT || '1' }}
+        run: python commands.py

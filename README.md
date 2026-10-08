@@ -81,6 +81,18 @@ Optional, under the **Variables** tab on the same page:
 
 That is all. The schedule now runs by itself.
 
+## Asking the bot
+
+Send these to your bot in Telegram at any time:
+
+| Command | Reply |
+|---|---|
+| `/signal` | Signals from the last daily close with entry, stop and target, or "no new signals" |
+| `/demo_trade` | The demo account: balance, success rate, open and finished trades |
+| `/help` | The list of commands |
+
+The bot answers only the chat id you set. GitHub starts the listener (`commands.py`) every 5 minutes and it listens for about 4, so a reply usually takes seconds and sometimes several minutes when GitHub starts late. It reads what the last scan saved; it does not run a new scan.
+
 ## Good to know
 
 - GitHub's scheduler can start a run several minutes late. Signals are based on the daily close, so a short delay changes nothing.

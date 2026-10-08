@@ -227,7 +227,7 @@ def plan(coin, regime, market="crypto"):
                 x50 = {"status": status, "when": when, "pnl": round(LEVERAGE * r_mult * risk / entry, 2)}
             last = {"day": int(df.t[i]), "age_days": int(n - 1 - i), "entry": entry, "stop": stop, "risk_pct": risk / entry * 100,
                     "status": status, "when": when, "R": r_mult, "x50": x50, "trail_level": float(np.min(c[-20:]))}
-            if n - 1 - i <= 120:
+            if n - 1 - i <= 120 or status == "open":           # an open trade stays listed however old it is
                 recent.append({k: last[k] for k in ("day", "entry", "stop", "risk_pct", "status", "when", "R", "x50")})
             if status == "open":
                 break
