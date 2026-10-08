@@ -102,7 +102,197 @@ def demo_text():
     return "\n".join(lines)
 
 
-HELP = "Commands:\n/signal - signals from the last daily close\n/demo_trade - the demo account\n/help - this list\n\nNew signals are also sent automatically after each daily close."
+DASHBOARD = os.environ.get("DASHBOARD_URL", "")
+
+
+def _open_rows(s, only_mexc=False):
+    """(name, kind, trade, price, exit text) for every open plan, newest first."""
+    mexc, rows = s.get("mexc") or {}, []
+    for c, p in s["coins"].items():
+        t = p["plans"].get(STYLE) or {}
+        if t.get("status") == "open" and not (only_mexc and p.get("market") == "stock" and c not in mexc):
+            tgt = "trailing exit" if STYLE == "trail" else f"target {fmt(t['entry'] + float(STYLE) * (t['entry'] - t['stop']))}"
+            rows.append((c, "stock breakout" if p.get("market") == "stock" else "crypto breakout", t, p["price"], tgt))
+    for c, p in (s.get("dips") or {}).items():
+        t = p["last"]
+        if t["status"] == "open" and not (only_mexc and c not in mexc):
+            rows.append((c, "dip", t, p["price"], f"exit above {fmt(p['ma20'])}, {max(0, 20 - t['age_days'])} days left"))
+    return sorted(rows, key=lambda r: r[2]["age_days"])
+
+
+def open_text(arg="", only_mexc=False):
+    s = load("state.json")
+    if not s:
+        return "No scan has been saved yet."
+    rows, mexc = _open_rows(s, only_mexc), s.get("mexc") or {}
+    head = f"OPEN PLANS{' YOU CAN TRADE ON MEXC' if only_mexc else ''} ({len(rows)})"
+    if only_mexc:
+        head += "\nCrypto coins, and US stocks MEXC lists as futures. The test used no leverage."
+    lines = [head, ""]
+    for c, kind, t, price, ex in rows[:40]:
+        r = (price - t["entry"]) / (t["entry"] - t["stop"])
+        lines.append(f"{c}{' [' + mexc[c] + ']' if c in mexc else ''} ({kind}, day {t['age_days']}): entry {fmt(t['entry'])}, stop {fmt(t['stop'])}, {ex}, now {fmt(price)} = {r:+.2f}R")
+    if len(rows) > 40:
+        lines.append(f"...and {len(rows) - 40} older ones. Use /coin NAME for any single one.")
+    avg = sum((price - t["entry"]) / (t["entry"] - t["stop"]) for _, _, t, price, _ in rows) / len(rows) if rows else 0
+    lines += ["", f"Average of all open plans right now: {avg:+.2f}R.", DISCLAIMER]
+    return "\n".join(lines)
+
+
+def near_text(arg=""):
+    s = load("state.json")
+    if not s:
+        return "No scan has been saved yet."
+    brk = sorted(((p["next_entry"] / p["price"] - 1) * 100, c, p) for c, p in s["coins"].items() if (p["plans"].get(STYLE) or {}).get("status") != "open" and p["next_entry"] / p["price"] - 1 < 0.05)
+    lines = [f"CLOSE TO A BREAKOUT SIGNAL ({len(brk)})", "No open plan, and within 5% of the level a daily close must beat.", ""]
+    for gap, c, p in brk[:20]:
+        lines.append(f"{c}: now {fmt(p['price'])}, needs a close above {fmt(p['next_entry'])} ({'above it now' if gap <= 0 else f'{gap:.1f}% away'}); stop would be {fmt(p['next_stop'])}")
+    if not brk:
+        lines.append("Nothing is close right now.")
+    lines += ["", "It only becomes a signal if the day closes above the level.", DISCLAIMER]
+    return "\n".join(lines)
+
+
+def coin_text(arg=""):
+    s = load("state.json")
+    name = arg.strip().upper().replace("USDT", "").replace("/", "")
+    if not name:
+        return "Send a name with it, for example:  /coin BTC   or   /coin AAPL"
+    p, d, mexc = (s.get("coins") or {}).get(name), (s.get("dips") or {}).get(name), s.get("mexc") or {}
+    if not p and not d:
+        in_dip = name in (HERE / "dip_tickers.txt").read_text().split() if (HERE / "dip_tickers.txt").exists() else False
+        return f"{name}: watched by the dip rule, no dip trade in the last 60 days." if in_dip else f"{name} is not on the scanner's lists."
+    lines = [name + (f"  (MEXC futures: {mexc[name]})" if name in mexc else ""), ""]
+    if p:
+        t = p["plans"].get(STYLE)
+        lines.append(f"Breakout rule. Price {fmt(p['price'])}.")
+        if t and t["status"] == "open":
+            r = (p["price"] - t["entry"]) / (t["entry"] - t["stop"])
+            lines += [f"  OPEN plan, day {t['age_days']}: entry {fmt(t['entry'])}, stop {fmt(t['stop'])} (-{t['risk_pct']:.1f}%)"
+                      + ("" if STYLE == "trail" else f", target {fmt(t['entry'] + float(STYLE) * (t['entry'] - t['stop']))}"), f"  now {r:+.2f}R"]
+        else:
+            if t:
+                lines.append(f"  last plan: {t['status']} on {day(t['when'])} ({t['R']:+.2f}R)")
+            gap = (p["next_entry"] / p["price"] - 1) * 100
+            lines.append(f"  next signal: a daily close above {fmt(p['next_entry'])} ({'above it now' if gap <= 0 else f'{gap:.1f}% away'}); stop would be {fmt(p['next_stop'])}")
+        done = [x for x in p["recent"].get(STYLE, []) if x["status"] != "open"]
+        if done:
+            lines.append(f"  last 120 days: {len(done)} finished, {sum(1 for x in done if x['R'] > 0)} won, total {sum(x['R'] for x in done):+.2f}R")
+        lines.append("")
+    if d:
+        t = d["last"]
+        lines.append(f"Dip rule. Price {fmt(d['price'])}, 20-day average {fmt(d['ma20'])}.")
+        if t["status"] == "open":
+            r = (d["price"] - t["entry"]) / (t["entry"] - t["stop"])
+            lines += [f"  OPEN plan, day {t['age_days']} of 20: entry {fmt(t['entry'])}, stop {fmt(t['stop'])} (-{t['risk_pct']:.1f}%), exit on a close above {fmt(d['ma20'])}", f"  now {r:+.2f}R"]
+        else:
+            lines.append(f"  last plan: {t['status']} on {day(t['when'])} ({t['R']:+.2f}R)")
+        done = [x for x in d["recent"] if x["status"] != "open"]
+        if done:
+            lines.append(f"  last 60 days: {len(done)} finished, {sum(1 for x in done if x['R'] > 0)} won, total {sum(x['R'] for x in done):+.2f}R")
+        lines.append("")
+    return "\n".join(lines + [DISCLAIMER])
+
+
+def results_text(arg=""):
+    s = load("state.json")
+    if not s:
+        return "No scan has been saved yet."
+    cut, rows = s["updated"] - 14 * 86_400_000, []
+    for c, p in s["coins"].items():
+        rows += [(t["when"], c, "breakout", t) for t in p["recent"].get(STYLE, []) if t["status"] != "open" and t["when"] >= cut]
+    for c, p in (s.get("dips") or {}).items():
+        rows += [(t["when"], c, "dip", t) for t in p["recent"] if t["status"] != "open" and t["when"] >= cut]
+    rows.sort(key=lambda r: -r[0])
+    lines = ["FINISHED IN THE LAST 14 DAYS", "Every plan the rules produced, wins and losses together.", ""]
+    for kind in ("breakout", "dip"):
+        g = [t for _, _, k, t in rows if k == kind]
+        if g:
+            lines.append(f"{kind}: {len(g)} finished, {sum(1 for t in g if t['R'] > 0)} won ({100 * sum(1 for t in g if t['R'] > 0) / len(g):.0f}%), total {sum(t['R'] for t in g):+.1f}R, average {sum(t['R'] for t in g) / len(g):+.2f}R")
+    lines.append("")
+    lines += [f"{day(w)} {c} ({k}): {t['status']} {t['R']:+.2f}R" for w, c, k, t in rows[:30]]
+    if len(rows) > 30:
+        lines.append(f"...and {len(rows) - 30} more.")
+    if not rows:
+        lines.append("Nothing finished in the last 14 days.")
+    return "\n".join(lines + ["", "Two weeks is too short to judge a rule either way.", DISCLAIMER])
+
+
+def status_text(arg=""):
+    s = load("state.json")
+    if not s:
+        return "No scan has been saved yet."
+    m, now = s.get("market") or {}, datetime.now(timezone.utc)
+    age = (now.timestamp() * 1000 - s["updated"]) / 3_600_000
+    to_crypto = 24 - now.hour - now.minute / 60
+    n_open = sum(1 for p in s["coins"].values() if (p["plans"].get(STYLE) or {}).get("status") == "open")
+    n_dip = sum(1 for p in (s.get("dips") or {}).values() if p["last"]["status"] == "open")
+    lines = ["STATUS", f"Last scan: {datetime.fromtimestamp(s['updated'] / 1000, timezone.utc).strftime('%b %d %H:%M UTC')} ({age:.1f} hours ago)" + ("  <- LATE, scans should come at least every 9 hours" if age > 9 else ""),
+             f"Watching: {len(s['coins'])} coins and stocks (breakout rule), {len((HERE / 'dip_tickers.txt').read_text().split()) if (HERE / 'dip_tickers.txt').exists() else 0} stocks and funds (dip rule)",
+             f"Open plans: {n_open} breakout, {n_dip} dip", f"Bitcoin filter: {'ON' if m.get('on') else 'OFF'} for {m.get('days', '?')} days (BTC {fmt(m['btc_close'])} vs 200-day average {fmt(m['btc_avg200'])})" if m else "",
+             f"MEXC lists {len(s.get('mexc') or {})} US stocks as futures", "", f"Next crypto daily close: in {to_crypto:.1f} hours (00:00 UTC = 05:00 Pakistan)",
+             "Next US stock close: about 21:00 UTC on weekdays (02:00 Pakistan)", f"Alerts use: target style {STYLE}, account ${ACCOUNT:,.0f}, risk {RISK:g}%"]
+    if DASHBOARD:
+        lines += ["", "Dashboard: " + DASHBOARD]
+    return "\n".join(x for x in lines if x is not None)
+
+
+def odds_text(arg=""):
+    ev = (load("state.json").get("evidence")) or {}
+    key = {"0.5": "TP_0.5R", "1": "TP_1R", "2": "TP_2R", "3": "TP_3R", "trail": "TRAIL"}[STYLE]
+    lines = ["WHAT THE TESTS SHOWED", "R = the amount risked on a trade.", ""]
+    for title, k in (("Crypto breakout, 40 coins, Bitcoin filter on", "top40"), ("US stock breakout, 52 names", "stocks")):
+        a, b = ((ev.get(k) or {}).get(key) or {}).get("ALL"), ((ev.get(k) or {}).get(key) or {}).get("SINCE_2022")
+        if a:
+            lines += [title, f"  won {a['win_pct']}%, average {a['avg_R']:+.2f}R, typical length {a['median_days']} days", f"  since 2022: won {b['win_pct']}%, average {b['avg_R']:+.2f}R, about {b['trades_per_week']} signals a week", ""]
+    d = ev.get("dip")
+    if d:
+        a, b, c = d["ALL"], d["SINCE_2022"], d["capped_account_10_open_half_pct_risk"]
+        lines += [f"Dip rule, {d['instruments']} US stocks and funds", f"  won {a['win_pct']}%, average {a['avg_R']:+.2f}R (winners {a['avg_winner_R']:+.2f}R, losers {a['avg_loser_R']:+.2f}R), typical length {a['median_days']} days",
+                  f"  since 2022: won {b['win_pct']}%, average {b['avg_R']:+.2f}R, about {b['trades_per_week']} signals a week, in bursts",
+                  f"  account limited to 10 positions at 0.5% risk: about {c['taken_per_week']} trades a week, {c['avg_return_per_year_pct']:+.1f}% a year, worst year {c['worst_year_pct']}%, deepest fall {c['deepest_fall_pct']}%", ""]
+    lines += ["The stock breakout result is mostly the stock market's own rise; breakout days did no better than random days in the same month.",
+              "At 50x leverage the same signals were wiped out about 9 times in 10.", "Past results do not guarantee future results. " + DISCLAIMER]
+    return "\n".join(lines)
+
+
+def size_text(arg=""):
+    try:
+        nums = [float(x.replace(",", "")) for x in arg.split()]
+        entry, stop = nums[0], nums[1]
+        account, risk = (nums[2] if len(nums) > 2 else ACCOUNT), (nums[3] if len(nums) > 3 else RISK)
+        assert entry > 0 and stop > 0 and entry != stop and account > 0 and 0 < risk <= 100
+    except Exception:
+        return ("Position size from entry and stop.\nSend:  /size ENTRY STOP\nor:    /size ENTRY STOP ACCOUNT RISK%\n\nExample:  /size 150.92 140.11\nExample:  /size 150.92 140.11 500 1")
+    dist = abs(entry - stop) / entry * 100
+    money = account * risk / 100
+    pos = money / (dist / 100)
+    lines = [f"Entry {fmt(entry)}, stop {fmt(stop)} ({'long' if stop < entry else 'short'}), stop distance {dist:.2f}%", f"Account ${account:,.2f}, risk {risk:g}% = ${money:,.2f} lost if the stop is hit", "",
+             f"Position size: ${pos:,.2f}  ({pos / entry:,.4f} units)", f"That is {pos / account * 100:.0f}% of the account" + (" - more than the account, so it would need leverage" if pos > account else ", no leverage needed"), ""]
+    lines += [f"At {lev}x leverage: margin ${pos / lev:,.2f}; liquidation about {100 / lev:.1f}% from entry" + ("  <- BEFORE your stop: the stop would never be reached" if 100 / lev <= dist else "") for lev in (5, 10, 20, 50)]
+    return "\n".join(lines + ["", "Arithmetic only. " + DISCLAIMER])
+
+
+def dashboard_text(arg=""):
+    return ("Dashboard: " + DASHBOARD) if DASHBOARD else "No dashboard address is set."
+
+
+# command -> (function, description for Telegram's "/" menu)
+COMMANDS = {
+    "signal": (lambda a="": signal_text(), "New signals from the last daily close"),
+    "open": (open_text, "All open plans and where price is now"),
+    "mexc": (lambda a="": open_text(a, only_mexc=True), "Open plans you can trade on MEXC"),
+    "near": (near_text, "Coins and stocks close to a breakout signal"),
+    "coin": (coin_text, "One coin or stock, e.g. /coin BTC"),
+    "results": (results_text, "What finished in the last 14 days"),
+    "demo_trade": (lambda a="": demo_text(), "Demo account: balance, success rate, trades"),
+    "size": (size_text, "Position size, e.g. /size 150.9 140.1"),
+    "odds": (odds_text, "What the tests showed for each rule"),
+    "status": (status_text, "Last scan, Bitcoin filter, next close"),
+    "dashboard": (dashboard_text, "Link to the dashboard"),
+}
+ALIASES = {"signals": "signal", "demo": "demo_trade", "demotrade": "demo_trade", "plan": "coin", "stock": "coin", "result": "results", "risk": "size", "start": "help"}
+HELP = "Commands:\n" + "\n".join(f"/{k} - {d}" for k, (_, d) in COMMANDS.items()) + "\n/help - this list\n\nNew signals are also sent automatically after each daily close."
 
 
 def send(text):
@@ -115,8 +305,7 @@ def main():
         print("no Telegram settings; nothing to do")
         return
     try:                                                       # makes the commands appear in Telegram's "/" menu
-        requests.post(f"{API}/setMyCommands", json={"commands": [{"command": "signal", "description": "Signals from the last daily close"},
-                      {"command": "demo_trade", "description": "Demo account: balance, success rate, trades"}, {"command": "help", "description": "List of commands"}]}, timeout=20)
+        requests.post(f"{API}/setMyCommands", json={"commands": [{"command": k, "description": d} for k, (_, d) in COMMANDS.items()] + [{"command": "help", "description": "List of commands"}]}, timeout=20)
     except Exception:
         pass
     offset, end, answered = None, time.time() + LISTEN_SECONDS, 0
@@ -135,8 +324,16 @@ def main():
             msg = u.get("message") or {}
             if str((msg.get("chat") or {}).get("id")) != CHAT:
                 continue                                       # not the owner: ignore
-            cmd = (msg.get("text") or "").strip().split()[0].split("@")[0].lower() if msg.get("text") else ""
-            reply = signal_text() if cmd in ("/signal", "/signals") else demo_text() if cmd in ("/demo_trade", "/demo", "/demotrade") else HELP if cmd in ("/help", "/start") else None
+            text = (msg.get("text") or "").strip()
+            if not text.startswith("/"):
+                continue
+            cmd, _, arg = text[1:].partition(" ")
+            cmd = cmd.split("@")[0].lower()
+            cmd = ALIASES.get(cmd, cmd)
+            try:
+                reply = HELP if cmd == "help" else COMMANDS[cmd][0](arg) if cmd in COMMANDS else "I do not know that command.\n\n" + HELP
+            except Exception as e:                              # one bad reply must not stop the listener
+                reply = f"Something went wrong answering /{cmd} ({type(e).__name__}). The scan data may be mid-update; try again in a minute."
             if reply:
                 send(reply)
                 answered += 1

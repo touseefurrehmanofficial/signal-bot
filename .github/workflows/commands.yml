@@ -31,4 +31,4 @@ jobs:
           TARGET_STYLE: ${{ vars.TARGET_STYLE || '1' }}
           ACCOUNT_SIZE: ${{ vars.ACCOUNT_SIZE || '1000' }}
           RISK_PCT: ${{ vars.RISK_PCT || '1' }}
-        run: python commands.py
+        run: DASHBOARD_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/" python commands.py

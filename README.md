@@ -88,7 +88,16 @@ Send these to your bot in Telegram at any time:
 | Command | Reply |
 |---|---|
 | `/signal` | Signals from the last daily close with entry, stop and target, or "no new signals" |
+| `/open` | Every open plan and where price is now, in R |
+| `/mexc` | Open plans you can trade on MEXC (crypto, and US stocks it lists as futures) |
+| `/near` | Coins and stocks within 5% of a breakout signal |
+| `/coin BTC` | One coin or stock: open plan, last result, next signal level |
+| `/results` | Everything that finished in the last 14 days, wins and losses |
 | `/demo_trade` | The demo account: balance, success rate, open and finished trades |
+| `/size 150.9 140.1` | Position size from entry and stop (optionally account and risk %), with where each leverage level would be liquidated |
+| `/odds` | What the tests showed for each rule |
+| `/status` | Last scan time, Bitcoin filter, next closes |
+| `/dashboard` | Link to the dashboard |
 | `/help` | The list of commands |
 
 The bot answers only the chat id you set. GitHub starts the listener (`commands.py`) every 5 minutes and it listens for about 4, so a reply usually takes seconds and sometimes several minutes when GitHub starts late. It reads what the last scan saved; it does not run a new scan.
