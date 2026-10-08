@@ -325,11 +325,12 @@ def main():
             if str((msg.get("chat") or {}).get("id")) != CHAT:
                 continue                                       # not the owner: ignore
             text = (msg.get("text") or "").strip()
-            if not text.startswith("/"):
-                continue
-            cmd, _, arg = text[1:].partition(" ")
+            slash = text.startswith("/")
+            cmd, _, arg = text.lstrip("/").partition(" ")
             cmd = cmd.split("@")[0].lower()
             cmd = ALIASES.get(cmd, cmd)
+            if not slash and cmd not in COMMANDS and cmd != "help":
+                continue                                       # ordinary text that is not a command word: stay quiet
             try:
                 reply = HELP if cmd == "help" else COMMANDS[cmd][0](arg) if cmd in COMMANDS else "I do not know that command.\n\n" + HELP
             except Exception as e:                              # one bad reply must not stop the listener
