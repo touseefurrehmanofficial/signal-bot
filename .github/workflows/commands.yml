@@ -1,23 +1,25 @@
 name: commands
 
-# Answers /signal, /demo_trade and /help sent to the Telegram bot.
-# Starts every 5 minutes and listens for about 4 minutes, so replies usually come within seconds.
+# Answers the Telegram bot's commands (/signal, /status, /demo_trade ...) within a second or two.
+# One run listens for 50 minutes and then starts the next one itself, so something is always listening.
+# The schedule below is only a safety net that restarts the chain if it ever breaks.
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "7,37 * * * *"
   workflow_dispatch: {}
 
 permissions:
   contents: read
+  actions: write               # lets a run start its successor
 
 concurrency:
-  group: commands
+  group: commands              # never two listeners at once (Telegram allows only one)
   cancel-in-progress: false
 
 jobs:
   listen:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 58
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,4 +33,10 @@ jobs:
           TARGET_STYLE: ${{ vars.TARGET_STYLE || '1' }}
           ACCOUNT_SIZE: ${{ vars.ACCOUNT_SIZE || '1000' }}
           RISK_PCT: ${{ vars.RISK_PCT || '1' }}
+          LISTEN_SECONDS: "3000"
         run: DASHBOARD_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/" python commands.py
+      - name: Start the next listener
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run commands.yml --repo "$GITHUB_REPOSITORY" --ref main
