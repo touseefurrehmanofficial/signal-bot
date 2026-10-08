@@ -93,7 +93,8 @@ def main():
         mexc = old.get("mexc") or {}
     if old_dips is not None:
         prev_last = lambda t: (old_dips.get(t) or {}).get("last") or {}
-        fresh = [(t, p["last"]) for t, p in dips.items() if p["last"]["status"] == "open" and p["last"]["age_days"] <= 1 and prev_last(t).get("day") != p["last"]["day"]]
+        fresh = [(t, p["last"]) for t, p in dips.items() if p["last"]["status"] == "open" and p["last"]["age_days"] <= 1 and prev_last(t).get("day") != p["last"]["day"]
+                 and t in (old.get("dip_checked") or [])]      # a stock the previous scan could not load is not a new signal
         closed = [(t, p["last"]) for t, p in dips.items() if p["last"]["status"] != "open" and prev_last(t).get("day") == p["last"]["day"] and prev_last(t).get("status") == "open"]
         risk_money = ACCOUNT * RISK / 100
         if fresh:
@@ -158,7 +159,7 @@ def main():
     ledger = json.loads(PAPER.read_text(encoding="utf-8")) if PAPER.exists() else None
     PAPER.write_text(json.dumps(update_ledger(ledger, new_state, STYLE, dips), separators=(",", ":")), encoding="utf-8")
     STATE.write_text(json.dumps({"updated": int(time.time() * 1000), "error": None, "order": list(new_state), "coins": new_state, "evidence": evidence, "market": market,
-                                 "announced": announced, "dips": dips, "dips_updated": int(time.time() * 1000), "mexc": mexc},
+                                 "announced": announced, "dip_checked": sorted(frames) if dip_file.exists() and len(frames) >= 100 else (old.get("dip_checked") or []), "dips": dips, "dips_updated": int(time.time() * 1000), "mexc": mexc},
                                 separators=(",", ":")), encoding="utf-8")
     print(datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"), "| coins", len(new_state), "| failed", len(failed),
           "| dip plans", len(dips), "| new signals", len(signals), "| targets", len(targets), "| stops", len(stops))
