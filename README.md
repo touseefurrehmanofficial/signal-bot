@@ -100,7 +100,7 @@ Send these to your bot in Telegram at any time:
 | `/dashboard` | Link to the dashboard |
 | `/help` | The list of commands |
 
-The bot answers only the chat id you set. GitHub starts the listener (`commands.py`) every 5 minutes and it listens for about 4, so a reply usually takes seconds and sometimes several minutes when GitHub starts late. It reads what the last scan saved; it does not run a new scan.
+The bot answers only the chat id you set. The listener (`commands.py`) runs for 50 minutes at a time and starts its own successor, so a reply normally comes within a second or two; during the hand-over, about once an hour, it can take a minute. This keeps one GitHub runner busy all day, which is free on a public repository; if GitHub ever limits it, replies fall back to the half-hourly safety schedule. It reads what the last scan saved; it does not run a new scan.
 
 ## Good to know
 

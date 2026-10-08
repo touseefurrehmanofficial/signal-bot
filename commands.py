@@ -5,11 +5,12 @@
   /help         this list
 
 Only messages from TELEGRAM_CHAT_ID are answered; anyone else who finds the bot gets no reply.
-GitHub starts this every few minutes and it listens for about four minutes each time, so a reply
-usually comes within seconds and occasionally takes several minutes when GitHub starts late.
+A run listens for 50 minutes and then starts its successor (see .github/workflows/commands.yml), so a
+reply normally comes within a second or two; during the hand-over, about once an hour, it can take a minute.
 """
 import json
 import os
+import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,6 +32,19 @@ def fmt(x):
 
 def day(ms):
     return datetime.fromtimestamp(ms / 1000, timezone.utc).strftime("%b %d")
+
+
+_pulled = [0.0]
+
+
+def refresh():
+    """A listener runs for most of an hour; fetch the scanner's newest files before answering (at most once a minute)."""
+    if time.time() - _pulled[0] > 60:
+        _pulled[0] = time.time()
+        try:
+            subprocess.run(["git", "pull", "--quiet", "--ff-only"], cwd=HERE, timeout=30, check=False, capture_output=True)
+        except Exception:
+            pass
 
 
 def load(name):
@@ -331,6 +345,7 @@ def main():
             cmd = ALIASES.get(cmd, cmd)
             if not slash and cmd not in COMMANDS and cmd != "help":
                 continue                                       # ordinary text that is not a command word: stay quiet
+            refresh()
             try:
                 reply = HELP if cmd == "help" else COMMANDS[cmd][0](arg) if cmd in COMMANDS else "I do not know that command.\n\n" + HELP
             except Exception as e:                              # one bad reply must not stop the listener
