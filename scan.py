@@ -19,7 +19,7 @@ from pathlib import Path
 
 import requests
 
-from core import btc_regime, dip_plan, market_z, mexc_stocks, plan, stock_frames, update_ledger
+from core import btc_regime, dip_plan, market_z, mexc_stocks, plan, signal_card, stock_frames, update_ledger
 
 HERE = Path(__file__).resolve().parent
 STATE = HERE / "docs" / "state.json"
@@ -27,6 +27,7 @@ PAPER = HERE / "docs" / "paper.json"
 STYLE = os.environ.get("TARGET_STYLE", "1")
 ACCOUNT = float(os.environ.get("ACCOUNT_SIZE", "1000"))
 RISK = float(os.environ.get("RISK_PCT", "1"))
+MAX_CARDS = 10           # at most this many full cards per rule per scan; the rest are listed by name
 NAMES = {"0.5": "target at half the stop distance", "1": "target equal to the stop distance", "2": "target at twice the stop distance",
          "3": "target at three times the stop distance", "trail": "no target, trailing exit"}
 
@@ -99,21 +100,18 @@ def main():
         risk_money = ACCOUNT * RISK / 100
         if fresh:
             fresh.sort(key=lambda x: (x[0] not in mexc, x[1]["risk_pct"]))
-            on_mexc = sum(1 for t, _ in fresh if t in mexc)
-            lines = [f"DIP SIGNALS ({len(fresh)}) - sharp dip in an uptrend", f"{on_mexc} of them are listed on MEXC as stock futures.", ""]
-            for t, s in fresh[:12]:
-                kind = "" if s.get("mkt_z") is None else " - market-wide dip" if s["mkt_z"] < -1.5 else " - stock-only dip" if s["mkt_z"] > -0.5 else ""
-                lines += [f"{t}" + (f" (MEXC: {mexc[t]})" if t in mexc else " (not on MEXC)") + kind, f"  entry {fmt(s['entry'])} (last daily close)", f"  stop {fmt(s['stop'])} (-{s['risk_pct']:.1f}%)",
-                          f"  exit: first daily close above the 20-day average (now {fmt(dips[t]['ma20'])}), or after 20 trading days",
-                          f"  size for {RISK:g}% risk on ${ACCOUNT:,.0f}: ${risk_money / (s['risk_pct'] / 100):,.0f}", ""]
-            if len(fresh) > 12:
-                lines += ["Also: " + ", ".join(t for t, _ in fresh[12:72]) + (f" and {len(fresh) - 72} more" if len(fresh) > 72 else ""), ""]
-            lines += ["Market-wide dips won 72% in the test, stock-only dips 64%.", "Dip signals come in bursts. The tested account held at most 10 at once and risked 0.5% on each.", "Research output, not financial advice."]
-            send("\n".join(lines))
+            for t, s in fresh[:MAX_CARDS]:                      # one clean card per signal, MEXC-listed first
+                send(signal_card(t, "dip", s, mexc.get(t), dips[t]["ma20"], ACCOUNT, RISK))
+                time.sleep(1.1)
+            if len(fresh) > MAX_CARDS:
+                rest = fresh[MAX_CARDS:]
+                send(f"\u2795 {len(rest)} more dip signals today ({sum(1 for t, _ in rest if t in mexc)} on MEXC):\n" + ", ".join(t for t, _ in rest[:80])
+                     + (f" and {len(rest) - 80} more" if len(rest) > 80 else "") + "\n\nSend /coin NAME for the card of any of them.")
         if closed:
-            lines = [f"DIP PLAN UPDATES ({len(closed)})", ""]
-            lines += [(f"STOPPED: {t} (-1R)" if s["status"] == "stopped" else f"EXIT: {t} at {s['R']:+.2f}R ({s['status']})") for t, s in closed[:40]]
-            send("\n".join(lines))
+            send("\U0001F4CB Dip plans closed\n\n" + "\n".join(
+                (f"\U0001F6D1 SL hit \u2014 {t}  (-1R)" if s["status"] == "stopped" else f"{'\u2705' if s['R'] > 0 else '\u26AA'} Exit \u2014 {t}  ({s['R']:+.2f}R, "
+                 + ("closed above 20-day average" if s["status"] == "exited" else "20-day time limit") + ")") for t, s in closed[:40])
+                 + (f"\n...and {len(closed) - 40} more" if len(closed) > 40 else ""))
 
     signals, targets, stops = [], [], []
     for coin, p in new_state.items():
@@ -128,21 +126,15 @@ def main():
             (targets if cur["status"] == "target" else stops).append((coin, cur))
 
     risk_money = ACCOUNT * RISK / 100
-    if signals:
-        lines = [f"NEW SIGNALS ({len(signals)}) - {NAMES[STYLE]}", ""]
-        for coin, s in sorted(signals, key=lambda x: x[1]["risk_pct"]):
-            r = s["entry"] - s["stop"]
-            tgt = "trail: leave on a daily close below the 20-day low" if STYLE == "trail" else f"target {fmt(s['entry'] + float(STYLE) * r)} (+{s['risk_pct'] * float(STYLE):.1f}%)"
-            lines += [f"{coin}" + (" (US stock/ETF)" if new_state[coin].get("market") == "stock" else ""), f"  entry {fmt(s['entry'])} (last daily close)", f"  stop {fmt(s['stop'])} (-{s['risk_pct']:.1f}%)", f"  {tgt}",
-                      f"  size for {RISK:g}% risk on ${ACCOUNT:,.0f}: ${risk_money / (s['risk_pct'] / 100):,.0f}", ""]
-        lines += ["Entry is the level the test used. If price has already moved far above it, it is no longer the tested trade.",
-                  "Research output, not financial advice."]
-        send("\n".join(lines))
+    for coin, s in sorted(signals, key=lambda x: x[1]["risk_pct"]):
+        stock = new_state[coin].get("market") == "stock"
+        send(signal_card(coin, "stock" if stock else "crypto", s, mexc.get(coin) if stock else None, None, ACCOUNT, RISK))
+        time.sleep(1.1)
     if targets or stops:
-        lines = ["PLAN UPDATES", ""]
-        lines += [f"TARGET reached: {c} (entry {fmt(s['entry'])})" for c, s in targets]
-        lines += [f"STOPPED: {c} (entry {fmt(s['entry'])}, stop {fmt(s['stop'])})" if s["status"] == "stopped" else f"TRAILED OUT: {c}" for c, s in stops]
-        send("\n".join(lines))
+        tp = {"0.5": "TP1", "1": "TP2", "2": "TP3"}.get(STYLE, "Target")
+        send("\U0001F4CB Plans closed\n\n" + "\n".join(
+            [f"\u2705 {tp} hit \u2014 {c}  ({s['R']:+g}R, entry {fmt(s['entry'])})" for c, s in targets]
+            + [f"\U0001F6D1 SL hit \u2014 {c}  (-1R, entry {fmt(s['entry'])}, SL {fmt(s['stop'])})" if s["status"] == "stopped" else f"\u26AA Trailed out \u2014 {c}  ({s['R']:+.2f}R)" for c, s in stops]))
     was_on = (old.get("market") or {}).get("on")
     if was_on is not None and was_on != market["on"]:
         send(("BITCOIN FILTER: ON\nBitcoin closed above its 200-day average. New signals count again." if market["on"] else

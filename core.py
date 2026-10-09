@@ -237,6 +237,39 @@ def plan(coin, regime, market="crypto"):
     return out
 
 
+# Tested share of trades that reached each level when the whole position was closed there.
+# crypto and stock: pipeline/21, 25, 26 (targets 0.5R / 1R / 2R). dip: pipeline/31 (+0.3R / +0.5R / close above the 20-day average).
+TP_WIN = {"crypto": (77, 65, 53), "stock": (74, 62, 49), "dip": (80, 72, 67)}
+
+
+def price_text(x):
+    return f"{x:,.1f}" if x >= 1000 else f"{x:.2f}" if x >= 100 else f"{x:.3f}" if x >= 1 else f"{x:.4f}" if x >= 0.01 else f"{x:.3g}"
+
+
+def signal_card(name, kind, t, mexc=None, ma20=None, account=1000.0, risk=1.0, title="Signal Update"):
+    """One signal as a short card. kind: "crypto" | "stock" (breakout rule) | "dip"."""
+    f, entry, stop = price_text, t["entry"], t["stop"]
+    r = entry - stop
+    if kind == "dip":
+        tps = sorted([(entry + 0.3 * r, ""), (entry + 0.5 * r, ""), (ma20, " (20-day average, moves daily)")] if ma20 and ma20 > entry else [(entry + 0.3 * r, ""), (entry + 0.5 * r, "")])
+    else:
+        tps = [(entry + 0.5 * r, ""), (entry + r, ""), (entry + 2 * r, "")]
+    pair = f"{name} USDT" if kind == "crypto" else f"{mexc.replace('_', ' ')}  ({name} on MEXC futures)" if mexc else f"{name}  (US stock, not on MEXC)"
+    lev = max(1, int(100 / (t["risk_pct"] * 1.3)))
+    wins = TP_WIN[kind][:len(tps)]
+    lines = [f"\U0001F4CA {title}", "", f"Pair: {pair}", "Direction: LONG", f"Leverage: 1X tested (above {lev}X liquidation comes before SL)", "",
+             f"Entry: {f(entry)} \u2014 {f(entry + 0.25 * r)}"]
+    lines += [f"\U0001F3AF TP{i + 1}: {f(p)}{note}" for i, (p, note) in enumerate(tps)]
+    lines += ["", f"\U0001F6E1 SL: {f(stop)}  (-{t['risk_pct']:.1f}%)", ""]
+    if kind == "dip":
+        wide = t.get("mkt_z")
+        lines.append("Rule: Dip" + ("" if wide is None else " (market-wide)" if wide < -1.5 else " (stock-only, weaker)" if wide > -0.5 else "") + " \u00B7 exit after 20 trading days at the latest")
+    else:
+        lines.append("Rule: Breakout \u00B7 SL and TPs are fixed")
+    lines += ["Tested wins: " + " / ".join(f"TP{i + 1} {w}%" for i, w in enumerate(wins)), f"Size: ${account * risk / 100 / (t['risk_pct'] / 100):,.0f} for {risk:g}% risk on ${account:,.0f}"]
+    return "\n".join(lines)
+
+
 def update_ledger(ledger, coins_state, style, dips=None):
     """Demo account: every signal whose day closes AFTER the ledger was started becomes a paper trade.
     Nothing from before the start date is added, so the record is a genuine forward test."""

@@ -12,10 +12,12 @@ import json
 import os
 import subprocess
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
+
+from core import signal_card
 
 HERE = Path(__file__).resolve().parent
 TOKEN, CHAT = os.environ.get("TELEGRAM_TOKEN"), str(os.environ.get("TELEGRAM_CHAT_ID", ""))
@@ -58,32 +60,27 @@ def signal_text():
         return "No scan has been saved yet."
     mexc, risk_money, lines = s.get("mexc") or {}, ACCOUNT * RISK / 100, []
     size = lambda rp: f"size for {RISK:g}% risk on ${ACCOUNT:,.0f}: ${risk_money / (rp / 100):,.0f}"
+    cards = []
     brk = [(c, p["plans"][STYLE], p) for c, p in s["coins"].items() if (p["plans"].get(STYLE) or {}).get("status") == "open" and p["plans"][STYLE]["age_days"] <= 1]
     dips = [(c, p["last"], p) for c, p in (s.get("dips") or {}).items() if p["last"]["status"] == "open" and p["last"]["age_days"] <= 1]
     dips.sort(key=lambda x: (x[0] not in mexc, x[1]["risk_pct"]))
-    if brk:
-        lines += [f"BREAKOUT SIGNALS ({len(brk)})", ""]
-        for c, t, p in brk:
-            r = t["entry"] - t["stop"]
-            tgt = "exit: daily close below the 20-day low" if STYLE == "trail" else f"target {fmt(t['entry'] + float(STYLE) * r)} (+{t['risk_pct'] * float(STYLE):.1f}%)"
-            lines += [c + (" (US stock/ETF)" if p.get("market") == "stock" else ""), f"  entry {fmt(t['entry'])}, now {fmt(p['price'])}", f"  stop {fmt(t['stop'])} (-{t['risk_pct']:.1f}%)", f"  {tgt}", f"  {size(t['risk_pct'])}", ""]
-    if dips:
-        lines += [f"DIP SIGNALS ({len(dips)}), {sum(1 for c, _, _ in dips if c in mexc)} listed on MEXC", ""]
-        for c, t, p in dips[:12]:
-            kind = "" if t.get("mkt_z") is None else " - market-wide dip" if t["mkt_z"] < -1.5 else " - stock-only dip" if t["mkt_z"] > -0.5 else ""
-            lines += [c + (f" (MEXC: {mexc[c]})" if c in mexc else " (not on MEXC)") + kind, f"  entry {fmt(t['entry'])}, now {fmt(p['price'])}", f"  stop {fmt(t['stop'])} (-{t['risk_pct']:.1f}%)",
-                      f"  exit: first daily close above {fmt(p['ma20'])} (20-day average, moves daily) or after 20 trading days", f"  {size(t['risk_pct'])}", ""]
-        if len(dips) > 12:
-            lines += ["Also: " + ", ".join(c for c, _, _ in dips[12:72]), ""]
+    now = lambda p: f"\nNow: {fmt(p['price'])}"
+    for c, t, p in brk:
+        stock = p.get("market") == "stock"
+        cards.append(signal_card(c, "stock" if stock else "crypto", t, mexc.get(c) if stock else None, None, ACCOUNT, RISK) + now(p))
+    for c, t, p in dips[:10]:
+        cards.append(signal_card(c, "dip", t, mexc.get(c), p["ma20"], ACCOUNT, RISK) + now(p))
+    if len(dips) > 10:
+        lines += [f"\u2795 {len(dips) - 10} more dip signals: " + ", ".join(c for c, _, _ in dips[10:80]), "Send /coin NAME for any of them.", ""]
     m = s.get("market") or {}
     checked = datetime.fromtimestamp(s["updated"] / 1000, timezone.utc).strftime("%b %d %H:%M UTC")
-    if not lines:
+    if not cards:
         lines = ["No new signals from the last daily close.", ""]
     n_open = sum(1 for p in s["coins"].values() if (p["plans"].get(STYLE) or {}).get("status") == "open")
     n_dip = sum(1 for p in (s.get("dips") or {}).values() if p["last"]["status"] == "open")
     lines += [f"Open plans from earlier signals: {n_open} breakout, {n_dip} dip.", f"Bitcoin filter: {'ON' if m.get('on') else 'OFF (no new crypto signals)'}.", f"Last scan: {checked}.",
-              "Signals appear only after a daily close: about 00:00 UTC for crypto, about 21:00 UTC on weekdays for US stocks.", DISCLAIMER]
-    return "\n".join(lines)
+              DISCLAIMER]
+    return cards + ["\n".join(lines)]
 
 
 def demo_text():
@@ -176,7 +173,11 @@ def coin_text(arg=""):
     if not p and not d:
         in_dip = name in (HERE / "dip_tickers.txt").read_text().split() if (HERE / "dip_tickers.txt").exists() else False
         return f"{name}: watched by the dip rule, no dip trade in the last 60 days." if in_dip else f"{name} is not on the scanner's lists."
-    lines = [name + (f"  (MEXC futures: {mexc[name]})" if name in mexc else ""), ""]
+    lines, cards = [name + (f"  (MEXC futures: {mexc[name]})" if name in mexc else ""), ""], []
+    if p and (p["plans"].get(STYLE) or {}).get("status") == "open":
+        cards.append(signal_card(name, "stock" if p.get("market") == "stock" else "crypto", p["plans"][STYLE], mexc.get(name) if p.get("market") == "stock" else None, None, ACCOUNT, RISK, "Open plan"))
+    if d and d["last"]["status"] == "open":
+        cards.append(signal_card(name, "dip", d["last"], mexc.get(name), d["ma20"], ACCOUNT, RISK, "Open plan"))
     if p:
         t = p["plans"].get(STYLE)
         lines.append(f"Breakout rule. Price {fmt(p['price'])}.")
@@ -205,7 +206,7 @@ def coin_text(arg=""):
         if done:
             lines.append(f"  last 60 days: {len(done)} finished, {sum(1 for x in done if x['R'] > 0)} won, total {sum(x['R'] for x in done):+.2f}R")
         lines.append("")
-    return "\n".join(lines + [DISCLAIMER])
+    return cards + ["\n".join(lines + [DISCLAIMER])]
 
 
 def results_text(arg=""):
@@ -293,7 +294,7 @@ def dashboard_text(arg=""):
 
 # command -> (function, description for Telegram's "/" menu)
 COMMANDS = {
-    "signal": (lambda a="": signal_text(), "New signals from the last daily close"),
+    "signal": (lambda a="": signal_text(), "New signals from the last daily close, one card each"),
     "open": (open_text, "All open plans and where price is now"),
     "mexc": (lambda a="": open_text(a, only_mexc=True), "Open plans you can trade on MEXC"),
     "near": (near_text, "Coins and stocks close to a breakout signal"),
@@ -310,8 +311,38 @@ HELP = "Commands:\n" + "\n".join(f"/{k} - {d}" for k, (_, d) in COMMANDS.items()
 
 
 def send(text):
-    for chunk in [text[i:i + 3800] for i in range(0, len(text), 3800)]:
-        requests.post(f"{API}/sendMessage", json={"chat_id": CHAT, "text": chunk, "disable_web_page_preview": True}, timeout=20)
+    """text may be one message or a list of messages (one card each)."""
+    for part in ([text] if isinstance(text, str) else text):
+        for chunk in [part[i:i + 3800] for i in range(0, len(part), 3800)]:
+            requests.post(f"{API}/sendMessage", json={"chat_id": CHAT, "text": chunk, "disable_web_page_preview": True}, timeout=20)
+            time.sleep(0.4)
+
+
+# GitHub's own schedule starts scans late or not at all, so the listener (which is always running) starts them.
+SCAN_TIMES = [(0, 6, False), (6, 20, False), (12, 20, False), (18, 20, False), (21, 25, True)]   # UTC hour, minute, weekdays only
+_scan_check = [0.0]
+
+
+def maybe_start_scan():
+    if not os.environ.get("GH_TOKEN") or time.time() - _scan_check[0] < 180:
+        return
+    _scan_check[0] = time.time()
+    now = datetime.now(timezone.utc)
+    due = max(d for back in (0, 1, 2) for h, m, wk in SCAN_TIMES
+              if (d := (now - timedelta(days=back)).replace(hour=h, minute=m, second=0, microsecond=0)) <= now and not (wk and d.weekday() >= 5))
+    try:
+        refresh()
+        if load("state.json").get("updated", 0) / 1000 >= due.timestamp():
+            return
+        repo = os.environ["GITHUB_REPOSITORY"]
+        last = subprocess.run(["gh", "run", "list", "--repo", repo, "--workflow", "scan.yml", "--limit", "1", "--json", "createdAt", "--jq", ".[0].createdAt"],
+                              capture_output=True, text=True, timeout=30).stdout.strip()
+        if last and datetime.fromisoformat(last.replace("Z", "+00:00")) >= due:
+            return                                             # a scan for this slot is already running or done
+        subprocess.run(["gh", "workflow", "run", "scan.yml", "--repo", repo, "--ref", "main"], capture_output=True, timeout=30)
+        print("started the scan due at", due.strftime("%H:%M UTC"))
+    except Exception as e:
+        print("scan check failed:", type(e).__name__)
 
 
 def main():
@@ -324,6 +355,7 @@ def main():
         pass
     offset, end, answered = None, time.time() + LISTEN_SECONDS, 0
     while time.time() < end:
+        maybe_start_scan()
         try:
             r = requests.get(f"{API}/getUpdates", params={"timeout": 25, "offset": offset, "allowed_updates": json.dumps(["message"])}, timeout=40).json()
         except Exception:
