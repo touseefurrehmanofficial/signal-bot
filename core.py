@@ -116,6 +116,7 @@ def dip_plan(ticker, df, mkt=None):
       EXIT    the first later day that closes above its 20-day average, or after 20 trading days
       One trade at a time per instrument."""
     live_price = float(df.close.iloc[-1])
+    forming = (float(df.high.iloc[-1]), float(df.low.iloc[-1]), float(df.t.iloc[-1]))
     df = df.iloc[:-1].reset_index(drop=True)
     n = len(df)
     if n < 230:
@@ -156,6 +157,7 @@ def dip_plan(ticker, df, mkt=None):
             x50 = {"status": status, "when": when, "pnl": round(LEVERAGE * r_mult * risk / entry, 2)}
         last = {"day": int(df.t[i]), "age_days": int(n - 1 - i), "entry": r6(entry), "stop": r6(stop), "risk_pct": round(risk / entry * 100, 2),
                 "status": status, "when": when, "R": r_mult, "x50": x50, "mkt_z": (mkt or {}).get(int(df.t[i]))}
+        last["hits"], _ = level_hits(("0.3", "0.5"), entry, risk, stop, h, l, df.t.values, i + 1, (j if status != "open" else n - 1) + 1, forming if status == "open" else None)
         if n - 1 - i <= DIP_RECENT:
             recent.append(last)
         if status == "open":
@@ -177,11 +179,30 @@ def btc_regime():
     return ok, {"on": bool(vals[-1]), "btc_close": float(df.close.iloc[-1]), "btc_avg200": float(ma.iloc[-1]), "days": days_in_state}
 
 
+def level_hits(levels, entry, risk, stop, highs, lows, times, start, end, forming=None):
+    """For the TP/SL update messages: {level: time first reached} and the time the stop was reached (or None),
+    walking the days after the signal. Within one day the stop is counted first, as in the tests.
+    `forming` = (high, low, time) of the day still in progress, so a hit shows up at the next scan, not the next close."""
+    hits, sl_t = {}, None
+    bars = [(highs[k], lows[k], times[k]) for k in range(start, end)] + ([forming] if forming else [])
+    for hi, lo, t in bars:
+        if lo <= stop:
+            sl_t = int(t)
+            break
+        for lv in levels:
+            if lv not in hits and hi >= entry + float(lv) * risk:
+                hits[lv] = int(t)
+        if len(hits) == len(levels):
+            break
+    return hits, sl_t
+
+
 def plan(coin, regime, market="crypto"):
     """market="stock": same rule on a US stock or ETF. No Bitcoin filter and no minimum-volume rule (these are large, liquid names)."""
     stock = market == "stock"
     df = klines_stock(coin) if stock else klines(coin)
     live_price = float(df.close.iloc[-1])
+    forming = (float(df.high.iloc[-1]), float(df.low.iloc[-1]), float(df.t.iloc[-1]))
     df = df.iloc[:-1].reset_index(drop=True)                 # completed days only
     if len(df) < 80:
         return None
@@ -227,6 +248,7 @@ def plan(coin, regime, market="crypto"):
                 x50 = {"status": status, "when": when, "pnl": round(LEVERAGE * r_mult * risk / entry, 2)}
             last = {"day": int(df.t[i]), "age_days": int(n - 1 - i), "entry": entry, "stop": stop, "risk_pct": risk / entry * 100,
                     "status": status, "when": when, "R": r_mult, "x50": x50, "trail_level": float(np.min(c[-20:]))}
+            last["hits"], last["sl_t"] = level_hits(("0.5", "1", "2"), entry, risk, stop, h, l, df.t.values, i + 1, n, forming)
             if n - 1 - i <= 120 or status == "open":           # an open trade stays listed however old it is
                 recent.append({k: last[k] for k in ("day", "entry", "stop", "risk_pct", "status", "when", "R", "x50")})
             if status == "open":
@@ -246,27 +268,59 @@ def price_text(x):
     return f"{x:,.1f}" if x >= 1000 else f"{x:.2f}" if x >= 100 else f"{x:.3f}" if x >= 1 else f"{x:.4f}" if x >= 0.01 else f"{x:.3g}"
 
 
+def pair_name(name, kind, mexc=None, long=False):
+    if kind == "crypto":
+        return f"{name} USDT"
+    if mexc:
+        return f"{mexc.replace('_', ' ')}" + (f"  ({name} on MEXC futures)" if long else "")
+    return name + ("  (US stock, not on MEXC)" if long else "")
+
+
+def update_card(pair, levels, old_hits, t):
+    """TP / SL update for one plan, or None if nothing new. `levels` are the plan's TP levels in order; old_hits = the levels
+    already announced; t = the plan now. Returns (text, kind) with kind "tp" or "sl"."""
+    f, hits = price_text, t.get("hits") or {}
+    num = lambda lv: levels.index(lv) + 1
+    fresh = [lv for lv in levels if lv in hits and lv not in old_hits]
+    r = t["entry"] - t["stop"]
+    if fresh:
+        done = all(lv in hits for lv in levels)
+        head = f"\U0001F3AF {pair} " + " ".join(f"TP {num(lv)}" for lv in fresh) + " HIT SUCCESSFULLY \u2705\U0001F525"
+        reached = ", ".join(f"TP{num(lv)} {f(t['entry'] + float(lv) * r)}" for lv in fresh)
+        if done:
+            return head + f"\nReached: {reached}\nAll targets hit. Trade complete \U0001F3C6", "tp"
+        return head + f"\nReached: {reached}\nSL is still {f(t['stop'])}.\nStay focused for the next targets \U0001F680", "tp"
+    return None, None
+
+
+def sl_card(pair, levels, t):
+    f, hits = price_text, t.get("hits") or {}
+    got = [f"TP {levels.index(lv) + 1}" for lv in levels if lv in hits]
+    if got:
+        return f"\U0001F6D1 {pair} SL HIT after {' '.join(got)} \u274C\nPrice came back to the stop at {f(t['stop'])}. Trade closed."
+    return f"\U0001F6D1 {pair} SL HIT \u274C\nStop at {f(t['stop'])} reached: -1R, the planned loss.\nLosses are part of the plan. Wait for the next signal."
+
+
 def signal_card(name, kind, t, mexc=None, ma20=None, account=1000.0, risk=1.0, title="Signal Update"):
     """One signal as a short card. kind: "crypto" | "stock" (breakout rule) | "dip"."""
     f, entry, stop = price_text, t["entry"], t["stop"]
     r = entry - stop
-    if kind == "dip":
-        tps = sorted([(entry + 0.3 * r, ""), (entry + 0.5 * r, ""), (ma20, " (20-day average, moves daily)")] if ma20 and ma20 > entry else [(entry + 0.3 * r, ""), (entry + 0.5 * r, "")])
-    else:
-        tps = [(entry + 0.5 * r, ""), (entry + r, ""), (entry + 2 * r, "")]
-    pair = f"{name} USDT" if kind == "crypto" else f"{mexc.replace('_', ' ')}  ({name} on MEXC futures)" if mexc else f"{name}  (US stock, not on MEXC)"
+    tps = [(entry + 0.3 * r, ""), (entry + 0.5 * r, "")] if kind == "dip" else [(entry + 0.5 * r, ""), (entry + r, ""), (entry + 2 * r, "")]
+    pair = pair_name(name, kind, mexc, long=True)
     lev = max(1, int(100 / (t["risk_pct"] * 1.3)))
     wins = TP_WIN[kind][:len(tps)]
     lines = [f"\U0001F4CA {title}", "", f"Pair: {pair}", "Direction: LONG", f"Leverage: 1X tested (above {lev}X liquidation comes before SL)", "",
              f"Entry: {f(entry)} \u2014 {f(entry + 0.25 * r)}"]
     lines += [f"\U0001F3AF TP{i + 1}: {f(p)}{note}" for i, (p, note) in enumerate(tps)]
+    if kind == "dip" and ma20:
+        lines.append(f"\U0001F3C1 Exit: daily close above {f(ma20)} (20-day average, moves daily)")
     lines += ["", f"\U0001F6E1 SL: {f(stop)}  (-{t['risk_pct']:.1f}%)", ""]
     if kind == "dip":
         wide = t.get("mkt_z")
         lines.append("Rule: Dip" + ("" if wide is None else " (market-wide)" if wide < -1.5 else " (stock-only, weaker)" if wide > -0.5 else "") + " \u00B7 exit after 20 trading days at the latest")
     else:
         lines.append("Rule: Breakout \u00B7 SL and TPs are fixed")
-    lines += ["Tested wins: " + " / ".join(f"TP{i + 1} {w}%" for i, w in enumerate(wins)), f"Size: ${account * risk / 100 / (t['risk_pct'] / 100):,.0f} for {risk:g}% risk on ${account:,.0f}"]
+    lines += ["Tested wins: " + " / ".join(f"TP{i + 1} {w}%" for i, w in enumerate(wins)) + (f" / Exit {TP_WIN['dip'][2]}%" if kind == "dip" else ""), f"Size: ${account * risk / 100 / (t['risk_pct'] / 100):,.0f} for {risk:g}% risk on ${account:,.0f}"]
     return "\n".join(lines)
 
 

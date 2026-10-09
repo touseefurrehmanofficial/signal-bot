@@ -19,7 +19,7 @@ from pathlib import Path
 
 import requests
 
-from core import btc_regime, dip_plan, market_z, mexc_stocks, plan, signal_card, stock_frames, update_ledger
+from core import btc_regime, dip_plan, market_z, mexc_stocks, pair_name, plan, signal_card, sl_card, stock_frames, update_card, update_ledger
 
 HERE = Path(__file__).resolve().parent
 STATE = HERE / "docs" / "state.json"
@@ -107,11 +107,28 @@ def main():
                 rest = fresh[MAX_CARDS:]
                 send(f"\u2795 {len(rest)} more dip signals today ({sum(1 for t, _ in rest if t in mexc)} on MEXC):\n" + ", ".join(t for t, _ in rest[:80])
                      + (f" and {len(rest) - 80} more" if len(rest) > 80 else "") + "\n\nSend /coin NAME for the card of any of them.")
-        if closed:
-            send("\U0001F4CB Dip plans closed\n\n" + "\n".join(
-                (f"\U0001F6D1 SL hit \u2014 {t}  (-1R)" if s["status"] == "stopped" else f"{'\u2705' if s['R'] > 0 else '\u26AA'} Exit \u2014 {t}  ({s['R']:+.2f}R, "
-                 + ("closed above 20-day average" if s["status"] == "exited" else "20-day time limit") + ")") for t, s in closed[:40])
-                 + (f"\n...and {len(closed) - 40} more" if len(closed) > 40 else ""))
+        updates = []
+        for t, p in dips.items():
+            s, prev = p["last"], prev_last(t)
+            if prev.get("day") != s["day"] or "hits" not in prev:   # a plan first seen now sets the baseline, no message
+                continue
+            pair = pair_name(t, "dip", mexc.get(t))
+            text, _ = update_card(pair, ["0.3", "0.5"], prev["hits"], s)
+            if text and s["status"] != "stopped":
+                updates.append((t not in mexc, text))
+        for t, s in closed:
+            pair = pair_name(t, "dip", mexc.get(t))
+            if s["status"] == "stopped":
+                updates.append((t not in mexc, sl_card(pair, ["0.3", "0.5"], s)))
+            else:
+                why = "closed above the 20-day average" if s["status"] == "exited" else "20-day time limit reached"
+                updates.append((t not in mexc, f"{'\U0001F3C1' if s['R'] > 0 else '\u26AA'} {pair} EXIT {'\u2705' if s['R'] > 0 else ''}\nPlan finished: {why}. Result {s['R']:+.2f}R."))
+        updates.sort(key=lambda x: x[0])
+        for _, text in updates[:MAX_CARDS]:
+            send(text)
+            time.sleep(1.1)
+        if len(updates) > MAX_CARDS:
+            send(f"\u2795 {len(updates) - MAX_CARDS} more dip updates:\n" + "\n".join(x[1].split("\n")[0] for x in updates[MAX_CARDS:MAX_CARDS + 60]))
 
     signals, targets, stops = [], [], []
     for coin, p in new_state.items():
@@ -130,11 +147,19 @@ def main():
         stock = new_state[coin].get("market") == "stock"
         send(signal_card(coin, "stock" if stock else "crypto", s, mexc.get(coin) if stock else None, None, ACCOUNT, RISK))
         time.sleep(1.1)
-    if targets or stops:
-        tp = {"0.5": "TP1", "1": "TP2", "2": "TP3"}.get(STYLE, "Target")
-        send("\U0001F4CB Plans closed\n\n" + "\n".join(
-            [f"\u2705 {tp} hit \u2014 {c}  ({s['R']:+g}R, entry {fmt(s['entry'])})" for c, s in targets]
-            + [f"\U0001F6D1 SL hit \u2014 {c}  (-1R, entry {fmt(s['entry'])}, SL {fmt(s['stop'])})" if s["status"] == "stopped" else f"\u26AA Trailed out \u2014 {c}  ({s['R']:+.2f}R)" for c, s in stops]))
+    for coin, p in new_state.items():                         # TP and SL updates, one message per plan
+        cur = p["plans"].get(STYLE)
+        prev = (old["coins"].get(coin) or {}).get("plans", {}).get(STYLE)
+        if not cur or not prev or prev.get("day") != cur["day"] or "hits" not in prev or prev.get("sl_t"):
+            continue                                           # new plan, first scan with tracking, or already stopped
+        stock = p.get("market") == "stock"
+        pair = pair_name(coin, "stock" if stock else "crypto", mexc.get(coin) if stock else None)
+        text, _ = update_card(pair, ["0.5", "1", "2"], prev["hits"], cur)
+        if cur.get("sl_t") and len(prev["hits"]) < 3:
+            text = sl_card(pair, ["0.5", "1", "2"], cur)
+        if text:
+            send(text)
+            time.sleep(1.1)
     was_on = (old.get("market") or {}).get("on")
     if was_on is not None and was_on != market["on"]:
         send(("BITCOIN FILTER: ON\nBitcoin closed above its 200-day average. New signals count again." if market["on"] else
