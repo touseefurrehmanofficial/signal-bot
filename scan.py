@@ -110,7 +110,7 @@ def main():
         updates = []
         for t, p in dips.items():
             s, prev = p["last"], prev_last(t)
-            if prev.get("day") != s["day"] or "hits" not in prev:   # a plan first seen now sets the baseline, no message
+            if prev.get("day") != s["day"] or "hits" not in prev or t in mexc:   # first sight sets the baseline; MEXC-listed ones are watched live
                 continue
             pair = pair_name(t, "dip", mexc.get(t))
             text, _ = update_card(pair, ["0.3", "0.5"], prev["hits"], s)
@@ -119,7 +119,8 @@ def main():
         for t, s in closed:
             pair = pair_name(t, "dip", mexc.get(t))
             if s["status"] == "stopped":
-                updates.append((t not in mexc, sl_card(pair, ["0.3", "0.5"], s)))
+                if t not in mexc:                              # MEXC-listed stops are sent live by the listener
+                    updates.append((True, sl_card(pair, ["0.3", "0.5"], s)))
             else:
                 why = "closed above the 20-day average" if s["status"] == "exited" else "20-day time limit reached"
                 updates.append((t not in mexc, f"{'\U0001F3C1' if s['R'] > 0 else '\u26AA'} {pair} EXIT {'\u2705' if s['R'] > 0 else ''}\nPlan finished: {why}. Result {s['R']:+.2f}R."))
@@ -153,7 +154,9 @@ def main():
         if not cur or not prev or prev.get("day") != cur["day"] or "hits" not in prev or prev.get("sl_t"):
             continue                                           # new plan, first scan with tracking, or already stopped
         stock = p.get("market") == "stock"
-        pair = pair_name(coin, "stock" if stock else "crypto", mexc.get(coin) if stock else None)
+        if not stock or coin in mexc:
+            continue                                           # crypto and MEXC-listed stocks are watched live by the listener
+        pair = pair_name(coin, "stock", None)
         text, _ = update_card(pair, ["0.5", "1", "2"], prev["hits"], cur)
         if cur.get("sl_t") and len(prev["hits"]) < 3:
             text = sl_card(pair, ["0.5", "1", "2"], cur)

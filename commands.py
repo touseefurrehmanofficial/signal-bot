@@ -17,7 +17,7 @@ from pathlib import Path
 
 import requests
 
-from core import signal_card
+from core import pair_name, signal_card, sl_card, update_card
 
 HERE = Path(__file__).resolve().parent
 TOKEN, CHAT = os.environ.get("TELEGRAM_TOKEN"), str(os.environ.get("TELEGRAM_CHAT_ID", ""))
@@ -44,7 +44,7 @@ def refresh():
     if time.time() - _pulled[0] > 60:
         _pulled[0] = time.time()
         try:
-            subprocess.run(["git", "pull", "--quiet", "--ff-only"], cwd=HERE, timeout=30, check=False, capture_output=True)
+            subprocess.run(["git", "pull", "--quiet", "--rebase"], cwd=HERE, timeout=30, check=False, capture_output=True)
         except Exception:
             pass
 
@@ -360,6 +360,106 @@ def send(text):
             time.sleep(0.4)
 
 
+# ---------------------------------------------------------------------------------------------------------
+# Live TP / SL watch. The listener is always running, so it checks prices every few seconds and sends the
+# update the moment a level is crossed, instead of waiting for the next scan.
+#   crypto              Binance spot price
+#   US stocks on MEXC   MEXC's index price for the stock future (public endpoint, no key)
+# Stocks MEXC does not list are still reported by the scanner at its next run.
+# What has been announced is kept in notified.json in the repository, so a restart never repeats a message.
+NOTI = HERE / "notified.json"
+_watch = {"t": 0.0, "set": None}
+
+
+def mexc_prices():
+    try:
+        d = requests.get("https://contract.mexc.com/api/v1/contract/ticker", timeout=10).json()["data"]
+        return {x["symbol"]: float(x.get("indexPrice") or x["lastPrice"]) for x in d}
+    except Exception:
+        return {}
+
+
+def git(*args):
+    return subprocess.run(["git", *args], cwd=HERE, capture_output=True, text=True, timeout=60)
+
+
+def save_notified():
+    for _ in range(3):
+        NOTI.write_text(json.dumps(sorted(_watch["set"])), encoding="utf-8")
+        git("add", "notified.json")
+        git("commit", "-q", "-m", "notified")
+        git("pull", "-q", "--rebase")
+        if git("push", "-q").returncode == 0:
+            return
+        git("rebase", "--abort")
+        git("fetch", "-q", "origin", "main")
+        git("reset", "-q", "--hard", "origin/main")
+        try:
+            _watch["set"] |= set(json.loads(NOTI.read_text(encoding="utf-8")))
+        except Exception:
+            pass
+    print("could not save notified.json")
+
+
+def watch_levels():
+    if time.time() - _watch["t"] < 12:
+        return
+    _watch["t"] = time.time()
+    refresh()
+    s = load("state.json")
+    if not s:
+        return
+    baseline = _watch["set"] is None and not NOTI.exists()     # very first run: record what is already true, send nothing
+    if _watch["set"] is None:
+        try:
+            _watch["set"] = set(json.loads(NOTI.read_text(encoding="utf-8")))
+        except Exception:
+            _watch["set"] = set()
+    seen, mexc, crypto, stock_px, changed, live = _watch["set"], s.get("mexc") or {}, live_prices(), mexc_prices(), False, set()
+    plans = []
+    for c, p in s["coins"].items():
+        t, stock = p["plans"].get(STYLE), p.get("market") == "stock"
+        if t and not (stock and c not in mexc):
+            plans.append((f"b:{c}:{t['day']}", c, "stock" if stock else "crypto", t, ["0.5", "1", "2"], True))
+    for c, p in (s.get("dips") or {}).items():
+        t = p["last"]
+        if c in mexc and t["status"] in ("open", "stopped"):
+            plans.append((f"d:{c}:{t['day']}", c, "dip", t, ["0.3", "0.5"], t["status"] == "open"))
+    for key, name, kind, t, levels, tracking in plans:
+        live.add(key)
+        if f"{key}:sl" in seen:
+            continue
+        r = t["entry"] - t["stop"]
+        hit = {lv for lv in levels if lv in (t.get("hits") or {}) or f"{key}:{lv}" in seen}
+        stopped = bool(t.get("sl_t")) or t["status"] == "stopped"
+        price = crypto.get(name) if kind == "crypto" else stock_px.get(mexc.get(name))
+        if price and tracking and not stopped and len(hit) < len(levels):
+            if price <= t["stop"]:
+                stopped = True
+            else:
+                hit |= {lv for lv in levels if price >= t["entry"] + float(lv) * r}
+        fresh = [lv for lv in levels if lv in hit and f"{key}:{lv}" not in seen]
+        if not (stopped or fresh):
+            continue
+        changed = True
+        seen.update(f"{key}:{lv}" for lv in fresh)
+        if stopped:
+            seen.add(f"{key}:sl")
+        if baseline:
+            continue
+        pair, shown = pair_name(name, kind, mexc.get(name) if kind != "crypto" else None), dict(t, hits={lv: 1 for lv in hit})
+        if stopped and len(hit) < len(levels):
+            send(sl_card(pair, levels, shown))
+        elif fresh:
+            send(update_card(pair, levels, {lv: 1 for lv in hit if lv not in fresh}, shown)[0] + (f"\nPrice now: {fmt(price)}" if price else ""))
+    stale = {k for k in seen if k.rsplit(":", 1)[0] not in live}
+    if stale and len(live) > 20:                               # forget plans the scanner no longer lists
+        seen -= stale
+        changed = True
+    if changed or baseline:
+        save_notified()
+
+
 # GitHub's own schedule starts scans late or not at all, so the listener (which is always running) starts them.
 SCAN_TIMES = [(0, 6, False), (6, 20, False), (12, 20, False), (18, 20, False), (21, 25, True)]   # UTC hour, minute, weekdays only
 _scan_check = [0.0]
@@ -399,7 +499,11 @@ def main():
     while time.time() < end:
         maybe_start_scan()
         try:
-            r = requests.get(f"{API}/getUpdates", params={"timeout": 25, "offset": offset, "allowed_updates": json.dumps(["message"])}, timeout=40).json()
+            watch_levels()
+        except Exception as e:
+            print("level watch failed:", type(e).__name__, e)
+        try:
+            r = requests.get(f"{API}/getUpdates", params={"timeout": 8, "offset": offset, "allowed_updates": json.dumps(["message"])}, timeout=40).json()
         except Exception:
             time.sleep(3)
             continue

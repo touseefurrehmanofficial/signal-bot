@@ -9,7 +9,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write              # saves which TP / SL updates were already sent
   actions: write               # lets a run start its successor
 
 concurrency:
@@ -26,6 +26,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install --quiet requests pandas numpy
+      - run: |
+          git config user.name "scan-bot"
+          git config user.email "scan-bot@users.noreply.github.com"
       - name: Listen for commands
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
