@@ -1,1 +1,1 @@
-{"started":1791450280118,"style":"1","start_balance":100.0,"risk_per_trade":1.0,"leverage":50,"trades":{}}
+{"started":1791450280118,"style":"1","start_balance":100.0,"risk_per_trade":1.0,"leverage":50,"trades":{"dip:EWS:1791417600000":{"coin":"EWS","rule":"dip","day":1791417600000,"age_days":0,"entry":31.62,"stop":30.4245,"risk_pct":3.78,"status":"open","when":null,"R":null,"x50":{"status":"open","when":null,"pnl":null},"mkt_z":0.98}}}
