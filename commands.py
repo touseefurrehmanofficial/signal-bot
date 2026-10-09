@@ -54,28 +54,70 @@ def load(name):
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
+SIGNAL_DAYS = 3          # /signal looks back this many daily closes for signals that can still be entered
+
+
+def live_prices():
+    """Current crypto prices in one request, so /signal judges the entry zone on now, not on the last scan."""
+    for base in ("https://data-api.binance.vision", "https://api.binance.com"):
+        try:
+            r = requests.get(base + "/api/v3/ticker/price", timeout=10)
+            if r.status_code == 200:
+                return {x["symbol"][:-4]: float(x["price"]) for x in r.json() if x["symbol"].endswith("USDT")}
+        except Exception:
+            pass
+    return {}
+
+
 def signal_text():
     s = load("state.json")
     if not s:
         return "No scan has been saved yet."
     mexc, risk_money, lines = s.get("mexc") or {}, ACCOUNT * RISK / 100, []
     size = lambda rp: f"size for {RISK:g}% risk on ${ACCOUNT:,.0f}: ${risk_money / (rp / 100):,.0f}"
-    cards = []
-    brk = [(c, p["plans"][STYLE], p) for c, p in s["coins"].items() if (p["plans"].get(STYLE) or {}).get("status") == "open" and p["plans"][STYLE]["age_days"] <= 1]
-    dips = [(c, p["last"], p) for c, p in (s.get("dips") or {}).items() if p["last"]["status"] == "open" and p["last"]["age_days"] <= 1]
-    dips.sort(key=lambda x: (x[0] not in mexc, x[1]["risk_pct"]))
-    now = lambda p: f"\nNow: {fmt(p['price'])}"
+    # Only signals that can still be entered as tested: from the last few daily closes, no TP reached yet,
+    # SL not touched, and price inside the entry zone or below the entry (but above the SL).
+    live = live_prices()
+    cards, skipped = [], {"above the entry zone": 0, "a TP was already reached": 0, "SL already touched": 0}
+
+    def check(c, t, p, dip):
+        price = live.get(c, p["price"]) if p.get("market", "crypto") == "crypto" and not dip else p["price"]
+        r = t["entry"] - t["stop"]
+        if t.get("sl_t") or price <= t["stop"]:
+            skipped["SL already touched"] += 1
+        elif t.get("hits") or (dip and price > p["ma20"]):
+            skipped["a TP was already reached"] += 1
+        elif price > t["entry"] + 0.25 * r:
+            skipped["above the entry zone"] += 1
+        else:
+            where = "in the entry zone" if price >= t["entry"] else f"{(1 - price / t['entry']) * 100:.1f}% below entry, SL not touched"
+            return price, f"\nNow: {fmt(price)}  ({where})" + (f"\nSignal from {t['age_days']} closes ago" if t["age_days"] > 1 else "")
+        return None, None
+
+    fresh = lambda t: t and t["status"] == "open" and t["age_days"] <= SIGNAL_DAYS
+    brk = [(c, p["plans"][STYLE], p) for c, p in s["coins"].items() if fresh(p["plans"].get(STYLE))]
+    dips = sorted(((c, p["last"], p) for c, p in (s.get("dips") or {}).items() if fresh(p["last"])), key=lambda x: (x[0] not in mexc, x[1]["age_days"], x[1]["risk_pct"]))
+    more = []
     for c, t, p in brk:
-        stock = p.get("market") == "stock"
-        cards.append(signal_card(c, "stock" if stock else "crypto", t, mexc.get(c) if stock else None, None, ACCOUNT, RISK) + now(p))
-    for c, t, p in dips[:10]:
-        cards.append(signal_card(c, "dip", t, mexc.get(c), p["ma20"], ACCOUNT, RISK) + now(p))
-    if len(dips) > 10:
-        lines += [f"\u2795 {len(dips) - 10} more dip signals: " + ", ".join(c for c, _, _ in dips[10:80]), "Send /coin NAME for any of them.", ""]
+        price, note = check(c, t, p, False)
+        if note:
+            stock = p.get("market") == "stock"
+            cards.append(signal_card(c, "stock" if stock else "crypto", t, mexc.get(c) if stock else None, None, ACCOUNT, RISK) + note)
+    for c, t, p in dips:
+        price, note = check(c, t, p, True)
+        if note and len(cards) < 12:
+            cards.append(signal_card(c, "dip", t, mexc.get(c), p["ma20"], ACCOUNT, RISK) + note)
+        elif note:
+            more.append(c)
+    if more:
+        lines += [f"\u2795 {len(more)} more dip signals still in their entry zone: " + ", ".join(more[:70]), "Send /coin NAME for any of them.", ""]
+    gone = ", ".join(f"{n} {why}" for why, n in skipped.items() if n)
+    if gone:
+        lines += [f"Not shown (entry no longer valid): {gone}.", ""]
     m = s.get("market") or {}
     checked = datetime.fromtimestamp(s["updated"] / 1000, timezone.utc).strftime("%b %d %H:%M UTC")
     if not cards:
-        lines = ["No new signals from the last daily close.", ""]
+        lines = [f"No signal from the last {SIGNAL_DAYS} daily closes is still inside its entry zone.", ""] + lines
     n_open = sum(1 for p in s["coins"].values() if (p["plans"].get(STYLE) or {}).get("status") == "open")
     n_dip = sum(1 for p in (s.get("dips") or {}).values() if p["last"]["status"] == "open")
     lines += [f"Open plans from earlier signals: {n_open} breakout, {n_dip} dip.", f"Bitcoin filter: {'ON' if m.get('on') else 'OFF (no new crypto signals)'}.", f"Last scan: {checked}.",
@@ -294,7 +336,7 @@ def dashboard_text(arg=""):
 
 # command -> (function, description for Telegram's "/" menu)
 COMMANDS = {
-    "signal": (lambda a="": signal_text(), "New signals from the last daily close, one card each"),
+    "signal": (lambda a="": signal_text(), "Signals you can still enter (price in the entry zone)"),
     "open": (open_text, "All open plans and where price is now"),
     "mexc": (lambda a="": open_text(a, only_mexc=True), "Open plans you can trade on MEXC"),
     "near": (near_text, "Coins and stocks close to a breakout signal"),
