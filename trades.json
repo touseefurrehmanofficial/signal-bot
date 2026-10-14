@@ -8,7 +8,7 @@
  },
  "skips": {
   "APT:1791676800000": "no leverage keeps liquidation at 0 (equity $6.28, open positions $35.60, margin $0.06)",
-  "FIL:1791676800000": "no leverage keeps liquidation at 0 (equity $6.28, open positions $35.62, margin $0.06)",
+  "FIL:1791676800000": "no leverage keeps liquidation at 0 (equity $6.27, open positions $35.60, margin $0.06)",
   "NEAR:1791676800000": "no leverage keeps liquidation at 0 (equity $6.28, open positions $35.62, margin $0.06)"
  }
 }
