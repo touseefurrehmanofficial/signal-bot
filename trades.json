@@ -1,5 +1,5 @@
 {
- "max_trades": 10,
+ "max_trades": 50,
  "paused": false,
  "trades": {},
  "flags": {
