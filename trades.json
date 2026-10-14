@@ -1,0 +1,9 @@
+{
+ "max_trades": 10,
+ "paused": false,
+ "trades": {},
+ "flags": {
+  "connected": true,
+  "key_seen": 1791959928921
+ }
+}
