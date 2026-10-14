@@ -7,7 +7,7 @@
   "key_seen": 1791959928921
  },
  "skips": {
-  "APT:1791676800000": "no leverage keeps liquidation at 0 (equity $6.20, open positions $35.25, margin $0.06)",
+  "APT:1791676800000": "no leverage keeps liquidation at 0 (equity $6.19, open positions $35.23, margin $0.06)",
   "FIL:1791676800000": "no leverage keeps liquidation at 0 (equity $6.20, open positions $35.25, margin $0.06)",
   "NEAR:1791676800000": "no leverage keeps liquidation at 0 (equity $6.20, open positions $35.25, margin $0.06)"
  }
