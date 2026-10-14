@@ -1,7 +1,21 @@
 {
  "max_trades": 50,
  "paused": false,
- "trades": {},
+ "trades": {
+  "APT:1791676800000": {
+   "key": "APT:1791676800000",
+   "coin": "APT",
+   "symbol": "APT_USDT",
+   "status": "opening",
+   "time": 1791987162089,
+   "leverage": 90,
+   "vol": 70.0,
+   "sl": 0.7367,
+   "tp1": 0.9834499999999999,
+   "tp2": 1.0657,
+   "entry_signal": 0.9012
+  }
+ },
  "flags": {
   "connected": true,
   "key_seen": 1791959928921
