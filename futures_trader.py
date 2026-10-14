@@ -230,52 +230,65 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist):
             api_post("/api/v1/private/position/change_leverage", {"openType": 2, "symbol": sym, "positionType": 1, "leverage": lev})
         except ApiError:
             pass                                                # the order below carries the leverage too
-        oid = api_post("/api/v1/private/order/create", {"symbol": sym, "price": price, "vol": vol, "leverage": lev, "side": 1, "type": 5, "openType": 2,
-                                                         "externalOid": ("sb" + key.replace(":", ""))[:32]})["orderId"]
-        o = wait_fill(oid)
-        filled = float(o.get("dealVol") or 0)
-        if filled <= 0:
-            trade.update(status="failed", reason=f"order not filled (state {o.get('state')})")
-            persist()
-            send(f"⚠️ {coin} USDT: the entry order was not filled. Nothing is open.")
-            return
-        pid, avg = o["positionId"], float(o.get("dealAvgPrice") or price)
-        trade.update(status="open", position_id=pid, entry=avg, vol=filled, last_hold=filled, order_id=oid)
-        min_vol = float(cinfo.get("minVol") or 1)
-        vol_a = to_unit(filled * TP1_SHARE, cinfo.get("volUnit") or 1)
-        vol_b = filled - vol_a
-        split = vol_a >= min_vol and vol_b >= min_vol
-        trade["split"] = split
-        ids = []
-        try:
-            ids.append(place_tpsl(pid, vol_a if split else filled, tp1, sl, cinfo))
-            if split:
-                try:
-                    ids.append(place_tpsl(pid, vol_b, tp2, sl, cinfo))
-                except ApiError:                                # a second TP/SL refused: replace both with one for the whole position at TP1
-                    try:
-                        api_post("/api/v1/private/stoporder/cancel", [{"stopPlanOrderId": i} for i in ids])
-                    except ApiError:
-                        pass
-                    ids = [place_tpsl(pid, filled, tp1, sl, cinfo)]
-                    trade["split"] = False
-        except ApiError as e:                                   # never leave a position without an exchange-side SL
+        # SL and TP are attached to the entry order itself (the order call MEXC accepts); 80% carries TP1, 20% carries TP2.
+        unit, min_vol = cinfo["priceUnit"], float(cinfo.get("minVol") or 1)
+        vol_a = to_unit(vol * TP1_SHARE, cinfo.get("volUnit") or 1)
+        split = vol_a >= min_vol and vol - vol_a >= min_vol
+        legs = [(vol_a, tp1, "a"), (vol - vol_a, tp2, "b")] if split else [(vol, tp1, "a")]
+        filled, cost, pid, err = 0.0, 0.0, None, None
+        for v, tp, tag in legs:
             try:
-                market_close(pid, sym, filled, price)
+                oid = api_post("/api/v1/private/order/create", {
+                    "symbol": sym, "price": price, "vol": v, "leverage": lev, "side": 1, "type": 5, "openType": 2,
+                    "stopLossPrice": to_unit(sl, unit, ROUND_HALF_UP), "takeProfitPrice": to_unit(tp, unit, ROUND_HALF_UP),
+                    "lossTrend": 1, "profitTrend": 1, "externalOid": ("sb" + key.replace(":", "") + tag)[:32]})["orderId"]
+            except ApiError as e:
+                err = e
+                break
+            trade.setdefault("order_ids", []).append(oid)
+            o = wait_fill(oid)
+            f = float(o.get("dealVol") or 0)
+            if f > 0:
+                filled, cost, pid = filled + f, cost + f * float(o.get("dealAvgPrice") or price), o["positionId"]
+        if filled <= 0:
+            trade.update(status="failed", reason=str(err) if err else "entry order not filled")
+            persist()
+            send(f"⚠️ {coin} USDT: the entry order was not accepted ({err or 'not filled'}). Nothing is open.")
+            return
+        avg = cost / filled
+        trade.update(status="open", position_id=pid, entry=avg, vol=filled, last_hold=filled, split=split and filled > vol_a)
+        persist()
+        # make sure the exchange really holds an SL for this position; if not, try once to add one, else close
+        has_sl = False
+        for _ in range(4):
+            time.sleep(1)
+            try:
+                has_sl = any(str(x.get("positionId")) == str(pid) and float(x.get("stopLossPrice") or 0) > 0 for x in tpsl_orders(sym))
             except ApiError:
                 pass
-            trade.update(status="closed", result="no SL possible, closed", pnl=0.0, closed=int(time.time() * 1000))
-            persist()
-            send(f"⚠️ {coin} USDT: the exchange refused the TP/SL order ({e}), so the position was closed at once.")
-            return
-        trade["tpsl_ids"] = ids
-        persist()
+            if has_sl:
+                break
+        if not has_sl:
+            try:
+                place_tpsl(pid, filled, tp1, sl, cinfo)
+                has_sl = True
+            except ApiError as e:
+                try:
+                    market_close(pid, sym, filled, price)
+                except ApiError:
+                    pass
+                trade.update(status="closed", result="no SL possible, closed", pnl=0.0, closed=int(time.time() * 1000))
+                persist()
+                send(f"⚠️ {coin} USDT: no stop loss could be placed ({e}), so the position was closed at once.")
+                return
+        if err:                                                 # the 20% leg was refused: the 80% leg stands with its own TP1 and SL
+            send(f"ℹ️ {coin} USDT: the TP2 part was not opened ({err}); the trade runs with TP1 only.")
         margin = value / lev
         loss_at_sl = (avg - sl) / avg * value
         send(f"\U0001F7E2 TRADE OPENED — {coin} USDT\n\nDirection: LONG · Cross {lev}X\nEntry: {avg:g}\nSize: {filled:g} contracts ≈ ${value:,.2f} (margin ${margin:,.2f})\n"
              + (f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} (80%)\n\U0001F3AF TP2: {to_unit(tp2, cinfo['priceUnit'], ROUND_HALF_UP):g} (20%)\n" if trade["split"]
                 else f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} (100%)\n")
-             + f"\U0001F6E1 SL: {to_unit(sl, cinfo['priceUnit'], ROUND_HALF_UP):g} (limit order on the exchange)\nLoss if SL is hit ≈ ${loss_at_sl:,.2f} · Liquidation: none\n\n" + stats_line(eq))
+             + f"\U0001F6E1 SL: {to_unit(sl, cinfo['priceUnit'], ROUND_HALF_UP):g} (on the exchange)\nLoss if SL is hit ≈ ${loss_at_sl:,.2f} · Liquidation: none\n\n" + stats_line(eq))
     except ApiError as e:
         trade.update(status="failed", reason=str(e))
         persist()
@@ -453,12 +466,14 @@ def run_confirmed(token):
                 if vol < float(c.get("minVol") or 1):
                     out.append(f"⛔ {sym.replace('_', ' ')}: {MARGIN_PCT:g}% margin is below the contract minimum")
                     continue
-                oid = api_post("/api/v1/private/order/create", {"symbol": sym, "price": price, "vol": vol, "leverage": lev, "side": 1, "type": 5, "openType": 2})["orderId"]
+                t = next((t for t in b["trades"].values() if t.get("position_id") == pid and t["status"] == "open"), None)
+                body = {"symbol": sym, "price": price, "vol": vol, "leverage": lev, "side": 1, "type": 5, "openType": 2}
+                if t:                                           # the added part gets the trade's own SL and TP1
+                    body.update(stopLossPrice=to_unit(t["sl"], c["priceUnit"], ROUND_HALF_UP), takeProfitPrice=to_unit(t["tp1"], c["priceUnit"], ROUND_HALF_UP), lossTrend=1, profitTrend=1)
+                oid = api_post("/api/v1/private/order/create", body)["orderId"]
                 o = wait_fill(oid)
                 filled = float(o.get("dealVol") or 0)
-                t = next((t for t in b["trades"].values() if t.get("position_id") == pid and t["status"] == "open"), None)
-                if filled and t:                                # protect the added part with the trade's own SL and TP1
-                    place_tpsl(pid, filled, t["tp1"], t["sl"], c)
+                if filled and t:
                     t["last_hold"] = t.get("last_hold", 0) + filled
                 out.append(f"➕ {sym.replace('_', ' ')}: added {filled:g} contracts at {lev}X" + ("" if t else " (not a bot trade: no TP/SL was added)"))
         except ApiError as e:
