@@ -313,7 +313,7 @@ def follow(eq, pos, prices, send, persist):
 def candidates(state, pos_symbols):
     b, out = load_book(), []
     for c, p in (state.get("coins") or {}).items():
-        t = (p.get("plans") or {}).get(STYLE)
+        t = p.get("fresh")
         if p.get("market") == "stock" or not t or t["status"] != "open" or t["age_days"] > SIGNAL_DAYS or t.get("hits") or t.get("sl_t"):
             continue
         key = f"{c}:{t['day']}"

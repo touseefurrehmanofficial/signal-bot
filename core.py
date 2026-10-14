@@ -25,6 +25,8 @@ STYLES = ("0.5", "1", "2", "3", "trail")
 MIN_VALUE = 1_000_000
 LEVERAGE = 50            # for the "what if I used 50x" column of the demo account
 DAY = 86_400_000
+FRESH_DAYS = 3           # a breakout stays "fresh" (enterable) for this many daily closes
+BOT_START = 1791450280118  # 2026-10-08 09:04 UTC: signals from before the bot started are not alerted or tracked
 DIP_LIMIT = 20           # the dip rule leaves after 20 trading days if nothing else has happened
 DIP_RECENT = 60          # days of finished dip trades kept for the dashboard
 
@@ -256,6 +258,17 @@ def plan(coin, regime, market="crypto"):
             i = j + 1
         out["plans"][key] = last
         out["recent"][key] = recent
+    # "fresh": the newest breakout day among the last FRESH_DAYS+1 closes, ignoring older historical plans.
+    # The owner trades every breakout; one trade per coin applies only while the account holds a position in it.
+    out["fresh"] = None
+    for k in range(n - 1, max(n - 2 - FRESH_DAYS, 56), -1):
+        if (not np.isnan(hi55[k]) and c[k] > hi55[k] and not np.isnan(lo20[k]) and lo20[k] < c[k] and value[k] >= MIN_VALUE
+                and regime.get(int(df.t[k]), False)):
+            e, s_ = float(c[k]), float(lo20[k])
+            hits, sl_t = level_hits(("0.5", "1", "2"), e, e - s_, s_, h, l, df.t.values, k + 1, n, forming)
+            out["fresh"] = {"day": int(df.t[k]), "age_days": int(n - 1 - k), "entry": e, "stop": s_, "risk_pct": (e - s_) / e * 100,
+                            "status": "stopped" if sl_t else "open", "hits": hits, "sl_t": sl_t}
+            break
     return out
 
 

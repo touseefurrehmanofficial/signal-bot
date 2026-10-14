@@ -138,19 +138,20 @@ def main():
         if not cur:
             continue
         is_new_plan = prev is None or prev.get("day") != cur["day"]
-        if cur["status"] == "open" and is_new_plan and cur["age_days"] <= 1 and not first_run:
-            signals.append((coin, cur))
-        elif prev and prev.get("day") == cur["day"] and prev.get("status") == "open" and cur["status"] != "open":
+        if prev and prev.get("day") == cur["day"] and prev.get("status") == "open" and cur["status"] != "open":
             (targets if cur["status"] == "target" else stops).append((coin, cur))
 
+    for coin, p in new_state.items():                         # new signal cards: every new breakout, old plans ignored
+        f, pf = p.get("fresh"), (old["coins"].get(coin) or {}).get("fresh")
+        if f and f["status"] == "open" and f["age_days"] <= 1 and not f["hits"] and (not pf or pf.get("day") != f["day"]) and not first_run:
+            signals.append((coin, f))
     risk_money = ACCOUNT * RISK / 100
     for coin, s in sorted(signals, key=lambda x: x[1]["risk_pct"]):
         stock = new_state[coin].get("market") == "stock"
         send(signal_card(coin, "stock" if stock else "crypto", s, mexc.get(coin) if stock else None, None, ACCOUNT, RISK))
         time.sleep(1.1)
     for coin, p in new_state.items():                         # TP and SL updates, one message per plan
-        cur = p["plans"].get(STYLE)
-        prev = (old["coins"].get(coin) or {}).get("plans", {}).get(STYLE)
+        cur, prev = p.get("fresh"), (old["coins"].get(coin) or {}).get("fresh")
         if not cur or not prev or prev.get("day") != cur["day"] or "hits" not in prev or prev.get("sl_t"):
             continue                                           # new plan, first scan with tracking, or already stopped
         stock = p.get("market") == "stock"

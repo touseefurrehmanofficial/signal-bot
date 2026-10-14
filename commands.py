@@ -18,7 +18,7 @@ from pathlib import Path
 import requests
 
 import futures_trader as ft
-from core import pair_name, signal_card, sl_card, update_card
+from core import BOT_START, pair_name, signal_card, sl_card, update_card
 
 HERE = Path(__file__).resolve().parent
 TOKEN, CHAT = os.environ.get("TELEGRAM_TOKEN"), str(os.environ.get("TELEGRAM_CHAT_ID", ""))
@@ -96,7 +96,7 @@ def signal_text():
         return None, None
 
     fresh = lambda t: t and t["status"] == "open" and t["age_days"] <= SIGNAL_DAYS
-    brk = [(c, p["plans"][STYLE], p) for c, p in s["coins"].items() if fresh(p["plans"].get(STYLE))]
+    brk = [(c, p["fresh"], p) for c, p in s["coins"].items() if fresh(p.get("fresh"))]
     dips = sorted(((c, p["last"], p) for c, p in (s.get("dips") or {}).items() if fresh(p["last"])), key=lambda x: (x[0] not in mexc, x[1]["age_days"], x[1]["risk_pct"]))
     more = []
     for c, t, p in brk:
@@ -428,12 +428,12 @@ def watch_levels():
     seen, mexc, crypto, stock_px, changed, live = _watch["set"], s.get("mexc") or {}, live_prices(), mexc_prices(), False, set()
     plans = []
     for c, p in s["coins"].items():
-        t, stock = p["plans"].get(STYLE), p.get("market") == "stock"
+        t, stock = p.get("fresh"), p.get("market") == "stock"
         if t and not (stock and c not in mexc):
             plans.append((f"b:{c}:{t['day']}", c, "stock" if stock else "crypto", t, ["0.5", "1", "2"], True))
     for c, p in (s.get("dips") or {}).items():
         t = p["last"]
-        if c in mexc and t["status"] in ("open", "stopped"):
+        if c in mexc and t["status"] in ("open", "stopped") and t["day"] + 86_400_000 >= BOT_START:
             plans.append((f"d:{c}:{t['day']}", c, "dip", t, ["0.3", "0.5"], t["status"] == "open"))
     for key, name, kind, t, levels, tracking in plans:
         live.add(key)
