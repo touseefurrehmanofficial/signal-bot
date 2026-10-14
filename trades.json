@@ -17,6 +17,14 @@
    "status": "skipped",
    "reason": "no leverage keeps liquidation at 0 with the positions already open",
    "time": 1791981118284
+  },
+  "NEAR:1791676800000": {
+   "key": "NEAR:1791676800000",
+   "coin": "NEAR",
+   "symbol": "NEAR_USDT",
+   "status": "skipped",
+   "reason": "no leverage keeps liquidation at 0 with the positions already open",
+   "time": 1791981121174
   }
  },
  "flags": {
