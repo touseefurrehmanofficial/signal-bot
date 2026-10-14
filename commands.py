@@ -17,6 +17,7 @@ from pathlib import Path
 
 import requests
 
+import futures_trader as ft
 from core import pair_name, signal_card, sl_card, update_card
 
 HERE = Path(__file__).resolve().parent
@@ -347,8 +348,13 @@ COMMANDS = {
     "odds": (odds_text, "What the tests showed for each rule"),
     "status": (status_text, "Last scan, Bitcoin filter, next close"),
     "dashboard": (dashboard_text, "Link to the dashboard"),
+    "positions": (None, "Your open futures trades: P/L, close or add margin"),
+    "account": (lambda a="": ft.account_text(), "Futures balance, trades, TP and SL hits"),
+    "maxtrades": (maxtrades_text, "Max open trades, e.g. /maxtrades 10"),
+    "pause": (pause_text, "Stop opening new auto-trades"),
+    "resume": (resume_text, "Start opening auto-trades again"),
 }
-ALIASES = {"signals": "signal", "demo": "demo_trade", "demotrade": "demo_trade", "plan": "coin", "stock": "coin", "result": "results", "risk": "size", "start": "help"}
+ALIASES = {"position": "positions", "trades": "positions", "balance": "account", "max": "maxtrades", "signals": "signal", "demo": "demo_trade", "demotrade": "demo_trade", "plan": "coin", "stock": "coin", "result": "results", "risk": "size", "start": "help"}
 HELP = "Commands:\n" + "\n".join(f"/{k} - {d}" for k, (_, d) in COMMANDS.items()) + "\n/help - this list\n\nNew signals are also sent automatically after each daily close."
 
 
@@ -384,10 +390,14 @@ def git(*args):
 
 
 def save_notified():
+    """Save the listener's own files (notified.json, trades.json) to the repository. Nothing else writes them."""
     for _ in range(3):
-        NOTI.write_text(json.dumps(sorted(_watch["set"])), encoding="utf-8")
-        git("add", "notified.json")
-        git("commit", "-q", "-m", "notified")
+        if _watch["set"] is not None:
+            NOTI.write_text(json.dumps(sorted(_watch["set"])), encoding="utf-8")
+        if ft.BOOK is not None:
+            ft.BOOK_FILE.write_text(json.dumps(ft.BOOK, indent=1), encoding="utf-8")
+        git("add", "notified.json", "trades.json")
+        git("commit", "-q", "-m", "bot state")
         git("pull", "-q", "--rebase")
         if git("push", "-q").returncode == 0:
             return
@@ -460,6 +470,80 @@ def watch_levels():
         save_notified()
 
 
+def send_kb(text, rows):
+    requests.post(f"{API}/sendMessage", json={"chat_id": CHAT, "text": text, "reply_markup": {"inline_keyboard": rows}}, timeout=20)
+
+
+def edit(msg, text=None, rows=None):
+    body = {"chat_id": CHAT, "message_id": msg["message_id"]}
+    if text is not None:
+        requests.post(f"{API}/editMessageText", json=dict(body, text=text, reply_markup={"inline_keyboard": rows or []}), timeout=20)
+    else:
+        requests.post(f"{API}/editMessageReplyMarkup", json=dict(body, reply_markup={"inline_keyboard": rows or []}), timeout=20)
+
+
+def on_button(cq):
+    """Buttons under /positions: tick positions, then Close selected / Add margin, then confirm."""
+    msg, data = cq.get("message") or {}, cq.get("data") or ""
+    answer = lambda text="": requests.post(f"{API}/answerCallbackQuery", json={"callback_query_id": cq["id"], "text": text}, timeout=20)
+    rows = (msg.get("reply_markup") or {}).get("inline_keyboard") or []
+    if data.startswith("t:"):                                   # tick / untick one position
+        for row in rows:
+            for btn in row:
+                if btn.get("callback_data") == data:
+                    btn["text"] = ("\u2611" if btn["text"].startswith("\u2610") else "\u2610") + btn["text"][1:]
+        edit(msg, rows=rows)
+        return answer()
+    if data == "ref":
+        text, rows = ft.positions_view()
+        edit(msg, text, rows)
+        return answer("Refreshed")
+    if data in ("close", "add"):
+        picked = [int(b["callback_data"][2:]) for row in rows for b in row if b.get("callback_data", "").startswith("t:") and b["text"].startswith("\u2611")]
+        if not picked:
+            return answer("Tick at least one position first")
+        names = [b["text"][2:].split()[0] for row in rows for b in row if b.get("callback_data", "").startswith("t:") and b["text"].startswith("\u2611")]
+        token = ft.ask_confirm(data, picked)
+        what = "CLOSE at market" if data == "close" else f"ADD {ft.MARGIN_PCT:g}% margin (same leverage) to"
+        edit(msg, f"{what}: {', '.join(names)}?", [[{"text": "\u2705 Yes", "callback_data": f"y:{token}"}, {"text": "\u2716 Cancel", "callback_data": "ref"}]])
+        return answer()
+    if data.startswith("y:"):
+        answer("Working...")
+        result = ft.run_confirmed(data[2:])
+        save_notified()
+        text, rows = ft.positions_view()
+        edit(msg, result + "\n\n" + text, rows)
+        return None
+    return answer()
+
+
+def maxtrades_text(arg=""):
+    b = ft.load_book()
+    a = arg.strip().lower()
+    if a in ("", "show"):
+        return f"Max open trades: {b['max_trades']}.\nChange it with /maxtrades 5 (any number from 1 to 50). /maxtrades 10 sets it back to 10."
+    try:
+        n = int(a)
+        assert 1 <= n <= 50
+    except Exception:
+        return "Send a number from 1 to 50, for example /maxtrades 10"
+    b["max_trades"] = n
+    save_notified()
+    return f"\u2705 Max open trades set to {n}."
+
+
+def pause_text(arg=""):
+    ft.load_book()["paused"] = True
+    save_notified()
+    return "\u23F8 Auto-trading paused. No new trades will be opened; open positions keep their TP/SL on the exchange. /resume to continue."
+
+
+def resume_text(arg=""):
+    ft.load_book()["paused"] = False
+    save_notified()
+    return "\u25B6\uFE0F Auto-trading resumed."
+
+
 # GitHub's own schedule starts scans late or not at all, so the listener (which is always running) starts them.
 SCAN_TIMES = [(0, 6, False), (6, 20, False), (12, 20, False), (18, 20, False), (21, 25, True)]   # UTC hour, minute, weekdays only
 _scan_check = [0.0]
@@ -503,7 +587,11 @@ def main():
         except Exception as e:
             print("level watch failed:", type(e).__name__, e)
         try:
-            r = requests.get(f"{API}/getUpdates", params={"timeout": 8, "offset": offset, "allowed_updates": json.dumps(["message"])}, timeout=40).json()
+            ft.tick(load("state.json"), send, save_notified)
+        except Exception as e:
+            print("auto-trader failed:", type(e).__name__, e)
+        try:
+            r = requests.get(f"{API}/getUpdates", params={"timeout": 8, "offset": offset, "allowed_updates": json.dumps(["message", "callback_query"])}, timeout=40).json()
         except Exception:
             time.sleep(3)
             continue
@@ -513,6 +601,14 @@ def main():
             continue
         for u in r["result"]:
             offset = u["update_id"] + 1
+            cq = u.get("callback_query")
+            if cq:
+                if str(((cq.get("message") or {}).get("chat") or {}).get("id")) == CHAT:
+                    try:
+                        on_button(cq)
+                    except Exception as e:
+                        send(f"Button failed ({type(e).__name__}: {e}).")
+                continue
             msg = u.get("message") or {}
             if str((msg.get("chat") or {}).get("id")) != CHAT:
                 continue                                       # not the owner: ignore
@@ -525,6 +621,11 @@ def main():
                 continue                                       # ordinary text that is not a command word: stay quiet
             refresh()
             try:
+                if cmd == "positions":
+                    text, rows = ft.positions_view()
+                    send_kb(text, rows) if rows else send(text)
+                    answered += 1
+                    continue
                 reply = HELP if cmd == "help" else COMMANDS[cmd][0](arg) if cmd in COMMANDS else "I do not know that command.\n\n" + HELP
             except Exception as e:                              # one bad reply must not stop the listener
                 reply = f"Something went wrong answering /{cmd} ({type(e).__name__}). The scan data may be mid-update; try again in a minute."

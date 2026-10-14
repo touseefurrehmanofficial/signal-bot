@@ -38,6 +38,10 @@ jobs:
           RISK_PCT: ${{ vars.RISK_PCT || '1' }}
           LISTEN_SECONDS: "3000"
           GH_TOKEN: ${{ github.token }}   # lets the listener start a scan when one is due
+          MEXC_API_KEY: ${{ secrets.MEXC_API_KEY }}
+          MEXC_API_SECRET: ${{ secrets.MEXC_API_SECRET }}
+          MARGIN_PCT: ${{ vars.MARGIN_PCT || '1' }}
+          MAX_LOSS_PCT: ${{ vars.MAX_LOSS_PCT || '1' }}
         run: DASHBOARD_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/" python commands.py
       - name: Start the next listener
         if: always()
