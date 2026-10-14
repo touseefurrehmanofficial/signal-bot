@@ -1,34 +1,14 @@
 {
  "max_trades": 50,
  "paused": false,
- "trades": {
-  "APT:1791676800000": {
-   "key": "APT:1791676800000",
-   "coin": "APT",
-   "symbol": "APT_USDT",
-   "status": "skipped",
-   "reason": "no leverage keeps liquidation at 0 with the positions already open",
-   "time": 1791981115402
-  },
-  "FIL:1791676800000": {
-   "key": "FIL:1791676800000",
-   "coin": "FIL",
-   "symbol": "FILECOIN_USDT",
-   "status": "skipped",
-   "reason": "no leverage keeps liquidation at 0 with the positions already open",
-   "time": 1791981118284
-  },
-  "NEAR:1791676800000": {
-   "key": "NEAR:1791676800000",
-   "coin": "NEAR",
-   "symbol": "NEAR_USDT",
-   "status": "skipped",
-   "reason": "no leverage keeps liquidation at 0 with the positions already open",
-   "time": 1791981121174
-  }
- },
+ "trades": {},
  "flags": {
   "connected": true,
   "key_seen": 1791959928921
+ },
+ "skips": {
+  "APT:1791676800000": "no leverage keeps liquidation at 0 (equity $6.21, open positions $27.15, margin $0.06)",
+  "FIL:1791676800000": "no leverage keeps liquidation at 0 with the positions already open",
+  "NEAR:1791676800000": "no leverage keeps liquidation at 0 with the positions already open"
  }
 }
