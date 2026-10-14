@@ -43,6 +43,19 @@
    "result": "no SL possible, closed",
    "pnl": 0.0,
    "closed": 1791987170591
+  },
+  "NEAR:1791676800000": {
+   "key": "NEAR:1791676800000",
+   "coin": "NEAR",
+   "symbol": "NEAR_USDT",
+   "status": "opening",
+   "time": 1791987172900,
+   "leverage": 90,
+   "vol": 1.0,
+   "sl": 4.271,
+   "tp1": 6.7085,
+   "tp2": 7.521,
+   "entry_signal": 5.896
   }
  },
  "flags": {
