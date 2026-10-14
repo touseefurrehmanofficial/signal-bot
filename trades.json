@@ -6,14 +6,22 @@
    "key": "APT:1791676800000",
    "coin": "APT",
    "symbol": "APT_USDT",
-   "status": "opening",
+   "status": "closed",
    "time": 1791987162089,
    "leverage": 90,
    "vol": 70.0,
    "sl": 0.7367,
    "tp1": 0.9834499999999999,
    "tp2": 1.0657,
-   "entry_signal": 0.9012
+   "entry_signal": 0.9012,
+   "position_id": 1520223917,
+   "entry": 0.7882,
+   "last_hold": 70.0,
+   "order_id": "865355228024017408",
+   "split": true,
+   "result": "no SL possible, closed",
+   "pnl": 0.0,
+   "closed": 1791987165132
   }
  },
  "flags": {
