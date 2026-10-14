@@ -216,7 +216,8 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist):
     lev, vol, value, why = sizing(eq, price, sl, cinfo, other)
     if why:                                                     # not permanent: tried again while the signal is fresh; message sent once per reason
         skips = b.setdefault("skips", {})
-        if skips.get(key) != why:
+        kind = why.split(" (")[0].split(",")[0]                 # the reason without its live numbers
+        if (skips.get(key) or "").split(" (")[0].split(",")[0] != kind:
             skips[key] = why
             persist()
             send(f"⏭ {coin} USDT signal not taken (yet)\nReason: {why}.\nThe bot keeps checking while the signal is fresh.")
