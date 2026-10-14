@@ -105,7 +105,9 @@ def equity():
 
 
 def positions():
-    return {p["positionId"]: p for p in (api_get("/api/v1/private/position/open_positions") or []) if float(p.get("holdVol") or 0) > 0}
+    # state 1 = holding, 2 = system-held, 3 = closed: closed positions are not counted even if MEXC still returns them
+    return {p["positionId"]: p for p in (api_get("/api/v1/private/position/open_positions") or [])
+            if float(p.get("holdVol") or 0) > 0 and int(p.get("state") or 1) in (1, 2)}
 
 
 def tpsl_orders(symbol=None):
@@ -132,6 +134,8 @@ def load_book():
         BOOK.setdefault("max_trades", 10)
         BOOK.setdefault("paused", False)
         BOOK.setdefault("trades", {})
+        for k in [k for k, t in BOOK["trades"].items() if t.get("status") == "skipped"]:   # old permanent skips: retry them
+            BOOK.setdefault("skips", {})[k] = BOOK["trades"].pop(k).get("reason")
         BOOK.setdefault("flags", {})
     return BOOK
 
@@ -165,7 +169,7 @@ def sizing(eq, price, sl, cinfo, other_notional):
     lev_risk = math.floor(MAX_LOSS_PCT / 100 * eq / (margin * stop_frac))
     lev = min(lev_liq, lev_risk, int(cinfo.get("maxLeverage") or 1))
     if lev < 1:
-        return 0, 0, 0, ("no leverage keeps liquidation at 0 with the positions already open" if lev_liq < 1 else f"the SL is {stop_frac * 100:.0f}% away, too far for a {MAX_LOSS_PCT:g}% loss limit")
+        return 0, 0, 0, (f"no leverage keeps liquidation at 0 (equity ${eq:,.2f}, open positions ${other_notional:,.2f}, margin ${margin:,.2f})" if lev_liq < 1 else f"the SL is {stop_frac * 100:.0f}% away, too far for a {MAX_LOSS_PCT:g}% loss limit")
     size = float(cinfo["contractSize"])
     vol = to_unit(margin * lev / (size * price), cinfo.get("volUnit") or 1)
     if vol < float(cinfo.get("minVol") or 1):
@@ -208,10 +212,12 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist):
     tp1, tp2, sl = t["entry"] + 0.5 * r, t["entry"] + r, t["stop"]
     other = sum(notional(p, cinfo_all, prices) for p in pos.values())
     lev, vol, value, why = sizing(eq, price, sl, cinfo, other)
-    if why:
-        b["trades"][key] = {"key": key, "coin": coin, "symbol": sym, "status": "skipped", "reason": why, "time": int(time.time() * 1000)}
-        persist()
-        send(f"⏭ {coin} USDT signal skipped\nReason: {why}.")
+    if why:                                                     # not permanent: tried again while the signal is fresh; message sent once per reason
+        skips = b.setdefault("skips", {})
+        if skips.get(key) != why:
+            skips[key] = why
+            persist()
+            send(f"⏭ {coin} USDT signal not taken (yet)\nReason: {why}.\nThe bot keeps checking while the signal is fresh.")
         return
     b["trades"][key] = trade = {"key": key, "coin": coin, "symbol": sym, "status": "opening", "time": int(time.time() * 1000), "leverage": lev, "vol": vol,
                                 "sl": sl, "tp1": tp1, "tp2": tp2, "entry_signal": t["entry"]}
