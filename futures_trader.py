@@ -169,7 +169,7 @@ def sizing(eq, price, sl, cinfo, other_notional):
     lev_risk = math.floor(MAX_LOSS_PCT / 100 * eq / (margin * stop_frac))
     lev = min(lev_liq, lev_risk, int(cinfo.get("maxLeverage") or 1))
     if lev < 1:
-        return 0, 0, 0, (f"no leverage keeps liquidation at 0 (equity ${eq:,.2f}, open positions ${other_notional:,.2f}, margin ${margin:,.2f})" if lev_liq < 1 else f"the SL is {stop_frac * 100:.0f}% away, too far for a {MAX_LOSS_PCT:g}% loss limit")
+        return 0, 0, 0, (f"no leverage keeps liquidation at 0 (equity ${eq:,.2f}, bot positions ${other_notional:,.2f}, margin ${margin:,.2f})" if lev_liq < 1 else f"the SL is {stop_frac * 100:.0f}% away, too far for a {MAX_LOSS_PCT:g}% loss limit")
     size = float(cinfo["contractSize"])
     vol = to_unit(margin * lev / (size * price), cinfo.get("volUnit") or 1)
     if vol < float(cinfo.get("minVol") or 1):
@@ -210,7 +210,9 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist):
     cinfo, price = cinfo_all[sym], prices[sym]
     r = t["entry"] - t["stop"]
     tp1, tp2, sl = t["entry"] + 0.5 * r, t["entry"] + r, t["stop"]
-    other = sum(notional(p, cinfo_all, prices) for p in pos.values())
+    # Owner's choice: only the bot's own open positions count toward the liquidation-0 room; manual positions are ignored.
+    bot_pids = {t.get("position_id") for t in b["trades"].values() if t.get("status") == "open"}
+    other = sum(notional(p, cinfo_all, prices) for pid, p in pos.items() if pid in bot_pids)
     lev, vol, value, why = sizing(eq, price, sl, cinfo, other)
     if why:                                                     # not permanent: tried again while the signal is fresh; message sent once per reason
         skips = b.setdefault("skips", {})
@@ -441,7 +443,8 @@ def run_confirmed(token):
             else:
                 lev, c, price = int(p["leverage"]), cinfo[sym], prices[sym]
                 margin = eq * MARGIN_PCT / 100
-                other = sum(notional(q, cinfo, prices) for q in pos.values())
+                bot_pids = {t.get("position_id") for t in b["trades"].values() if t.get("status") == "open"}
+                other = sum(notional(q, cinfo, prices) for qid, q in pos.items() if qid in bot_pids)   # manual positions ignored
                 if other + margin * lev > LIQ_BUFFER * eq:
                     out.append(f"⛔ {sym.replace('_', ' ')}: not added, liquidation would no longer be 0")
                     continue
