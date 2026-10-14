@@ -27,14 +27,22 @@
    "key": "FIL:1791676800000",
    "coin": "FIL",
    "symbol": "FILECOIN_USDT",
-   "status": "opening",
+   "status": "closed",
    "time": 1791987167636,
    "leverage": 50,
    "vol": 280.0,
    "sl": 0.9361,
    "tp1": 1.3749999999999998,
    "tp2": 1.5212999999999997,
-   "entry_signal": 1.2287
+   "entry_signal": 1.2287,
+   "position_id": 1520224007,
+   "entry": 1.0984,
+   "last_hold": 280.0,
+   "order_id": "865355251409484288",
+   "split": true,
+   "result": "no SL possible, closed",
+   "pnl": 0.0,
+   "closed": 1791987170591
   }
  },
  "flags": {
