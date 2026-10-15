@@ -346,6 +346,7 @@
   "dip:SOXX:1791936000000": "the order would be $3.66, below this contract's minimum of about $5.10",
   "dip:ETN:1791936000000": "the order would be $1.47, below this contract's minimum of about $4.00",
   "dip:BE:1791936000000": "the order would be $1.47, below this contract's minimum of about $2.33",
-  "MSFT:1791": "the order would be $4.69, below this contract's minimum of about $5.41"
+  "MSFT:1791": "the order would be $4.69, below this contract's minimum of about $5.41",
+  "dip:SWKS:1791504000000": "no leverage keeps liquidation at 0 (equity $7.32, bot positions $6.54, margin $0.07)"
  }
 }
