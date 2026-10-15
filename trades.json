@@ -86,7 +86,24 @@
    "last_hold": 2.0,
    "split": true,
    "pnl": 0.3232,
-   "tp1_hit": true
+   "tp1_hit": true,
+   "name": "PYTH USDT"
+  },
+  "AAPL:1792": {
+   "key": "AAPL:1792",
+   "coin": "AAPL",
+   "symbol": "AAPLSTOCK_USDT",
+   "kind": "stock",
+   "name": "AAPLSTOCK USDT (AAPL, stock breakout)",
+   "day": 1792,
+   "status": "opening",
+   "time": 1792087007270,
+   "leverage": 64,
+   "vol": 1.0,
+   "sl": 329.3999938964844,
+   "tp1": 351.80999755859375,
+   "tp2": 359.2799987792969,
+   "entry_signal": 344.3399963378906
   }
  },
  "flags": {
