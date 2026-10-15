@@ -275,6 +275,22 @@
    "tp2": 549.8955,
    "entry_signal": 507.93,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:SMCI:1791936000000": {
+   "key": "dip:SMCI:1791936000000",
+   "coin": "SMCI",
+   "symbol": "SMCISTOCK_USDT",
+   "kind": "dip",
+   "name": "SMCISTOCK USDT (SMCI, stock dip)",
+   "day": 1791936000000,
+   "status": "opening",
+   "time": 1792087069631,
+   "leverage": 50,
+   "vol": 1.0,
+   "sl": 28.673,
+   "tp1": 37.9121,
+   "tp2": 39.3335,
+   "entry_signal": 35.78
   }
  },
  "flags": {
