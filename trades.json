@@ -215,14 +215,15 @@
    "kind": "stock",
    "name": "WMTSTOCK USDT (WMT, stock breakout)",
    "day": 1792,
-   "status": "opening",
+   "status": "failed",
    "time": 1792087048148,
    "leverage": 64,
    "vol": 3.0,
    "sl": 103.91999816894531,
    "tp1": 125.89500045776367,
    "tp2": 133.22000122070312,
-   "entry_signal": 118.56999969482422
+   "entry_signal": 118.56999969482422,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
