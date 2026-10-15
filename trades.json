@@ -198,14 +198,15 @@
    "kind": "stock",
    "name": "VSTOCK USDT (V, stock breakout)",
    "day": 1792,
-   "status": "opening",
+   "status": "failed",
    "time": 1792087043319,
    "leverage": 64,
    "vol": 1.0,
    "sl": 359.3299865722656,
    "tp1": 420.87498474121094,
    "tp2": 441.3899841308594,
-   "entry_signal": 400.3599853515625
+   "entry_signal": 400.3599853515625,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
