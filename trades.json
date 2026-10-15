@@ -69,14 +69,22 @@
    "key": "PYTH:1791936000000",
    "coin": "PYTH",
    "symbol": "PYTH_USDT",
-   "status": "opening",
+   "status": "open",
    "time": 1792023080220,
    "leverage": 90,
    "vol": 6.0,
    "sl": 0.06832,
    "tp1": 0.09355,
    "tp2": 0.10195999999999998,
-   "entry_signal": 0.08514
+   "entry_signal": 0.08514,
+   "order_ids": [
+    "865505879036668416",
+    "865505881448397312"
+   ],
+   "position_id": 1520511262,
+   "entry": 0.08547,
+   "last_hold": 6.0,
+   "split": true
   }
  },
  "flags": {
