@@ -258,6 +258,22 @@
    "tp2": 109.10425000000001,
    "entry_signal": 101.08,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:DELL:1791936000000": {
+   "key": "dip:DELL:1791936000000",
+   "coin": "DELL",
+   "symbol": "DELLSTOCK_USDT",
+   "kind": "dip",
+   "name": "DELLSTOCK USDT (DELL, stock dip)",
+   "day": 1791936000000,
+   "status": "opening",
+   "time": 1792087064632,
+   "leverage": 64,
+   "vol": 1.0,
+   "sl": 423.999,
+   "tp1": 533.1093,
+   "tp2": 549.8955,
+   "entry_signal": 507.93
   }
  },
  "flags": {
