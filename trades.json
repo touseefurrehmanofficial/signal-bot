@@ -309,6 +309,22 @@
    "tp2": 195.71998596191406,
    "entry_signal": 177.00999450683594,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:EWY:1791763200000": {
+   "key": "dip:EWY:1791763200000",
+   "coin": "EWY",
+   "symbol": "EWY_USDT",
+   "kind": "dip",
+   "name": "EWY USDT (EWY, stock dip)",
+   "day": 1791763200000,
+   "status": "opening",
+   "time": 1792087084804,
+   "leverage": 64,
+   "vol": 3.0,
+   "sl": 153.273,
+   "tp1": 175.16110000000003,
+   "tp2": 178.5285,
+   "entry_signal": 170.11
   }
  },
  "flags": {
