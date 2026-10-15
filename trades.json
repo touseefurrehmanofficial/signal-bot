@@ -345,7 +345,7 @@
   "NEAR:1791676800000": "no leverage keeps liquidation at 0 (equity $6.17, open positions $35.16, margin $0.06)",
   "dip:SOXX:1791936000000": "the order would be $0.07, below this contract's minimum of about $5.07",
   "dip:ETN:1791936000000": "the order would be $0.07, below this contract's minimum of about $3.98",
-  "dip:BE:1791936000000": "no leverage keeps liquidation at 0 (equity $7.32, bot positions $6.54, margin $0.07)",
+  "dip:BE:1791936000000": "the order would be $0.07, below this contract's minimum of about $2.31",
   "MSFT:1791": "no leverage keeps liquidation at 0 (equity $7.33, bot positions $6.54, margin $0.07)",
   "dip:SWKS:1791504000000": "no leverage keeps liquidation at 0 (equity $7.32, bot positions $6.54, margin $0.07)",
   "AAPL:1791": "no leverage keeps liquidation at 0 (equity $7.23, bot positions $6.49, margin $0.07)"
