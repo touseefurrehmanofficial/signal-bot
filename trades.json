@@ -96,14 +96,15 @@
    "kind": "stock",
    "name": "AAPLSTOCK USDT (AAPL, stock breakout)",
    "day": 1792,
-   "status": "opening",
+   "status": "failed",
    "time": 1792087007270,
    "leverage": 64,
    "vol": 1.0,
    "sl": 329.3999938964844,
    "tp1": 351.80999755859375,
    "tp2": 359.2799987792969,
-   "entry_signal": 344.3399963378906
+   "entry_signal": 344.3399963378906,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
