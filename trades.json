@@ -224,6 +224,22 @@
    "tp2": 133.22000122070312,
    "entry_signal": 118.56999969482422,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:MU:1791936000000": {
+   "key": "dip:MU:1791936000000",
+   "coin": "MU",
+   "symbol": "MUSTOCK_USD1",
+   "kind": "dip",
+   "name": "MUSTOCK USD1 (MU, stock dip)",
+   "day": 1791936000000,
+   "status": "opening",
+   "time": 1792087053411,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 777.219,
+   "tp1": 955.2033,
+   "tp2": 982.5854999999999,
+   "entry_signal": 914.13
   }
  },
  "flags": {
