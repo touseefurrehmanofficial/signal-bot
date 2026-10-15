@@ -205,11 +205,17 @@ def wait_fill(order_id):
     return api_get(f"/api/v1/private/order/get/{order_id}")
 
 
-def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist):
-    b, sym = load_book(), sym_of(coin)
+def label(coin, sym, kind):
+    return f"{coin} USDT" if kind == "crypto" else f"{sym.replace('_', ' ')} ({coin}, {'stock dip' if kind == 'dip' else 'stock breakout'})"
+
+
+def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None, kind="crypto"):
+    b, sym = load_book(), sym or sym_of(coin)
+    name = label(coin, sym, kind)
     cinfo, price = cinfo_all[sym], prices[sym]
     r = t["entry"] - t["stop"]
-    tp1, tp2, sl = t["entry"] + 0.5 * r, t["entry"] + r, t["stop"]
+    k1, k2 = (0.3, 0.5) if kind == "dip" else (0.5, 1.0)
+    tp1, tp2, sl = t["entry"] + k1 * r, t["entry"] + k2 * r, t["stop"]
     # Owner's choice: only the bot's own open positions count toward the liquidation-0 room; manual positions are ignored.
     bot_pids = {t.get("position_id") for t in b["trades"].values() if t.get("status") == "open"}
     other = sum(notional(p, cinfo_all, prices) for pid, p in pos.items() if pid in bot_pids)
@@ -220,9 +226,10 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist):
         if (skips.get(key) or "").split(" (")[0].split(",")[0] != kind:
             skips[key] = why
             persist()
-            send(f"⏭ {coin} USDT signal not taken (yet)\nReason: {why}.\nThe bot keeps checking while the signal is fresh.")
+            if kind == "crypto":                                # stock signals come in bursts: their skips are only listed in /account
+                send(f"⏭ {name} signal not taken (yet)\nReason: {why}.\nThe bot keeps checking while the signal is fresh.")
         return
-    b["trades"][key] = trade = {"key": key, "coin": coin, "symbol": sym, "status": "opening", "time": int(time.time() * 1000), "leverage": lev, "vol": vol,
+    b["trades"][key] = trade = {"key": key, "coin": coin, "symbol": sym, "kind": kind, "name": name, "day": t["day"], "status": "opening", "time": int(time.time() * 1000), "leverage": lev, "vol": vol,
                                 "sl": sl, "tp1": tp1, "tp2": tp2, "entry_signal": t["entry"]}
     persist()                                                   # recorded before ordering, so a restart can never order twice
     try:
@@ -253,7 +260,7 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist):
         if filled <= 0:
             trade.update(status="failed", reason=str(err) if err else "entry order not filled")
             persist()
-            send(f"⚠️ {coin} USDT: the entry order was not accepted ({err or 'not filled'}). Nothing is open.")
+            send(f"⚠️ {name}: the entry order was not accepted ({err or 'not filled'}). Nothing is open.")
             return
         avg = cost / filled
         trade.update(status="open", position_id=pid, entry=avg, vol=filled, last_hold=filled, split=split and filled > vol_a)
@@ -279,28 +286,47 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist):
                     pass
                 trade.update(status="closed", result="no SL possible, closed", pnl=0.0, closed=int(time.time() * 1000))
                 persist()
-                send(f"⚠️ {coin} USDT: no stop loss could be placed ({e}), so the position was closed at once.")
+                send(f"⚠️ {name}: no stop loss could be placed ({e}), so the position was closed at once.")
                 return
         if err:                                                 # the 20% leg was refused: the 80% leg stands with its own TP1 and SL
-            send(f"ℹ️ {coin} USDT: the TP2 part was not opened ({err}); the trade runs with TP1 only.")
+            send(f"ℹ️ {name}: the TP2 part was not opened ({err}); the trade runs with TP1 only.")
         margin = value / lev
         loss_at_sl = (avg - sl) / avg * value
-        send(f"\U0001F7E2 TRADE OPENED — {coin} USDT\n\nDirection: LONG · Cross {lev}X\nEntry: {avg:g}\nSize: {filled:g} contracts ≈ ${value:,.2f} (margin ${margin:,.2f})\n"
+        send(f"\U0001F7E2 TRADE OPENED — {name}\n\nDirection: LONG · Cross {lev}X\nEntry: {avg:g}\nSize: {filled:g} contracts ≈ ${value:,.2f} (margin ${margin:,.2f})\n"
              + (f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} (80%)\n\U0001F3AF TP2: {to_unit(tp2, cinfo['priceUnit'], ROUND_HALF_UP):g} (20%)\n" if trade["split"]
                 else f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} (100%)\n")
              + f"\U0001F6E1 SL: {to_unit(sl, cinfo['priceUnit'], ROUND_HALF_UP):g} (on the exchange)\nLoss if SL is hit ≈ ${loss_at_sl:,.2f} · Liquidation: none\n\n" + stats_line(eq))
     except ApiError as e:
         trade.update(status="failed", reason=str(e))
         persist()
-        send(f"⚠️ {coin} USDT: could not open the trade ({e}).")
+        send(f"⚠️ {name}: could not open the trade ({e}).")
 
 
-def follow(eq, pos, prices, send, persist):
-    """Detect TP / SL fills on the bot's open trades."""
+def follow(eq, pos, prices, send, persist, state=None):
+    """Detect TP / SL fills on the bot's open trades, and close dip trades when their daily exit rule fires."""
     b = load_book()
     for t in [x for x in b["trades"].values() if x["status"] == "open"]:
         p = pos.get(t["position_id"])
         hold = float(p["holdVol"]) if p else 0.0
+        t.setdefault("name", f"{t['coin']} USDT")
+        d = ((state or {}).get("dips") or {}).get(t["coin"], {}).get("last") if t.get("kind") == "dip" else None
+        if d and d.get("day") == t.get("day") and d["status"] in ("exited", "time limit") and hold > 0 and not t.get("manual_close"):
+            try:
+                market_close(t["position_id"], t["symbol"], hold, prices.get(t["symbol"], t["entry"]))
+                t["dip_exit"] = d["status"]
+            except ApiError as e:
+                send(f"⚠️ {t['name']}: the daily exit could not be sent ({e}). It will be tried again.")
+            continue
+        if t.get("dip_exit") and hold < t["last_hold"]:          # the bot's own daily exit went through
+            price = prices.get(t["symbol"], 0)
+            t["pnl"] = round((t.get("pnl") or 0) + (price - t["entry"]) * (t["last_hold"] - hold) * float(contracts()[t["symbol"]]["contractSize"]), 4)
+            t["last_hold"] = hold
+            if hold <= 0:
+                t.update(status="closed", closed=int(time.time() * 1000), result="exit")
+                why = "closed above the 20-day average" if t["dip_exit"] == "exited" else "20-trading-day limit reached"
+                send(f"\U0001F3C1 {t['name']} EXIT {'✅' if t['pnl'] > 0 else ''}\nPlan finished: {why}. Result ≈ {t['pnl']:+.2f}$\n\n" + stats_line(eq))
+            persist()
+            continue
         if hold >= t["last_hold"] - 1e-12:
             continue
         price = prices.get(t["symbol"], 0)
@@ -309,7 +335,7 @@ def follow(eq, pos, prices, send, persist):
             t["pnl"] = round((t.get("pnl") or 0) + (price - t["entry"]) * part * float(contracts()[t["symbol"]]["contractSize"]), 4)
             t.update(last_hold=hold, status="closed" if hold <= 0 else "open", closed=int(time.time() * 1000), result="closed by you")
             if hold <= 0:
-                send(f"✖ {t['coin']} USDT closed by you · result ≈ {t['pnl']:+.2f}$\n\n" + stats_line(eq))
+                send(f"✖ {t['name']} closed by you · result ≈ {t['pnl']:+.2f}$\n\n" + stats_line(eq))
             persist()
             continue
         hit_tp = price >= (t["tp1"] + t["sl"]) / 2                # which side of the range price is on when the size dropped
@@ -319,30 +345,34 @@ def follow(eq, pos, prices, send, persist):
         if hit_tp and not t.get("tp1_hit"):
             t["tp1_hit"] = True
             if hold > 0:
-                send(f"\U0001F3AF {t['coin']} USDT TP 1 HIT SUCCESSFULLY ✅\U0001F525\n80% closed at about {t['tp1']:g} · profit ≈ {t['pnl']:+.2f}$\n"
+                send(f"\U0001F3AF {t['name']} TP 1 HIT SUCCESSFULLY ✅\U0001F525\n80% closed at about {t['tp1']:g} · profit ≈ {t['pnl']:+.2f}$\n"
                      f"SL still {t['sl']:g} for the rest. Stay focused for TP 2 \U0001F680\n\n" + stats_line(eq))
         elif hit_tp:
             t["tp2_hit"] = True
         if hold <= 0:
             t.update(status="closed", closed=int(time.time() * 1000), result=("TP2" if t.get("tp2_hit") else "TP1") if hit_tp else "SL")
             if hit_tp:
-                send(f"\U0001F3AF {t['coin']} USDT {'TP 2' if t.get('tp2_hit') else 'TP 1'} HIT SUCCESSFULLY ✅\U0001F525\nTrade complete \U0001F3C6 · profit ≈ {t['pnl']:+.2f}$\n\n" + stats_line(eq))
+                send(f"\U0001F3AF {t['name']} {'TP 2' if t.get('tp2_hit') else 'TP 1'} HIT SUCCESSFULLY ✅\U0001F525\nTrade complete \U0001F3C6 · profit ≈ {t['pnl']:+.2f}$\n\n" + stats_line(eq))
             else:
-                send(f"\U0001F6D1 {t['coin']} USDT SL HIT ❌\nLoss ≈ {t['pnl']:+.2f}$, as planned.\n\n" + stats_line(eq))
+                send(f"\U0001F6D1 {t['name']} SL HIT ❌\nLoss ≈ {t['pnl']:+.2f}$, as planned.\n\n" + stats_line(eq))
         persist()
 
 
 def candidates(state, pos_symbols):
-    b, out = load_book(), []
+    """(key, name, plan, kind, contract symbol) for every signal that can still be entered.
+    kind: "crypto" (breakout), "stock" (breakout on a US stock MEXC lists), "dip" (dip rule on a US stock MEXC lists)."""
+    b, out, mexc = load_book(), [], state.get("mexc") or {}
+    usable = lambda t: t and t["status"] == "open" and t["age_days"] <= SIGNAL_DAYS and not t.get("hits") and not t.get("sl_t")
     for c, p in (state.get("coins") or {}).items():
-        t = p.get("fresh")
-        if p.get("market") == "stock" or not t or t["status"] != "open" or t["age_days"] > SIGNAL_DAYS or t.get("hits") or t.get("sl_t"):
-            continue
-        key = f"{c}:{t['day']}"
-        if key in b["trades"] or sym_of(c) in pos_symbols:
-            continue
-        out.append((key, c, t))
-    return sorted(out, key=lambda x: (x[2]["age_days"], x[2]["risk_pct"]))
+        t, stock = p.get("fresh"), p.get("market") == "stock"
+        if usable(t) and (not stock or c in mexc):
+            out.append((f"{c}:{t['day']}", c, t, "stock" if stock else "crypto", mexc[c] if stock else sym_of(c)))
+    for c, p in (state.get("dips") or {}).items():
+        t = p.get("last")
+        if usable(t) and c in mexc:
+            out.append((f"dip:{c}:{t['day']}", c, t, "dip", mexc[c]))
+    out = [x for x in out if x[0] not in b["trades"] and x[4] not in pos_symbols]
+    return sorted(out, key=lambda x: (x[3] != "crypto", x[2]["age_days"], x[2]["risk_pct"]))
 
 
 def tick(state, send, persist):
@@ -359,9 +389,9 @@ def tick(state, send, persist):
             b["flags"]["key_seen"] = int(time.time() * 1000)
             persist()
             send(f"✅ MEXC futures connected\nFutures balance: ${eq:,.2f}\nPosition mode: {'Hedge' if mode == 1 else 'One-way'}\nMax open trades: {b['max_trades']}\n"
-                 f"Margin per trade: {MARGIN_PCT:g}% · Max loss per trade: {MAX_LOSS_PCT:g}%\nThe bot will open trades on new crypto signals from now on.")
+                 f"Margin per trade: {MARGIN_PCT:g}% · Max loss per trade: {MAX_LOSS_PCT:g}%\nThe bot will open trades on new crypto signals, and on stock signals for stocks MEXC lists, from now on.")
         cinfo, prices, pos = contracts(), tickers(), positions()
-        follow(eq, pos, prices, send, persist)
+        follow(eq, pos, prices, send, persist, state)
         if b["paused"]:
             return
         if eq < MIN_BALANCE:
@@ -379,16 +409,17 @@ def tick(state, send, persist):
             persist()
             send("\U0001F511 Your MEXC API key is about 80 days old. Keys without a linked IP expire after 90 days: renew it under API Management → My API Key → Renew.")
         open_syms = {p["symbol"] for p in pos.values()}
-        for key, coin, t in candidates(state, open_syms):
-            if len(pos) >= b["max_trades"]:
+        for key, coin, t, kind, sym in candidates(state, open_syms):
+            if b["max_trades"] and len(pos) >= b["max_trades"]:
                 break
-            sym = sym_of(coin)
+            if sym in {p["symbol"] for p in pos.values()}:
+                continue
             if sym not in cinfo or not cinfo[sym].get("apiAllowed") or sym not in prices:
                 continue
             price = prices[sym]
             if not (t["stop"] < price <= t["entry"] + 0.25 * (t["entry"] - t["stop"])):
                 continue                                        # outside the entry zone right now; checked again next time
-            open_trade(key, coin, t, eq, cinfo, prices, pos, send, persist)
+            open_trade(key, coin, t, eq, cinfo, prices, pos, send, persist, sym, kind)
             pos = positions()
             eq, _ = equity()
     except ApiError as e:
