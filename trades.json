@@ -139,6 +139,22 @@
    "tp2": 32.0,
    "entry_signal": 29.704999923706055,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "DIS:1792": {
+   "key": "DIS:1792",
+   "coin": "DIS",
+   "symbol": "DISSTOCK_USDT",
+   "kind": "stock",
+   "name": "DISSTOCK USDT (DIS, stock breakout)",
+   "day": 1792,
+   "status": "opening",
+   "time": 1792087024043,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 101.33000183105469,
+   "tp1": 116.35250091552734,
+   "tp2": 121.36000061035156,
+   "entry_signal": 111.34500122070312
   }
  },
  "flags": {
