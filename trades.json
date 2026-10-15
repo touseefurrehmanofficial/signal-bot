@@ -83,8 +83,10 @@
    ],
    "position_id": 1520511262,
    "entry": 0.08547,
-   "last_hold": 6.0,
-   "split": true
+   "last_hold": 2.0,
+   "split": true,
+   "pnl": 0.3232,
+   "tp1_hit": true
   }
  },
  "flags": {
