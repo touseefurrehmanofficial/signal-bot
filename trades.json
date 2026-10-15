@@ -317,14 +317,22 @@
    "kind": "dip",
    "name": "EWY USDT (EWY, stock dip)",
    "day": 1791763200000,
-   "status": "opening",
+   "status": "open",
    "time": 1792087084804,
    "leverage": 64,
    "vol": 3.0,
    "sl": 153.273,
    "tp1": 175.16110000000003,
    "tp2": 178.5285,
-   "entry_signal": 170.11
+   "entry_signal": 170.11,
+   "order_ids": [
+    "865774334975732416",
+    "865774336976418496"
+   ],
+   "position_id": 1521163579,
+   "entry": 155.55,
+   "last_hold": 3.0,
+   "split": true
   }
  },
  "flags": {
