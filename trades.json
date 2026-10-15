@@ -64,6 +64,19 @@
    "result": "no SL possible, closed",
    "pnl": 0.0,
    "closed": 1791987175840
+  },
+  "PYTH:1791936000000": {
+   "key": "PYTH:1791936000000",
+   "coin": "PYTH",
+   "symbol": "PYTH_USDT",
+   "status": "opening",
+   "time": 1792023080220,
+   "leverage": 90,
+   "vol": 6.0,
+   "sl": 0.06832,
+   "tp1": 0.09355,
+   "tp2": 0.10195999999999998,
+   "entry_signal": 0.08514
   }
  },
  "flags": {
