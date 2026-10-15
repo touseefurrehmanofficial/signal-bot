@@ -122,6 +122,22 @@
    "tp2": 99.3102035522461,
    "entry_signal": 92.4801025390625,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "PFE:1792": {
+   "key": "PFE:1792",
+   "coin": "PFE",
+   "symbol": "PFESTOCK_USDT",
+   "kind": "stock",
+   "name": "PFESTOCK USDT (PFE, stock breakout)",
+   "day": 1792,
+   "status": "opening",
+   "time": 1792087016917,
+   "leverage": 20,
+   "vol": 4.0,
+   "sl": 27.40999984741211,
+   "tp1": 30.852499961853027,
+   "tp2": 32.0,
+   "entry_signal": 29.704999923706055
   }
  },
  "flags": {
