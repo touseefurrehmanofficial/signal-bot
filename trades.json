@@ -333,6 +333,22 @@
    "entry": 155.55,
    "last_hold": 3.0,
    "split": true
+  },
+  "dip:SWKS:1791504000000": {
+   "key": "dip:SWKS:1791504000000",
+   "coin": "SWKS",
+   "symbol": "SWKSSTOCK_USDT",
+   "kind": "dip",
+   "name": "SWKSSTOCK USDT (SWKS, stock dip)",
+   "day": 1791504000000,
+   "status": "opening",
+   "time": 1792090283398,
+   "leverage": 2,
+   "vol": 1.0,
+   "sl": 60.9165,
+   "tp1": 80.98004999999999,
+   "tp2": 84.06674999999998,
+   "entry_signal": 76.35
   }
  },
  "flags": {
