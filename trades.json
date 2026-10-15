@@ -249,14 +249,15 @@
    "kind": "dip",
    "name": "ROBINHOOD USDT (HOOD, stock dip)",
    "day": 1791936000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792087059673,
    "leverage": 64,
    "vol": 4.0,
    "sl": 85.0315,
    "tp1": 105.89455,
    "tp2": 109.10425000000001,
-   "entry_signal": 101.08
+   "entry_signal": 101.08,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
