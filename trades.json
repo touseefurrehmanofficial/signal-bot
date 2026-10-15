@@ -156,6 +156,22 @@
    "tp2": 121.36000061035156,
    "entry_signal": 111.34500122070312,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "COST:1792": {
+   "key": "COST:1792",
+   "coin": "COST",
+   "symbol": "COSTSTOCK_USDT",
+   "kind": "stock",
+   "name": "COSTSTOCK USDT (COST, stock breakout)",
+   "day": 1792,
+   "status": "opening",
+   "time": 1792087028922,
+   "leverage": 64,
+   "vol": 4.0,
+   "sl": 893.9299926757812,
+   "tp1": 1034.2715454101562,
+   "tp2": 1081.0520629882812,
+   "entry_signal": 987.4910278320312
   }
  },
  "flags": {
