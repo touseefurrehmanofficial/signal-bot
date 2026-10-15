@@ -173,6 +173,22 @@
    "tp2": 1081.0520629882812,
    "entry_signal": 987.4910278320312,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:DAL:1791936000000": {
+   "key": "dip:DAL:1791936000000",
+   "coin": "DAL",
+   "symbol": "DALSTOCK_USDT",
+   "kind": "dip",
+   "name": "DALSTOCK USDT (DAL, stock dip)",
+   "day": 1791936000000,
+   "status": "opening",
+   "time": 1792087035797,
+   "leverage": 20,
+   "vol": 18.0,
+   "sl": 69.264,
+   "tp1": 78.86580000000001,
+   "tp2": 80.34300000000002,
+   "entry_signal": 76.65
   }
  },
  "flags": {
