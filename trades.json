@@ -566,6 +566,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.86",
    "time": 1792150553400
+  },
+  "dip:SOXX:1791936000000": {
+   "key": "dip:SOXX:1791936000000",
+   "coin": "SOXX",
+   "symbol": "SOXX_USDT",
+   "kind": "dip",
+   "name": "SOXX USDT (SOXX, stock dip)",
+   "day": 1791936000000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 50X the order would be below its minimum of about $5.09",
+   "time": 1792150556241
   }
  },
  "flags": {
