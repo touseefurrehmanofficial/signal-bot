@@ -317,7 +317,7 @@
    "kind": "dip",
    "name": "EWY USDT (EWY, stock dip)",
    "day": 1791763200000,
-   "status": "open",
+   "status": "closed",
    "time": 1792087084804,
    "leverage": 64,
    "vol": 3.0,
@@ -331,8 +331,11 @@
    ],
    "position_id": 1521163579,
    "entry": 155.55,
-   "last_hold": 3.0,
-   "split": true
+   "last_hold": 0.0,
+   "split": true,
+   "pnl": -0.0683,
+   "closed": 1792110139777,
+   "result": "SL"
   },
   "dip:SWKS:1791504000000": {
    "key": "dip:SWKS:1791504000000",
