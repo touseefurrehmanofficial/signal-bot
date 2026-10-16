@@ -43,6 +43,7 @@ MAX_LOSS_PCT = float(os.environ.get("MAX_LOSS_PCT", "1"))
 MIN_BALANCE = float(os.environ.get("MIN_BALANCE", "1"))
 LIQ_BUFFER = 0.9          # total open notional kept under 90% of equity: no liquidation price, with room for fees and funding
 SL_LIMIT_OFFSET = 0.005   # SL limit order price 0.5% under the SL trigger
+BE_FEES = 0.0016          # after TP1 the stop moves to entry + 0.16% (taker fee in and out), so the rest closes at about $0
 TP1_SHARE = 0.8
 SIGNAL_DAYS = 3
 ALIAS = {"FIL": "FILECOIN"}
@@ -185,6 +186,33 @@ def place_tpsl(pid, vol, tp, sl, cinfo):
             "takeProfitPrice": to_unit(tp, unit, ROUND_HALF_UP), "takeProfitType": 1, "takeProfitOrderPrice": to_unit(tp, unit, ROUND_HALF_UP),
             "stopLossPrice": to_unit(sl, unit, ROUND_HALF_UP), "stopLossType": 1, "stopLossOrderPrice": to_unit(sl * (1 - SL_LIMIT_OFFSET), unit)}
     return api_post("/api/v1/private/stoporder/place", body)
+
+
+def move_sl_to_breakeven(t):
+    """After TP1: stop loss of what is left goes to entry + fees. Returns the new stop price."""
+    cinfo = contracts()[t["symbol"]]
+    be = to_unit(t["entry"] * (1 + BE_FEES), cinfo["priceUnit"], ROUND_HALF_UP)
+    found = 0
+    for o in tpsl_orders(t["symbol"]):
+        if str(o.get("positionId")) != str(t["position_id"]) or o.get("isFinished") or int(o.get("state") or 1) != 1:
+            continue
+        found += 1
+        if float(o.get("stopLossPrice") or 0) >= be:
+            continue
+        tp = float(o.get("takeProfitPrice") or 0)
+        body = {"stopPlanOrderId": o["id"], "stopLossPrice": be, "lossTrend": 1}
+        if tp > 0:
+            body.update(takeProfitPrice=tp, profitTrend=1)
+        try:
+            api_post("/api/v1/private/stoporder/change_plan_price", body)
+        except ApiError:
+            if str(o.get("orderId") or "0") == "0":
+                raise
+            body.pop("stopPlanOrderId")                         # a TP/SL attached to an order is changed through that order
+            api_post("/api/v1/private/stoporder/change_price", dict(body, orderId=o["orderId"]))
+    if not found:
+        raise ApiError("no live TP/SL order found for the position")
+    return be
 
 
 def market_close(pid, symbol, vol, price):
@@ -343,20 +371,28 @@ def follow(eq, pos, prices, send, persist, state=None):
                 send(f"✖ {t['name']} closed by you · result ≈ {t['pnl']:+.2f}$\n\n" + stats_line(eq))
             persist()
             continue
-        hit_tp = price >= (t["tp1"] + t["sl"]) / 2                # which side of the range price is on when the size dropped
+        hit_tp = price >= ((t["tp2"] if t.get("be_moved") else t["tp1"]) + t["sl"]) / 2   # which side of the range price is on when the size dropped
         gain = (t["tp2"] if t.get("tp1_hit") else t["tp1"]) if hit_tp else t["sl"]
         t["pnl"] = round((t.get("pnl") or 0) + (gain - t["entry"]) * part * float(contracts()[t["symbol"]]["contractSize"]), 4)
         t["last_hold"] = hold
         if hit_tp and not t.get("tp1_hit"):
             t["tp1_hit"] = True
             if hold > 0:
+                try:
+                    t["sl"], t["be_moved"] = move_sl_to_breakeven(t), True
+                    sl_text = f"\U0001F512 SL moved to breakeven {t['sl']:g} for the rest (a fast gap through it can still cost a little)."
+                except ApiError as e:
+                    sl_text = f"\u26A0\uFE0F Could not move the SL to breakeven yet ({e}); retrying. SL is still {t['sl']:g}."
                 send(f"\U0001F3AF {t['name']} TP 1 HIT SUCCESSFULLY ✅\U0001F525\n80% closed at about {t['tp1']:g} · profit ≈ {t['pnl']:+.2f}$\n"
-                     f"SL still {t['sl']:g} for the rest. Stay focused for TP 2 \U0001F680\n\n" + stats_line(eq))
+                     f"{sl_text}\nStay focused for TP 2 \U0001F680\n\n" + stats_line(eq))
         elif hit_tp:
             t["tp2_hit"] = True
         if hold <= 0:
-            t.update(status="closed", closed=int(time.time() * 1000), result=("TP2" if t.get("tp2_hit") else "TP1") if hit_tp else "SL")
-            if hit_tp:
+            t.update(status="closed", closed=int(time.time() * 1000),
+                     result=("TP2" if t.get("tp2_hit") else "TP1") if hit_tp else ("TP1 + breakeven" if t.get("be_moved") else "SL"))
+            if not hit_tp and t.get("be_moved"):
+                send(f"\U0001F512 {t['name']} closed at breakeven after TP 1 \u2705\nTrade complete \u00B7 total profit \u2248 {t['pnl']:+.2f}$\n\n" + stats_line(eq))
+            elif hit_tp:
                 send(f"\U0001F3AF {t['name']} {'TP 2' if t.get('tp2_hit') else 'TP 1'} HIT SUCCESSFULLY ✅\U0001F525\nTrade complete \U0001F3C6 · profit ≈ {t['pnl']:+.2f}$\n\n" + stats_line(eq))
             else:
                 send(f"\U0001F6D1 {t['name']} SL HIT ❌\nLoss ≈ {t['pnl']:+.2f}$, as planned.\n\n" + stats_line(eq))
@@ -397,6 +433,14 @@ def tick(state, send, persist):
             send(f"✅ MEXC futures connected\nFutures balance: ${eq:,.2f}\nPosition mode: {'Hedge' if mode == 1 else 'One-way'}\nMax open trades: {b['max_trades']}\n"
                  f"Margin per trade: {MARGIN_PCT:g}% · Max loss per trade: {MAX_LOSS_PCT:g}%\nThe bot will open trades on new crypto signals, and on stock signals for stocks MEXC lists, from now on.")
         cinfo, prices, pos = contracts(), tickers(), positions()
+        for t in [x for x in b["trades"].values() if x["status"] == "open" and x.get("tp1_hit") and not x.get("be_moved")]:
+            if pos.get(t["position_id"]):
+                try:
+                    t["sl"], t["be_moved"] = move_sl_to_breakeven(t), True
+                    persist()
+                    send(f"\U0001F512 {t.get('name', t['coin'])}: SL moved to breakeven {t['sl']:g} (TP 1 was already hit).")
+                except ApiError:
+                    pass
         follow(eq, pos, prices, send, persist, state)
         if b["paused"]:
             return
