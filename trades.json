@@ -588,6 +588,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.03",
    "time": 1792150559113
+  },
+  "dip:BE:1791936000000": {
+   "key": "dip:BE:1791936000000",
+   "coin": "BE",
+   "symbol": "BESTOCK_USDT",
+   "kind": "dip",
+   "name": "BESTOCK USDT (BE, stock dip)",
+   "day": 1791936000000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.33",
+   "time": 1792150561938
   }
  },
  "flags": {
