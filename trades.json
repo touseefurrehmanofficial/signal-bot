@@ -487,14 +487,22 @@
    "kind": "dip",
    "name": "SMH USDT (SMH, stock dip)",
    "day": 1792022400000,
-   "status": "opening",
+   "status": "open",
    "time": 1792124612947,
    "leverage": 20,
    "vol": 2.0,
    "sl": 511.647,
    "tp1": 572.9979000000001,
    "tp2": 582.4365,
-   "entry_signal": 558.84
+   "entry_signal": 558.84,
+   "order_ids": [
+    "865931739362982592",
+    "865931741866977984"
+   ],
+   "position_id": 1521384965,
+   "entry": 561.56,
+   "last_hold": 2.0,
+   "split": true
   }
  },
  "flags": {
