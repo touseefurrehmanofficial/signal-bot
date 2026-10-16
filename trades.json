@@ -69,7 +69,7 @@
    "key": "PYTH:1791936000000",
    "coin": "PYTH",
    "symbol": "PYTH_USDT",
-   "status": "open",
+   "status": "closed",
    "time": 1792023080220,
    "leverage": 90,
    "vol": 6.0,
@@ -83,12 +83,14 @@
    ],
    "position_id": 1520511262,
    "entry": 0.08547,
-   "last_hold": 2.0,
+   "last_hold": 0.0,
    "split": true,
-   "pnl": 0.3232,
+   "pnl": 0.326,
    "tp1_hit": true,
    "name": "PYTH USDT",
-   "be_moved": true
+   "be_moved": true,
+   "closed": 1792164169525,
+   "result": "TP1 + breakeven"
   },
   "AAPL:1792": {
    "key": "AAPL:1792",
