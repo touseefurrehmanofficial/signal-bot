@@ -787,6 +787,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792185897402
+  },
+  "dip:APH:1792108800000": {
+   "key": "dip:APH:1792108800000",
+   "coin": "APH",
+   "symbol": "APHSTOCK_USDT",
+   "kind": "dip",
+   "name": "APHSTOCK USDT (APH, stock dip)",
+   "day": 1792108800000,
+   "status": "opening",
+   "time": 1792185900930,
+   "leverage": 17,
+   "vol": 1.0,
+   "sl": 71.1638,
+   "tp1": 81.80586,
+   "tp2": 83.44309999999999,
+   "entry_signal": 79.35
   }
  },
  "flags": {
