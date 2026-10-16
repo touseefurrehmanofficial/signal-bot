@@ -455,6 +455,22 @@
    "tp2": 412.5600280761719,
    "entry_signal": 382.70001220703125,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:EWT:1792022400000": {
+   "key": "dip:EWT:1792022400000",
+   "coin": "EWT",
+   "symbol": "EWT_USDT",
+   "kind": "dip",
+   "name": "EWT USDT (EWT, stock dip)",
+   "day": 1792022400000,
+   "status": "opening",
+   "time": 1792124604428,
+   "leverage": 50,
+   "vol": 3.0,
+   "sl": 102.403,
+   "tp1": 111.1611,
+   "tp2": 112.5085,
+   "entry_signal": 109.14
   }
  },
  "flags": {
