@@ -361,14 +361,15 @@
    "kind": "stock",
    "name": "PFESTOCK USDT (PFE, stock breakout)",
    "day": 1791,
-   "status": "opening",
+   "status": "failed",
    "time": 1792110143965,
    "leverage": 20,
    "vol": 4.0,
    "sl": 27.40999984741211,
    "tp1": 30.10999870300293,
    "tp2": 31.009998321533203,
-   "entry_signal": 29.209999084472656
+   "entry_signal": 29.209999084472656,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
