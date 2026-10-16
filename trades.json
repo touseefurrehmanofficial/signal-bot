@@ -599,6 +599,22 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.33",
    "time": 1792150561938
+  },
+  "PFE:1792022400000": {
+   "key": "PFE:1792022400000",
+   "coin": "PFE",
+   "symbol": "PFESTOCK_USDT",
+   "kind": "stock",
+   "name": "PFESTOCK USDT (PFE, stock breakout)",
+   "day": 1792022400000,
+   "status": "opening",
+   "time": 1792150690431,
+   "leverage": 8,
+   "vol": 2.0,
+   "sl": 27.40999984741211,
+   "tp1": 30.45500087738037,
+   "tp2": 31.470001220703125,
+   "entry_signal": 29.440000534057617
   }
  },
  "flags": {
