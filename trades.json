@@ -538,6 +538,22 @@
    "tp2": 601.392,
    "entry_signal": 562.23,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "MSFT:1791": {
+   "key": "MSFT:1791",
+   "coin": "MSFT",
+   "symbol": "MSFTSTOCK_USDT",
+   "kind": "stock",
+   "name": "MSFTSTOCK USDT (MSFT, stock breakout)",
+   "day": 1791,
+   "status": "opening",
+   "time": 1792147540129,
+   "leverage": 72,
+   "vol": 1.0,
+   "sl": 490.29998779296875,
+   "tp1": 570.0250244140625,
+   "tp2": 596.6000366210938,
+   "entry_signal": 543.4500122070312
   }
  },
  "flags": {
