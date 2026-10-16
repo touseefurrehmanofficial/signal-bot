@@ -73,7 +73,7 @@
    "time": 1792023080220,
    "leverage": 90,
    "vol": 6.0,
-   "sl": 0.06832,
+   "sl": 0.08561,
    "tp1": 0.09355,
    "tp2": 0.10195999999999998,
    "entry_signal": 0.08514,
@@ -87,7 +87,8 @@
    "split": true,
    "pnl": 0.3232,
    "tp1_hit": true,
-   "name": "PYTH USDT"
+   "name": "PYTH USDT",
+   "be_moved": true
   },
   "AAPL:1792": {
    "key": "AAPL:1792",
