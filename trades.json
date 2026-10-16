@@ -616,6 +616,22 @@
    "tp2": 31.470001220703125,
    "entry_signal": 29.440000534057617,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "KO:1792022400000": {
+   "key": "KO:1792022400000",
+   "coin": "KO",
+   "symbol": "KOSTOCK_USDT",
+   "kind": "stock",
+   "name": "KOSTOCK USDT (KO, stock breakout)",
+   "day": 1792022400000,
+   "status": "opening",
+   "time": 1792150695662,
+   "leverage": 13,
+   "vol": 1.0,
+   "sl": 85.6500015258789,
+   "tp1": 95.17499923706055,
+   "tp2": 98.3499984741211,
+   "entry_signal": 92.0
   }
  },
  "flags": {
