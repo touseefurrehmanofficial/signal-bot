@@ -723,6 +723,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792150724797
+  },
+  "AAPL:1791936000000": {
+   "key": "AAPL:1791936000000",
+   "coin": "AAPL",
+   "symbol": "AAPLSTOCK_USDT",
+   "kind": "stock",
+   "name": "AAPLSTOCK USDT (AAPL, stock breakout)",
+   "day": 1791936000000,
+   "status": "opening",
+   "time": 1792157411629,
+   "leverage": 48,
+   "vol": 1.0,
+   "sl": 329.3999938964844,
+   "tp1": 349.739990234375,
+   "tp2": 356.5199890136719,
+   "entry_signal": 342.9599914550781
   }
  },
  "flags": {
