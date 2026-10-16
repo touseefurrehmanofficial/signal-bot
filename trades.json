@@ -843,6 +843,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792185913903
+  },
+  "dip:MRVL:1792108800000": {
+   "key": "dip:MRVL:1792108800000",
+   "coin": "MRVL",
+   "symbol": "MRVLSTOCK_USDT",
+   "kind": "dip",
+   "name": "MRVLSTOCK USDT (MRVL, stock dip)",
+   "day": 1792108800000,
+   "status": "opening",
+   "time": 1792185916319,
+   "leverage": 33,
+   "vol": 1.0,
+   "sl": 182.46,
+   "tp1": 241.441,
+   "tp2": 250.51500000000001,
+   "entry_signal": 227.83
   }
  },
  "flags": {
