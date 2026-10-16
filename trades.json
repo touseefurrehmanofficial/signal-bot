@@ -577,6 +577,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 50X the order would be below its minimum of about $5.09",
    "time": 1792150556241
+  },
+  "dip:ETN:1791936000000": {
+   "key": "dip:ETN:1791936000000",
+   "coin": "ETN",
+   "symbol": "ETNSTOCK_USDT",
+   "kind": "dip",
+   "name": "ETNSTOCK USDT (ETN, stock dip)",
+   "day": 1791936000000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.03",
+   "time": 1792150559113
   }
  },
  "flags": {
