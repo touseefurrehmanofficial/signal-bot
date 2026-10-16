@@ -750,14 +750,21 @@
    "kind": "crypto",
    "name": "PYTH USDT",
    "day": 1792022400000,
-   "status": "opening",
+   "status": "open",
    "time": 1792164172419,
    "leverage": 22,
    "vol": 1.0,
    "sl": 0.0738,
    "tp1": 0.10300500000000001,
    "tp2": 0.11274,
-   "entry_signal": 0.09327
+   "entry_signal": 0.09327,
+   "order_ids": [
+    "866097664154808832"
+   ],
+   "position_id": 1521721761,
+   "entry": 0.08568,
+   "last_hold": 1.0,
+   "split": false
   }
  },
  "flags": {
