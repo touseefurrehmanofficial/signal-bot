@@ -404,6 +404,22 @@
    "tp2": 1070.260009765625,
    "entry_signal": 982.0,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "WMT:1791": {
+   "key": "WMT:1791",
+   "coin": "WMT",
+   "symbol": "WMTSTOCK_USDT",
+   "kind": "stock",
+   "name": "WMTSTOCK USDT (WMT, stock breakout)",
+   "day": 1791,
+   "status": "opening",
+   "time": 1792110157708,
+   "leverage": 64,
+   "vol": 3.0,
+   "sl": 103.91999816894531,
+   "tp1": 122.2800064086914,
+   "tp2": 128.40000915527344,
+   "entry_signal": 116.16000366210938
   }
  },
  "flags": {
