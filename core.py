@@ -25,6 +25,7 @@ STYLES = ("0.5", "1", "2", "3", "trail")
 MIN_VALUE = 1_000_000
 LEVERAGE = 50            # for the "what if I used 50x" column of the demo account
 DAY = 86_400_000
+VOLUME_MULT = 2.0        # option A: crypto breakouts need at least this multiple of the 30-day average volume
 FRESH_DAYS = 3           # a breakout stays "fresh" (enterable) for this many daily closes
 BOT_START = 1791450280118  # 2026-10-08 09:04 UTC: signals from before the bot started are not alerted or tracked
 DIP_LIMIT = 20           # the dip rule leaves after 20 trading days if nothing else has happened
@@ -260,21 +261,25 @@ def plan(coin, regime, market="crypto"):
         out["recent"][key] = recent
     # "fresh": the newest breakout day among the last FRESH_DAYS+1 closes, ignoring older historical plans.
     # The owner trades every breakout; one trade per coin applies only while the account holds a position in it.
+    # Option A (owner's choice, pipeline/39-40): a crypto breakout counts only on a day with at least 2x the
+    # 30-day average volume. Stock breakouts are unchanged (option A was tested on crypto only).
     out["fresh"] = None
+    vol, vol30 = df.volume.values, df.volume.rolling(30).mean().shift(1).values
     for k in range(n - 1, max(n - 2 - FRESH_DAYS, 56), -1):
+        volx = vol[k] / vol30[k] if vol30[k] and not np.isnan(vol30[k]) else 0.0
         if (not np.isnan(hi55[k]) and c[k] > hi55[k] and not np.isnan(lo20[k]) and lo20[k] < c[k] and value[k] >= MIN_VALUE
-                and regime.get(int(df.t[k]), False)):
+                and regime.get(int(df.t[k]), False) and (stock or volx >= VOLUME_MULT)):
             e, s_ = float(c[k]), float(lo20[k])
             hits, sl_t = level_hits(("0.5", "1", "2"), e, e - s_, s_, h, l, df.t.values, k + 1, n, forming)
             out["fresh"] = {"day": int(df.t[k]), "age_days": int(n - 1 - k), "entry": e, "stop": s_, "risk_pct": (e - s_) / e * 100,
-                            "status": "stopped" if sl_t else "open", "hits": hits, "sl_t": sl_t}
+                            "status": "stopped" if sl_t else "open", "hits": hits, "sl_t": sl_t, "volx": round(float(volx), 1)}
             break
     return out
 
 
 # Tested share of trades that reached each level when the whole position was closed there.
 # crypto and stock: pipeline/21, 25, 26 (targets 0.5R / 1R / 2R). dip: pipeline/31 (+0.3R / +0.5R / close above the 20-day average).
-TP_WIN = {"crypto": (77, 65, 53), "stock": (74, 62, 49), "dip": (80, 72, 67)}
+TP_WIN = {"crypto": (79, 63, 44), "stock": (74, 62, 49), "dip": (80, 72, 67)}   # crypto: option A (breakout on 2x volume)
 
 
 def price_text(x):
@@ -332,7 +337,7 @@ def signal_card(name, kind, t, mexc=None, ma20=None, account=1000.0, risk=1.0, t
         wide = t.get("mkt_z")
         lines.append("Rule: Dip" + ("" if wide is None else " (market-wide)" if wide < -1.5 else " (stock-only, weaker)" if wide > -0.5 else "") + " \u00B7 exit after 20 trading days at the latest")
     else:
-        lines.append("Rule: Breakout \u00B7 SL and TPs are fixed")
+        lines.append("Rule: Breakout" + (f" on {t['volx']:g}x volume" if t.get("volx") and kind == "crypto" else "") + " \u00B7 SL and TPs are fixed")
     lines += ["Tested wins: " + " / ".join(f"TP{i + 1} {w}%" for i, w in enumerate(wins)) + (f" / Exit {TP_WIN['dip'][2]}%" if kind == "dip" else ""), f"Size: ${account * risk / 100 / (t['risk_pct'] / 100):,.0f} for {risk:g}% risk on ${account:,.0f}"]
     return "\n".join(lines)
 
