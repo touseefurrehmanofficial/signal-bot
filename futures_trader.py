@@ -33,6 +33,8 @@ from pathlib import Path
 
 import requests
 
+from core import signal_card
+
 HERE = Path(__file__).resolve().parent
 BOOK_FILE = HERE / "trades.json"
 BASE = "https://api.mexc.com"
@@ -265,14 +267,8 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
     bot_pids = {t.get("position_id") for t in b["trades"].values() if t.get("status") == "open"}
     other = sum(notional(p, cinfo_all, prices) for pid, p in pos.items() if pid in bot_pids)
     lev, vol, value, why = sizing(eq, price, sl, cinfo, other)
-    if why:                                                     # not permanent: tried again while the signal is fresh; message sent once per reason
-        skips = b.setdefault("skips", {})
-        plain = lambda w: re.sub(r"[\d.,$]+", "#", (w or "").split(" (")[0])   # the reason without its live numbers
-        if plain(skips.get(key)) != plain(why):
-            skips[key] = why
-            persist()
-            if kind == "crypto":                                # stock signals come in bursts: their skips are only listed in /account
-                send(f"⏭ {name} signal not taken (yet)\nReason: {why}.\nThe bot keeps checking while the signal is fresh.")
+    if why:                                                     # the bot cannot take it: hand it to the owner as a manual trade
+        manual(key, coin, t, kind, sym, why, eq, send, persist)
         return
     b["trades"][key] = trade = {"key": key, "coin": coin, "symbol": sym, "kind": kind, "name": name, "day": t["day"], "status": "opening", "time": int(time.time() * 1000), "leverage": lev, "vol": vol,
                                 "sl": sl, "tp1": tp1, "tp2": tp2, "entry_signal": t["entry"]}
@@ -309,7 +305,9 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
                 if sym not in b["blocked"]:
                     b["blocked"].append(sym)
             persist()
-            send(f"⚠️ {name}: the entry order was not accepted ({err or 'not filled'}). Nothing is open.")
+            reason = ("MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)"
+                      if err and "8950" in str(err) else f"the entry order was not accepted ({err or 'not filled'})")
+            manual(key, coin, t, kind, sym, reason, eq, send, persist, record=False)
             return
         avg = cost / filled
         trade.update(status="open", position_id=pid, entry=avg, vol=filled, last_hold=filled, split=split and filled > vol_a)
@@ -418,6 +416,29 @@ def follow(eq, pos, prices, send, persist, state=None):
         persist()
 
 
+def manual(key, coin, t, kind, sym, reason, eq, send, persist, record=True):
+    """The bot cannot open this signal: send the owner the full card to take it by hand, once per signal.
+    The signal is then marked as handed over, so the bot never opens it later on top of a manual trade."""
+    b = load_book()
+    if record:
+        if key in b["trades"]:
+            return
+        b["trades"][key] = {"key": key, "coin": coin, "symbol": sym, "kind": kind, "name": label(coin, sym, kind), "day": t["day"],
+                            "status": "manual", "reason": reason, "time": int(time.time() * 1000)}
+    persist()
+    card = signal_card(coin, kind, t, sym if kind != "crypto" else None, t.get("ma20"), eq, 1.0)
+    extra = ""
+    try:                                                        # what MEXC's minimum order means at the bot's own margin
+        c = contracts()[sym]
+        min_order = float(c.get("minVol") or 1) * float(c["contractSize"]) * t["entry"]
+        margin = eq * MARGIN_PCT / 100
+        extra = (f"\nMEXC minimum order: about ${min_order:,.2f}. With the bot's {MARGIN_PCT:g}% margin (${margin:,.2f}) "
+                 f"that needs {math.ceil(min_order / margin)}X leverage" + (f"; this contract allows at most {int(c.get('maxLeverage') or 1)}X." if math.ceil(min_order / margin) > int(c.get("maxLeverage") or 1) else "."))
+    except Exception:
+        pass
+    send(f"✋ TAKE THIS TRADE MANUALLY\nThe bot could not open it: {reason}.\nThe bot will not open it later, so there is no risk of a double trade.\n\n" + card + extra)
+
+
 def candidates(state, pos_symbols):
     """(key, name, plan, kind, contract symbol) for every signal that can still be entered.
     kind: "crypto" (breakout), "stock" (breakout on a US stock MEXC lists), "dip" (dip rule on a US stock MEXC lists)."""
@@ -430,9 +451,8 @@ def candidates(state, pos_symbols):
     for c, p in (state.get("dips") or {}).items():
         t = p.get("last")
         if usable(t) and c in mexc:
-            out.append((f"dip:{c}:{t['day']}", c, t, "dip", mexc[c]))
-    blocked = set(b.get("blocked") or [])
-    out = [x for x in out if x[0] not in b["trades"] and x[4] not in pos_symbols and x[4] not in blocked]
+            out.append((f"dip:{c}:{t['day']}", c, dict(t, ma20=p.get("ma20")), "dip", mexc[c]))
+    out = [x for x in out if x[0] not in b["trades"] and x[4] not in pos_symbols]   # blocked contracts are handed over in tick()
     return sorted(out, key=lambda x: (x[3] != "crypto", x[2]["age_days"], x[2]["risk_pct"]))
 
 
@@ -488,6 +508,9 @@ def tick(state, send, persist):
             price = prices[sym]
             if not (t["stop"] < price <= t["entry"] + 0.25 * (t["entry"] - t["stop"])):
                 continue                                        # outside the entry zone right now; checked again next time
+            if sym in set(b.get("blocked") or []):              # MEXC refuses this contract for the bot: hand it over
+                manual(key, coin, t, kind, sym, "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)", eq, send, persist)
+                continue
             open_trade(key, coin, t, eq, cinfo, prices, pos, send, persist, sym, kind)
             pos = positions()
             eq, _ = equity()
@@ -590,11 +613,11 @@ def account_text():
         return "No MEXC API key is set."
     eq, avail = equity()
     b = load_book()
-    recent = sorted([t for t in b["trades"].values() if t["status"] in ("closed", "skipped", "failed")], key=lambda t: -t.get("closed", t.get("time", 0)))[:8]
+    recent = sorted([t for t in b["trades"].values() if t["status"] in ("closed", "skipped", "failed", "manual")], key=lambda t: -t.get("closed", t.get("time", 0)))[:8]
     lines = ["\U0001F4BC FUTURES ACCOUNT", f"Equity ${eq:,.2f} · available ${avail:,.2f}", f"Trading: {'PAUSED' if b['paused'] else 'on'} · max open trades {b['max_trades']}",
              f"Margin per trade {MARGIN_PCT:g}% · max loss per trade {MAX_LOSS_PCT:g}%", "", stats_line(eq), ""]
     if recent:
         lines.append("Recent:")
         lines += [f"  {t['coin']}: {t.get('result') or t['status']}" + (f" {t['pnl']:+.2f}$" if t.get("pnl") is not None and t["status"] == "closed" else "")
-                  + (f" ({t['reason']})" if t["status"] in ("skipped", "failed") else "") for t in recent]
+                  + (f" ({t['reason'][:80]})" if t["status"] in ("skipped", "failed", "manual") else "") for t in recent]
     return "\n".join(lines)

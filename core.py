@@ -338,7 +338,9 @@ def signal_card(name, kind, t, mexc=None, ma20=None, account=1000.0, risk=1.0, t
         lines.append("Rule: Dip" + ("" if wide is None else " (market-wide)" if wide < -1.5 else " (stock-only, weaker)" if wide > -0.5 else "") + " \u00B7 exit after 20 trading days at the latest")
     else:
         lines.append("Rule: Breakout" + (f" on {t['volx']:g}x volume" if t.get("volx") and kind == "crypto" else "") + " \u00B7 SL and TPs are fixed")
-    lines += ["Tested wins: " + " / ".join(f"TP{i + 1} {w}%" for i, w in enumerate(wins)) + (f" / Exit {TP_WIN['dip'][2]}%" if kind == "dip" else ""), f"Size: ${account * risk / 100 / (t['risk_pct'] / 100):,.0f} for {risk:g}% risk on ${account:,.0f}"]
+    lines += ["Tested wins: " + " / ".join(f"TP{i + 1} {w}%" for i, w in enumerate(wins)) + (f" / Exit {TP_WIN['dip'][2]}%" if kind == "dip" else ""), (lambda size: f"Size: ${size:,.0f}" if size >= 100 else f"Size: ${size:,.2f}")(account * risk / 100 / (t['risk_pct'] / 100))
+              + f" for {risk:g}% risk on ${account:,.0f}" if account >= 100 else
+              (lambda size: f"Size: ${size:,.2f}")(account * risk / 100 / (t['risk_pct'] / 100)) + f" for {risk:g}% risk on ${account:,.2f}"]
     return "\n".join(lines)
 
 
