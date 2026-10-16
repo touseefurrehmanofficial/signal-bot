@@ -885,14 +885,15 @@
    "kind": "dip",
    "name": "HPESTOCK USDT (HPE, stock dip)",
    "day": 1792108800000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792185926971,
    "leverage": 17,
    "vol": 2.0,
    "sl": 43.6883,
    "tp1": 58.56251,
    "tp2": 60.85085000000001,
-   "entry_signal": 55.13
+   "entry_signal": 55.13,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -939,7 +940,8 @@
   "APHSTOCK_USDT",
   "KEYSSTOCK_USDT",
   "MRVLSTOCK_USDT",
-  "INTCSTOCK_USDT"
+  "INTCSTOCK_USDT",
+  "HPESTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
