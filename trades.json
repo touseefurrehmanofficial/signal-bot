@@ -795,14 +795,15 @@
    "kind": "dip",
    "name": "APHSTOCK USDT (APH, stock dip)",
    "day": 1792108800000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792185900930,
    "leverage": 17,
    "vol": 1.0,
    "sl": 71.1638,
    "tp1": 81.80586,
    "tp2": 83.44309999999999,
-   "entry_signal": 79.35
+   "entry_signal": 79.35,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -845,7 +846,8 @@
   "WMTSTOCK_USDT",
   "COSTSTOCK_USDT",
   "XOMSTOCK_USDT",
-  "AAPLSTOCK_USDT"
+  "AAPLSTOCK_USDT",
+  "APHSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
