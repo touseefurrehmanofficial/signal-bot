@@ -529,14 +529,15 @@
    "kind": "dip",
    "name": "AMDSTOCK USDT (AMD, stock dip)",
    "day": 1792022400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792147530710,
    "leverage": 74,
    "vol": 1.0,
    "sl": 483.906,
    "tp1": 585.7272,
    "tp2": 601.392,
-   "entry_signal": 562.23
+   "entry_signal": 562.23,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -568,6 +569,7 @@
   "EWZ:1791": "the order would be $3.78, below this contract's minimum of about $4.20"
  },
  "blocked": [
-  "NVIDIA_USDT"
+  "NVIDIA_USDT",
+  "AMDSTOCK_USDT"
  ]
 }
