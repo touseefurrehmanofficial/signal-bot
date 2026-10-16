@@ -765,6 +765,17 @@
    "entry": 0.08568,
    "last_hold": 1.0,
    "split": false
+  },
+  "AAPL:1792108800000": {
+   "key": "AAPL:1792108800000",
+   "coin": "AAPL",
+   "symbol": "AAPLSTOCK_USDT",
+   "kind": "stock",
+   "name": "AAPLSTOCK USDT (AAPL, stock breakout)",
+   "day": 1792108800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792185894886
   }
  },
  "flags": {
