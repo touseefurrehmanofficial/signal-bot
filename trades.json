@@ -804,6 +804,17 @@
    "tp2": 83.44309999999999,
    "entry_signal": 79.35,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "V:1792108800000": {
+   "key": "V:1792108800000",
+   "coin": "V",
+   "symbol": "VSTOCK_USDT",
+   "kind": "stock",
+   "name": "VSTOCK USDT (V, stock breakout)",
+   "day": 1792108800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792185906340
   }
  },
  "flags": {
