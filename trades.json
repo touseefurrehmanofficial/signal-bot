@@ -815,6 +815,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792185906340
+  },
+  "dip:KEYS:1792108800000": {
+   "key": "dip:KEYS:1792108800000",
+   "coin": "KEYS",
+   "symbol": "KEYSSTOCK_USDT",
+   "kind": "dip",
+   "name": "KEYSSTOCK USDT (KEYS, stock dip)",
+   "day": 1792108800000,
+   "status": "opening",
+   "time": 1792185908646,
+   "leverage": 17,
+   "vol": 3.0,
+   "sl": 295.588,
+   "tp1": 341.8966,
+   "tp2": 349.02099999999996,
+   "entry_signal": 331.21
   }
  },
  "flags": {
