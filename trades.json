@@ -686,14 +686,15 @@
    "kind": "stock",
    "name": "COSTSTOCK USDT (COST, stock breakout)",
    "day": 1791936000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792150713967,
    "leverage": 13,
    "vol": 1.0,
    "sl": 893.739990234375,
    "tp1": 1026.1300048828125,
    "tp2": 1070.260009765625,
-   "entry_signal": 982.0
+   "entry_signal": 982.0,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -731,6 +732,7 @@
   "PFESTOCK_USDT",
   "KOSTOCK_USDT",
   "VSTOCK_USDT",
-  "WMTSTOCK_USDT"
+  "WMTSTOCK_USDT",
+  "COSTSTOCK_USDT"
  ]
 }
