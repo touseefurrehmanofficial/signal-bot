@@ -378,14 +378,15 @@
    "kind": "stock",
    "name": "KOSTOCK USDT (KO, stock breakout)",
    "day": 1791,
-   "status": "opening",
+   "status": "failed",
    "time": 1792110148457,
    "leverage": 20,
    "vol": 1.0,
    "sl": 85.6500015258789,
    "tp1": 94.84499740600586,
    "tp2": 97.90999603271484,
-   "entry_signal": 91.77999877929688
+   "entry_signal": 91.77999877929688,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
