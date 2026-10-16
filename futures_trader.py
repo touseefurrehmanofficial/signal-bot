@@ -169,14 +169,30 @@ def sizing(eq, price, sl, cinfo, other_notional):
         return 0, 0, 0, "price is not above the SL"
     lev_liq = math.floor((LIQ_BUFFER * eq - other_notional) / margin)
     lev_risk = math.floor(MAX_LOSS_PCT / 100 * eq / (margin * stop_frac))
-    lev = min(lev_liq, lev_risk, int(cinfo.get("maxLeverage") or 1))
-    if lev < 1:
-        return 0, 0, 0, (f"no leverage keeps liquidation at 0 (equity ${eq:,.2f}, bot positions ${other_notional:,.2f}, margin ${margin:,.2f})" if lev_liq < 1 else f"the SL is {stop_frac * 100:.0f}% away, too far for a {MAX_LOSS_PCT:g}% loss limit")
-    size = float(cinfo["contractSize"])
-    vol = to_unit(margin * lev / (size * price), cinfo.get("volUnit") or 1)
-    if vol < float(cinfo.get("minVol") or 1):
-        return lev, 0, 0, f"the order would be ${margin * lev:.2f}, below this contract's minimum of about ${float(cinfo.get('minVol') or 1) * size * price:.2f}"
-    return lev, vol, vol * size * price, None
+    max_lev = int(cinfo.get("maxLeverage") or 1)
+    size, unit, min_vol = float(cinfo["contractSize"]), cinfo.get("volUnit") or 1, float(cinfo.get("minVol") or 1)
+    lev = min(lev_liq, lev_risk, max_lev)
+    if lev >= 1:
+        vol = to_unit(margin * lev / (size * price), unit)
+        if vol >= min_vol:
+            return lev, vol, vol * size * price, None           # first choice: liquidation stays at 0
+    # Owner's rule: when no leverage keeps liquidation at 0, still take the trade, with the LOWEST leverage that
+    # reaches the contract's minimum order: that is the farthest liquidation price available.
+    lev = math.ceil(min_vol * size * price / margin)
+    if lev > lev_risk:
+        return 0, 0, 0, f"the SL is {stop_frac * 100:.0f}% away, too far for a {MAX_LOSS_PCT:g}% loss limit"
+    if lev > max_lev:
+        return 0, 0, 0, f"even at this contract's maximum {max_lev}X the order would be below its minimum of about ${min_vol * size * price:.2f}"
+    return lev, min_vol, min_vol * size * price, None
+
+
+def est_liquidation(eq, total_notional, entry):
+    """Rough cross-margin liquidation price for a long, if every open bot position fell by the same % as this one.
+    None = no liquidation even at a price of zero."""
+    if total_notional <= 0 or eq >= total_notional * 1.005:
+        return None
+    drop = eq / total_notional - 0.005                         # about 0.5% maintenance margin
+    return entry * (1 - max(drop, 0.0))
 
 
 # --------------------------------------------------------------------------------------------- orders
@@ -325,10 +341,13 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
             send(f"ℹ️ {name}: the TP2 part was not opened ({err}); the trade runs with TP1 only.")
         margin = value / lev
         loss_at_sl = (avg - sl) / avg * value
+        liq = est_liquidation(eq, other + filled * float(cinfo["contractSize"]) * avg, avg)
+        liq_text = ("Liquidation: none" if liq is None else
+                    f"Liquidation ≈ {liq:g} (cross-margin estimate)" + (" ⚠️ BEFORE the SL" if liq >= sl else ""))
         send(f"\U0001F7E2 TRADE OPENED — {name}\n\nDirection: LONG · Cross {lev}X\nEntry: {avg:g}\nSize: {filled:g} contracts ≈ ${value:,.2f} (margin ${margin:,.2f})\n"
              + (f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} (80%)\n\U0001F3AF TP2: {to_unit(tp2, cinfo['priceUnit'], ROUND_HALF_UP):g} (20%)\n" if trade["split"]
                 else f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} (100%)\n")
-             + f"\U0001F6E1 SL: {to_unit(sl, cinfo['priceUnit'], ROUND_HALF_UP):g} (on the exchange)\nLoss if SL is hit ≈ ${loss_at_sl:,.2f} · Liquidation: none\n\n" + stats_line(eq))
+             + f"\U0001F6E1 SL: {to_unit(sl, cinfo['priceUnit'], ROUND_HALF_UP):g} (on the exchange)\nLoss if SL is hit ≈ ${loss_at_sl:,.2f} · {liq_text}\n\n" + stats_line(eq))
     except ApiError as e:
         trade.update(status="failed", reason=str(e))
         persist()
