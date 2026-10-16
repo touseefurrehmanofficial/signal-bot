@@ -436,10 +436,14 @@ def watch_levels():
         t = p["last"]
         if c in mexc and t["status"] in ("open", "stopped") and t["day"] + 86_400_000 >= BOT_START:
             plans.append((f"d:{c}:{t['day']}", c, "dip", t, ["0.3", "0.5"], t["status"] == "open"))
+    bot_keys = {k for k, x in (ft.load_book().get("trades") or {}).items() if x.get("position_id")}
     for key, name, kind, t, levels, tracking in plans:
         live.add(key)
         if f"{key}:sl" in seen:
             continue
+        trader_key = f"dip:{name}:{t['day']}" if kind == "dip" else f"{name}:{t['day']}"
+        if trader_key in bot_keys:
+            continue                                           # the bot opened this one and reports its own TP / SL
         r = t["entry"] - t["stop"]
         hit = {lv for lv in levels if lv in (t.get("hits") or {}) or f"{key}:{lv}" in seen}
         stopped = bool(t.get("sl_t")) or t["status"] == "stopped"

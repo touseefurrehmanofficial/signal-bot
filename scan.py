@@ -56,6 +56,12 @@ def main():
     evidence = json.loads((HERE / "evidence.json").read_text(encoding="utf-8"))
     old = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {"coins": {}}
     first_run = not old.get("coins")
+    # When the MEXC auto-trader is running, it sends one message per signal (trade opened, or "take this manually").
+    # The scanner then stays quiet about signals, so nothing arrives twice.
+    try:
+        autotrade = bool(json.loads((HERE / "trades.json").read_text(encoding="utf-8")).get("flags", {}).get("connected"))
+    except Exception:
+        autotrade = False
     new_state, failed = {}, []
     regime, market = btc_regime()
     for coin in coins:
@@ -98,7 +104,7 @@ def main():
                  and t in (old.get("dip_checked") or [])]      # a stock the previous scan could not load is not a new signal
         closed = [(t, p["last"]) for t, p in dips.items() if p["last"]["status"] != "open" and prev_last(t).get("day") == p["last"]["day"] and prev_last(t).get("status") == "open"]
         risk_money = ACCOUNT * RISK / 100
-        if fresh:
+        if fresh and not autotrade:
             fresh.sort(key=lambda x: (x[0] not in mexc, x[1]["risk_pct"]))
             for t, s in fresh[:MAX_CARDS]:                      # one clean card per signal, MEXC-listed first
                 send(signal_card(t, "dip", s, mexc.get(t), dips[t]["ma20"], ACCOUNT, RISK))
@@ -124,6 +130,7 @@ def main():
             else:
                 why = "closed above the 20-day average" if s["status"] == "exited" else "20-day time limit reached"
                 updates.append((t not in mexc, f"{'\U0001F3C1' if s['R'] > 0 else '\u26AA'} {pair} EXIT {'\u2705' if s['R'] > 0 else ''}\nPlan finished: {why}. Result {s['R']:+.2f}R."))
+        updates = [] if autotrade else updates
         updates.sort(key=lambda x: x[0])
         for _, text in updates[:MAX_CARDS]:
             send(text)
@@ -146,7 +153,7 @@ def main():
         if f and f["status"] == "open" and f["age_days"] <= 1 and not f["hits"] and (not pf or pf.get("day") != f["day"]) and not first_run:
             signals.append((coin, f))
     risk_money = ACCOUNT * RISK / 100
-    for coin, s in sorted(signals, key=lambda x: x[1]["risk_pct"]):
+    for coin, s in ([] if autotrade else sorted(signals, key=lambda x: x[1]["risk_pct"])):
         stock = new_state[coin].get("market") == "stock"
         send(signal_card(coin, "stock" if stock else "crypto", s, mexc.get(coin) if stock else None, None, ACCOUNT, RISK))
         time.sleep(1.1)
@@ -155,7 +162,7 @@ def main():
         if not cur or not prev or prev.get("day") != cur["day"] or "hits" not in prev or prev.get("sl_t"):
             continue                                           # new plan, first scan with tracking, or already stopped
         stock = p.get("market") == "stock"
-        if not stock or coin in mexc:
+        if not stock or coin in mexc or autotrade:
             continue                                           # crypto and MEXC-listed stocks are watched live by the listener
         pair = pair_name(coin, "stock", None)
         text, _ = update_card(pair, ["0.5", "1", "2"], prev["hits"], cur)
