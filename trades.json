@@ -727,7 +727,9 @@
  },
  "flags": {
   "connected": true,
-  "key_seen": 1791959928921
+  "key_seen": 1791959928921,
+  "ledger_start": 1791548462925,
+  "start_equity": 7.4241
  },
  "skips": {
   "APT:1791676800000": "no leverage keeps liquidation at 0 (equity $6.17, open positions $35.16, margin $0.06)",
@@ -777,12 +779,231 @@
     1791936000000,
     "AAPL:1791936000000",
     "stock"
+   ],
+   [
+    1792,
+    "AAPL:1792",
+    "stock"
    ]
   ],
   "CVXSTOCK_USDT": [
    [
     1791936000000,
     "CVX:1791936000000",
+    "stock"
+   ]
+  ],
+  "KOSTOCK_USDT": [
+   [
+    1792,
+    "KO:1792",
+    "stock"
+   ],
+   [
+    1791,
+    "KO:1791",
+    "stock"
+   ],
+   [
+    1792022400000,
+    "KO:1792022400000",
+    "stock"
+   ]
+  ],
+  "PFESTOCK_USDT": [
+   [
+    1792,
+    "PFE:1792",
+    "stock"
+   ],
+   [
+    1791,
+    "PFE:1791",
+    "stock"
+   ],
+   [
+    1792022400000,
+    "PFE:1792022400000",
+    "stock"
+   ]
+  ],
+  "DISSTOCK_USDT": [
+   [
+    1792,
+    "DIS:1792",
+    "stock"
+   ]
+  ],
+  "COSTSTOCK_USDT": [
+   [
+    1792,
+    "COST:1792",
+    "stock"
+   ],
+   [
+    1791,
+    "COST:1791",
+    "stock"
+   ],
+   [
+    1791936000000,
+    "COST:1791936000000",
+    "stock"
+   ]
+  ],
+  "DALSTOCK_USDT": [
+   [
+    1791936000000,
+    "dip:DAL:1791936000000",
+    "dip"
+   ]
+  ],
+  "VSTOCK_USDT": [
+   [
+    1792,
+    "V:1792",
+    "stock"
+   ],
+   [
+    1791,
+    "V:1791",
+    "stock"
+   ],
+   [
+    1792022400000,
+    "V:1792022400000",
+    "stock"
+   ]
+  ],
+  "WMTSTOCK_USDT": [
+   [
+    1792,
+    "WMT:1792",
+    "stock"
+   ],
+   [
+    1791,
+    "WMT:1791",
+    "stock"
+   ],
+   [
+    1792022400000,
+    "WMT:1792022400000",
+    "stock"
+   ]
+  ],
+  "MUSTOCK_USD1": [
+   [
+    1791936000000,
+    "dip:MU:1791936000000",
+    "dip"
+   ]
+  ],
+  "ROBINHOOD_USDT": [
+   [
+    1791936000000,
+    "dip:HOOD:1791936000000",
+    "dip"
+   ]
+  ],
+  "DELLSTOCK_USDT": [
+   [
+    1791936000000,
+    "dip:DELL:1791936000000",
+    "dip"
+   ]
+  ],
+  "SMCISTOCK_USDT": [
+   [
+    1791936000000,
+    "dip:SMCI:1791936000000",
+    "dip"
+   ]
+  ],
+  "XOMSTOCK_USDT": [
+   [
+    1791,
+    "XOM:1791",
+    "stock"
+   ],
+   [
+    1791936000000,
+    "XOM:1791936000000",
+    "stock"
+   ]
+  ],
+  "SWKSSTOCK_USDT": [
+   [
+    1791504000000,
+    "dip:SWKS:1791504000000",
+    "dip"
+   ]
+  ],
+  "TESLA_USDT": [
+   [
+    1791,
+    "TSLA:1791",
+    "stock"
+   ]
+  ],
+  "NVIDIA_USDT": [
+   [
+    1792022400000,
+    "dip:NVDA:1792022400000",
+    "dip"
+   ]
+  ],
+  "AMDSTOCK_USDT": [
+   [
+    1792022400000,
+    "dip:AMD:1792022400000",
+    "dip"
+   ]
+  ],
+  "MSFTSTOCK_USDT": [
+   [
+    1791,
+    "MSFT:1791",
+    "stock"
+   ],
+   [
+    1791849600000,
+    "MSFT:1791849600000",
+    "stock"
+   ]
+  ],
+  "ANETSTOCK_USDT": [
+   [
+    1792022400000,
+    "dip:ANET:1792022400000",
+    "dip"
+   ]
+  ],
+  "SOXX_USDT": [
+   [
+    1791936000000,
+    "dip:SOXX:1791936000000",
+    "dip"
+   ]
+  ],
+  "ETNSTOCK_USDT": [
+   [
+    1791936000000,
+    "dip:ETN:1791936000000",
+    "dip"
+   ]
+  ],
+  "BESTOCK_USDT": [
+   [
+    1791936000000,
+    "dip:BE:1791936000000",
+    "dip"
+   ]
+  ],
+  "PGSTOCK_USDT": [
+   [
+    1792022400000,
+    "PG:1792022400000",
     "stock"
    ]
   ]
