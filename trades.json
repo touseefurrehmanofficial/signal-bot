@@ -763,5 +763,21 @@
   "WMTSTOCK_USDT",
   "COSTSTOCK_USDT",
   "XOMSTOCK_USDT"
- ]
+ ],
+ "signals": {
+  "PYTH_USDT": [
+   [
+    1792022400000,
+    "PYTH:1792022400000",
+    "crypto"
+   ]
+  ],
+  "AAPLSTOCK_USDT": [
+   [
+    1791936000000,
+    "AAPL:1791936000000",
+    "stock"
+   ]
+  ]
+ }
 }
