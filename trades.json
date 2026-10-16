@@ -521,6 +521,22 @@
    "tp2": 225.60899999999998,
    "entry_signal": 217.23,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:AMD:1792022400000": {
+   "key": "dip:AMD:1792022400000",
+   "coin": "AMD",
+   "symbol": "AMDSTOCK_USDT",
+   "kind": "dip",
+   "name": "AMDSTOCK USDT (AMD, stock dip)",
+   "day": 1792022400000,
+   "status": "opening",
+   "time": 1792147530710,
+   "leverage": 74,
+   "vol": 1.0,
+   "sl": 483.906,
+   "tp1": 585.7272,
+   "tp2": 601.392,
+   "entry_signal": 562.23
   }
  },
  "flags": {
