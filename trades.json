@@ -438,6 +438,22 @@
    "tp2": 432.7900085449219,
    "entry_signal": 396.05999755859375,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "TSLA:1791": {
+   "key": "TSLA:1791",
+   "coin": "TSLA",
+   "symbol": "TESLA_USDT",
+   "kind": "stock",
+   "name": "TESLA USDT (TSLA, stock breakout)",
+   "day": 1791,
+   "status": "opening",
+   "time": 1792110169595,
+   "leverage": 64,
+   "vol": 1.0,
+   "sl": 352.8399963378906,
+   "tp1": 397.63002014160156,
+   "tp2": 412.5600280761719,
+   "entry_signal": 382.70001220703125
   }
  },
  "flags": {
