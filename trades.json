@@ -555,6 +555,17 @@
    "tp2": 596.6000366210938,
    "entry_signal": 543.4500122070312,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:ANET:1792022400000": {
+   "key": "dip:ANET:1792022400000",
+   "coin": "ANET",
+   "symbol": "ANETSTOCK_USDT",
+   "kind": "dip",
+   "name": "ANETSTOCK USDT (ANET, stock dip)",
+   "day": 1792022400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.86",
+   "time": 1792150553400
   }
  },
  "flags": {
