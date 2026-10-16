@@ -742,6 +742,22 @@
    "tp2": 356.5199890136719,
    "entry_signal": 342.9599914550781,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "PYTH:1792022400000": {
+   "key": "PYTH:1792022400000",
+   "coin": "PYTH",
+   "symbol": "PYTH_USDT",
+   "kind": "crypto",
+   "name": "PYTH USDT",
+   "day": 1792022400000,
+   "status": "opening",
+   "time": 1792164172419,
+   "leverage": 22,
+   "vol": 1.0,
+   "sl": 0.0738,
+   "tp1": 0.10300500000000001,
+   "tp2": 0.11274,
+   "entry_signal": 0.09327
   }
  },
  "flags": {
