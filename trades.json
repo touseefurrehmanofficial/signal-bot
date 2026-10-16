@@ -546,14 +546,15 @@
    "kind": "stock",
    "name": "MSFTSTOCK USDT (MSFT, stock breakout)",
    "day": 1791,
-   "status": "opening",
+   "status": "failed",
    "time": 1792147540129,
    "leverage": 72,
    "vol": 1.0,
    "sl": 490.29998779296875,
    "tp1": 570.0250244140625,
    "tp2": 596.6000366210938,
-   "entry_signal": 543.4500122070312
+   "entry_signal": 543.4500122070312,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -586,6 +587,7 @@
  },
  "blocked": [
   "NVIDIA_USDT",
-  "AMDSTOCK_USDT"
+  "AMDSTOCK_USDT",
+  "MSFTSTOCK_USDT"
  ]
 }
