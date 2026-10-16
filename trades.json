@@ -703,14 +703,15 @@
    "kind": "stock",
    "name": "XOMSTOCK USDT (XOM, stock breakout)",
    "day": 1791936000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792150719179,
    "leverage": 24,
    "vol": 1.0,
    "sl": 158.3000030517578,
    "tp1": 186.364990234375,
    "tp2": 195.71998596191406,
-   "entry_signal": 177.00999450683594
+   "entry_signal": 177.00999450683594,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -749,6 +750,7 @@
   "KOSTOCK_USDT",
   "VSTOCK_USDT",
   "WMTSTOCK_USDT",
-  "COSTSTOCK_USDT"
+  "COSTSTOCK_USDT",
+  "XOMSTOCK_USDT"
  ]
 }
