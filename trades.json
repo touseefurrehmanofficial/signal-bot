@@ -695,6 +695,22 @@
    "tp2": 1070.260009765625,
    "entry_signal": 982.0,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "XOM:1791936000000": {
+   "key": "XOM:1791936000000",
+   "coin": "XOM",
+   "symbol": "XOMSTOCK_USDT",
+   "kind": "stock",
+   "name": "XOMSTOCK USDT (XOM, stock breakout)",
+   "day": 1791936000000,
+   "status": "opening",
+   "time": 1792150719179,
+   "leverage": 24,
+   "vol": 1.0,
+   "sl": 158.3000030517578,
+   "tp1": 186.364990234375,
+   "tp2": 195.71998596191406,
+   "entry_signal": 177.00999450683594
   }
  },
  "flags": {
