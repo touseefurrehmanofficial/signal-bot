@@ -712,6 +712,17 @@
    "tp2": 195.71998596191406,
    "entry_signal": 177.00999450683594,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "MSFT:1791849600000": {
+   "key": "MSFT:1791849600000",
+   "coin": "MSFT",
+   "symbol": "MSFTSTOCK_USDT",
+   "kind": "stock",
+   "name": "MSFTSTOCK USDT (MSFT, stock breakout)",
+   "day": 1791849600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792150724797
   }
  },
  "flags": {
