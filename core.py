@@ -97,8 +97,15 @@ def mexc_stocks():
     """US-stock tickers that MEXC lists as perpetual futures: ticker -> MEXC contract symbol. Public endpoint, no key."""
     data = requests.get("https://contract.mexc.com/api/v1/contract/detail", timeout=30).json()["data"]
     fix = {"BRKB": "BRK-B", "BFB": "BF-B"}
-    return {fix.get(x["baseCoinName"], x["baseCoinName"]): x["symbol"] for x in data
-            if "mc-trade-zone-Stock" in (x.get("conceptPlate") or []) and x.get("state") == 0}
+    out = {}
+    for x in data:
+        if "mc-trade-zone-Stock" not in (x.get("conceptPlate") or []) or x.get("state") != 0 or not x["symbol"].endswith("_USDT"):
+            continue                                            # USDT-margined only (MU also has a USD1 contract)
+        name = (x.get("baseCoinName") or "").upper()
+        if name.endswith("STOCK") and len(name) > 5:            # a few are named like the contract: CVXSTOCK -> CVX
+            name = name[:-5]
+        out.setdefault(fix.get(name, name), x["symbol"])
+    return out
 
 
 def market_z(spy_df):

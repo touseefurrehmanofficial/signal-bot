@@ -151,16 +151,133 @@ def notional(p, cinfo, prices):
 
 def stats_line(eq=None):
     b = load_book()
-    done = [t for t in b["trades"].values() if t["status"] == "closed"]
-    wins = [t for t in done if (t.get("pnl") or 0) > 0]
-    tp_hits = sum(1 for t in b["trades"].values() for k in ("tp1_hit", "tp2_hit") if t.get(k))
-    sl_hits = sum(1 for t in done if t.get("result") == "SL")
     n_open = sum(1 for t in b["trades"].values() if t["status"] == "open")
-    head = (f"💼 Balance ${eq:,.2f} · " if eq is not None else "") + f"Open {n_open}/{b['max_trades']}"
-    body = f"📊 Trades {len(done) + n_open} · TP hits {tp_hits} · SL hits {sl_hits}"
-    if done:
-        body += f" · Win rate {100 * len(wins) / len(done):.0f}% · P/L {sum(t.get('pnl') or 0 for t in done):+.2f}$"
-    return head + "\n" + body
+    head = (f"💼 Balance ${eq:,.2f} · " if eq is not None else "") + f"Bot trades open {n_open}" + (f"/{b['max_trades']}" if b["max_trades"] else "")
+    try:
+        L = ledger()
+    except Exception:
+        L = None
+    if not L:
+        return head
+    line = lambda g: (f"{g['closed']} closed, {g['wins']} won / {g['losses']} lost ({g['win_rate']}), P/L {g['net']:+.2f}$" if g["closed"] else "none closed yet")
+    return (head + f"\n\U0001F916 Bot: {line(L['bot'])}\n\U0001F464 You, from bot signals: {line(L['follow'])}"
+            + f"\n\U0001F4C8 Since tracking began: {L['total_net']:+.2f}$ ({L['total_pct']:+.1f}% of ${L['start_equity']:,.2f})")
+
+
+# ------------------------------------------------------------------------- results ledger (MEXC's own closed-position records)
+SIGNAL_WINDOW = 6 * 86_400_000                                  # a manual trade counts as "from a bot signal" if opened within 6 days of it
+
+
+def note_signal(sym, day, key, kind):
+    """Remember every signal the bot announced on a contract, to recognise manual trades that follow it."""
+    b = load_book()
+    lst = b.setdefault("signals", {}).setdefault(sym, [])
+    if not any(x[1] == key for x in lst):
+        lst.append([int(day), key, kind])
+        del lst[:-20]
+        return True
+    return False
+
+
+def history_positions(since):
+    out, page = [], 1
+    while page <= 20:
+        d = api_get("/api/v1/private/position/list/history_positions", {"page_num": page, "page_size": 100, "start_time": since})
+        rows = d.get("resultList") if isinstance(d, dict) else d
+        rows = rows or []
+        out += rows
+        if len(rows) < 100:
+            break
+        page += 1
+    return out
+
+
+def ledger(force=False):
+    """Every position since tracking began, classified as bot / manual from a bot signal / manual own, with P/L from MEXC.
+    P/L = close P/L - fees + funding (MEXC's numbers). % = P/L / initial margin, as MEXC shows it."""
+    if not force and _mem.get("ledger") and time.time() - _mem["ledger_t"] < 60:
+        return _mem["ledger"]
+    b = load_book()
+    flags = b.setdefault("flags", {})
+    if "ledger_start" not in flags:
+        flags["ledger_start"], flags["start_equity"] = int(time.time() * 1000) - 7 * 86_400_000, round(equity()[0], 4)
+    since = max(flags["ledger_start"], 1791450280118)
+    bot_pids = {str(t.get("position_id")) for t in b["trades"].values() if t.get("position_id")}
+    sig = b.get("signals") or {}
+    for t in b["trades"].values():                              # hand-overs and refused orders are bot signals too
+        if t.get("status") in ("manual", "failed") and t.get("symbol"):
+            lst = sig.setdefault(t["symbol"], [])
+            if not any(x[1] == t["key"] for x in lst):
+                lst.append([int(t.get("day") or t.get("time", 0)), t["key"], t.get("kind", "crypto")])
+    groups = {g: {"closed": 0, "wins": 0, "losses": 0, "net": 0.0, "fees": 0.0, "funding": 0.0, "pct": [], "best": None, "worst": None, "list": []}
+              for g in ("bot", "follow", "own")}
+
+    def group_of(p):
+        if str(p.get("positionId")) in bot_pids:
+            return "bot"
+        made = int(p.get("createTime") or 0)
+        if int(p.get("positionType") or 1) == 1 and any(0 <= made - s[0] <= SIGNAL_WINDOW for s in sig.get(p["symbol"], [])):
+            return "follow"
+        return "own"
+
+    for p in history_positions(since):
+        if int(p.get("state") or 3) != 3 or int(p.get("createTime") or 0) < since:
+            continue
+        g = groups[group_of(p)]
+        net = float(p.get("closeProfitLoss") or 0) - abs(float(p.get("totalFee") or p.get("fee") or 0)) + float(p.get("holdFee") or 0)
+        g["closed"] += 1
+        g["wins" if net > 0 else "losses"] += 1
+        g["net"] += net
+        g["fees"] += abs(float(p.get("totalFee") or p.get("fee") or 0))
+        g["funding"] += float(p.get("holdFee") or 0)
+        g["best"], g["worst"] = net if g["best"] is None else max(g["best"], net), net if g["worst"] is None else min(g["worst"], net)
+        if p.get("profitRatio") is not None:
+            g["pct"].append(float(p["profitRatio"]) * 100)
+        g["list"].append((int(p.get("updateTime") or 0), p["symbol"], net, float(p.get("profitRatio") or 0) * 100))
+    open_pos = positions()
+    unreal = {g: 0.0 for g in groups}
+    n_open = {g: 0 for g in groups}
+    for p in open_pos.values():
+        if int(p.get("createTime") or 0) < since and str(p.get("positionId")) not in bot_pids:
+            continue
+        g = group_of(p)
+        unreal[g] += float(p.get("unRealizedPnl") or 0)
+        n_open[g] += 1
+    for k, g in groups.items():
+        g["win_rate"] = f"{100 * g['wins'] / g['closed']:.0f}%" if g["closed"] else "-"
+        g["avg_pct"] = sum(g["pct"]) / len(g["pct"]) if g["pct"] else 0.0
+        g["open"], g["unrealised"] = n_open[k], unreal[k]
+        g["list"].sort(reverse=True)
+    total = sum(g["net"] for g in groups.values())
+    out = {**groups, "total_net": total, "start_equity": flags["start_equity"],
+           "total_pct": 100 * total / flags["start_equity"] if flags["start_equity"] else 0.0, "since": since}
+    _mem["ledger"], _mem["ledger_t"] = out, time.time()
+    return out
+
+
+def pnl_text():
+    if not (KEY and SECRET):
+        return "No MEXC API key is set."
+    L, eq = ledger(force=True), equity()[0]
+    names = {"bot": "\U0001F916 BOT TRADES", "follow": "\U0001F464 YOUR TRADES FROM BOT SIGNALS", "own": "\U0001F9D1 YOUR OTHER TRADES"}
+    lines = ["\U0001F4CA PROFIT & LOSS (from MEXC's closed-position records, after fees and funding)",
+             f"Since {time.strftime('%b %d', time.gmtime(L['since'] / 1000))} · balance now ${eq:,.2f}", ""]
+    for k in ("bot", "follow", "own"):
+        g = L[k]
+        lines.append(names[k])
+        if g["closed"]:
+            lines += [f"  Closed {g['closed']}: {g['wins']} won, {g['losses']} lost ({g['win_rate']})",
+                      f"  P/L {g['net']:+.2f}$ · average {g['avg_pct']:+.1f}% on margin",
+                      f"  Best {g['best']:+.2f}$ · worst {g['worst']:+.2f}$ · fees {g['fees']:.2f}$ · funding {g['funding']:+.2f}$"]
+            lines += [f"    {time.strftime('%b %d', time.gmtime(t / 1000))} {s.replace('_USDT', '')}: {n:+.2f}$ ({pc:+.1f}%)" for t, s, n, pc in g["list"][:5]]
+        else:
+            lines.append("  None closed yet")
+        if g["open"]:
+            lines.append(f"  Open now {g['open']}, unrealised {g['unrealised']:+.2f}$")
+        lines.append("")
+    lines.append(f"TOTAL closed P/L {L['total_net']:+.2f}$ = {L['total_pct']:+.1f}% of ${L['start_equity']:,.2f} (balance when tracking began)")
+    lines.append("A trade of yours counts as 'from bot signals' if it is a long on the same contract, opened within 6 days after the bot's signal.")
+    return "\n".join(lines)
 
 
 def sizing(eq, price, sl, cinfo, other_notional):
@@ -498,6 +615,11 @@ def tick(state, send, persist):
             persist()
             send("\U0001F511 Your MEXC API key is about 80 days old. Keys without a linked IP expire after 90 days: renew it under API Management → My API Key → Renew.")
         open_syms = {p["symbol"] for p in pos.values()}
+        noted = False
+        for key, coin, t, kind, sym, *_ in [c for c in candidates(state, set())]:   # every signal, so manual trades can be matched
+            noted = note_signal(sym, t["day"], key, kind) or noted
+        if noted:
+            persist()
         for key, coin, t, kind, sym in candidates(state, open_syms):
             if b["max_trades"] and len(pos) >= b["max_trades"]:
                 break
