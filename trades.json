@@ -479,6 +479,22 @@
    "entry": 109.75,
    "last_hold": 3.0,
    "split": true
+  },
+  "dip:SMH:1792022400000": {
+   "key": "dip:SMH:1792022400000",
+   "coin": "SMH",
+   "symbol": "SMH_USDT",
+   "kind": "dip",
+   "name": "SMH USDT (SMH, stock dip)",
+   "day": 1792022400000,
+   "status": "opening",
+   "time": 1792124612947,
+   "leverage": 20,
+   "vol": 2.0,
+   "sl": 511.647,
+   "tp1": 572.9979000000001,
+   "tp2": 582.4365,
+   "entry_signal": 558.84
   }
  },
  "flags": {
