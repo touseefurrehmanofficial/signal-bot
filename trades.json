@@ -607,14 +607,15 @@
    "kind": "stock",
    "name": "PFESTOCK USDT (PFE, stock breakout)",
    "day": 1792022400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792150690431,
    "leverage": 8,
    "vol": 2.0,
    "sl": 27.40999984741211,
    "tp1": 30.45500087738037,
    "tp2": 31.470001220703125,
-   "entry_signal": 29.440000534057617
+   "entry_signal": 29.440000534057617,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -648,6 +649,7 @@
  "blocked": [
   "NVIDIA_USDT",
   "AMDSTOCK_USDT",
-  "MSFTSTOCK_USDT"
+  "MSFTSTOCK_USDT",
+  "PFESTOCK_USDT"
  ]
 }
