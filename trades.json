@@ -504,6 +504,22 @@
    "entry": 561.56,
    "last_hold": 2.0,
    "split": true
+  },
+  "dip:NVDA:1792022400000": {
+   "key": "dip:NVDA:1792022400000",
+   "coin": "NVDA",
+   "symbol": "NVIDIA_USDT",
+   "kind": "dip",
+   "name": "NVIDIA USDT (NVDA, stock dip)",
+   "day": 1792022400000,
+   "status": "opening",
+   "time": 1792147524307,
+   "leverage": 29,
+   "vol": 1.0,
+   "sl": 200.472,
+   "tp1": 222.2574,
+   "tp2": 225.60899999999998,
+   "entry_signal": 217.23
   }
  },
  "flags": {
