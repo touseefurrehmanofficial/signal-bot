@@ -633,6 +633,17 @@
    "tp2": 98.3499984741211,
    "entry_signal": 92.0,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "PG:1792022400000": {
+   "key": "PG:1792022400000",
+   "coin": "PG",
+   "symbol": "PGSTOCK_USDT",
+   "kind": "stock",
+   "name": "PGSTOCK USDT (PG, stock breakout)",
+   "day": 1792022400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.58",
+   "time": 1792150700894
   }
  },
  "flags": {
