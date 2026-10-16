@@ -54,7 +54,7 @@ def klines_stock(ticker):
         raise RuntimeError(f"{ticker}: no data")
     d.columns = [c[0].lower() if isinstance(c, tuple) else str(c).lower() for c in d.columns]
     d = d.dropna(subset=["close"])
-    df = pd.DataFrame({"t": (d.index.astype("int64") // 1_000_000).astype(float), "open": d.open.values, "high": d.high.values,
+    df = pd.DataFrame({"t": ((d.index - pd.Timestamp(0)) // pd.Timedelta(milliseconds=1)).astype(float), "open": d.open.values, "high": d.high.values,
                        "low": d.low.values, "close": d.close.values, "volume": d.volume.values})
     return _with_placeholder(df)
 

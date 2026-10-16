@@ -26,6 +26,7 @@ import hmac
 import json
 import math
 import os
+import re
 import time
 from decimal import ROUND_DOWN, ROUND_HALF_UP, Decimal
 from pathlib import Path
@@ -222,8 +223,8 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
     lev, vol, value, why = sizing(eq, price, sl, cinfo, other)
     if why:                                                     # not permanent: tried again while the signal is fresh; message sent once per reason
         skips = b.setdefault("skips", {})
-        kind = why.split(" (")[0].split(",")[0]                 # the reason without its live numbers
-        if (skips.get(key) or "").split(" (")[0].split(",")[0] != kind:
+        plain = lambda w: re.sub(r"[\d.,$]+", "#", (w or "").split(" (")[0])   # the reason without its live numbers
+        if plain(skips.get(key)) != plain(why):
             skips[key] = why
             persist()
             if kind == "crypto":                                # stock signals come in bursts: their skips are only listed in /account
@@ -259,6 +260,10 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
                 filled, cost, pid = filled + f, cost + f * float(o.get("dealAvgPrice") or price), o["positionId"]
         if filled <= 0:
             trade.update(status="failed", reason=str(err) if err else "entry order not filled")
+            if err and "8950" in str(err):                      # "unavailable in your country or region": never try this contract again
+                b.setdefault("blocked", [])
+                if sym not in b["blocked"]:
+                    b["blocked"].append(sym)
             persist()
             send(f"⚠️ {name}: the entry order was not accepted ({err or 'not filled'}). Nothing is open.")
             return
@@ -371,7 +376,8 @@ def candidates(state, pos_symbols):
         t = p.get("last")
         if usable(t) and c in mexc:
             out.append((f"dip:{c}:{t['day']}", c, t, "dip", mexc[c]))
-    out = [x for x in out if x[0] not in b["trades"] and x[4] not in pos_symbols]
+    blocked = set(b.get("blocked") or [])
+    out = [x for x in out if x[0] not in b["trades"] and x[4] not in pos_symbols and x[4] not in blocked]
     return sorted(out, key=lambda x: (x[3] != "crypto", x[2]["age_days"], x[2]["risk_pct"]))
 
 
