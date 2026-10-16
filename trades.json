@@ -851,14 +851,15 @@
    "kind": "dip",
    "name": "MRVLSTOCK USDT (MRVL, stock dip)",
    "day": 1792108800000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792185916319,
    "leverage": 33,
    "vol": 1.0,
    "sl": 182.46,
    "tp1": 241.441,
    "tp2": 250.51500000000001,
-   "entry_signal": 227.83
+   "entry_signal": 227.83,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -903,7 +904,8 @@
   "XOMSTOCK_USDT",
   "AAPLSTOCK_USDT",
   "APHSTOCK_USDT",
-  "KEYSSTOCK_USDT"
+  "KEYSSTOCK_USDT",
+  "MRVLSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
