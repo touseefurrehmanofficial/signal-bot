@@ -644,6 +644,22 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.58",
    "time": 1792150700894
+  },
+  "V:1792022400000": {
+   "key": "V:1792022400000",
+   "coin": "V",
+   "symbol": "VSTOCK_USDT",
+   "kind": "stock",
+   "name": "VSTOCK USDT (V, stock breakout)",
+   "day": 1792022400000,
+   "status": "opening",
+   "time": 1792150703550,
+   "leverage": 53,
+   "vol": 1.0,
+   "sl": 359.3299865722656,
+   "tp1": 419.9600067138672,
+   "tp2": 440.1700134277344,
+   "entry_signal": 399.75
   }
  },
  "flags": {
