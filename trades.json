@@ -917,6 +917,22 @@
    "entry": 8.695,
    "last_hold": 1.0,
    "split": false
+  },
+  "CVX:1791936000000": {
+   "key": "CVX:1791936000000",
+   "coin": "CVX",
+   "symbol": "CVXSTOCK_USDT",
+   "kind": "stock",
+   "name": "CVXSTOCK USDT (CVX, stock breakout)",
+   "day": 1791936000000,
+   "status": "opening",
+   "time": 1792198207318,
+   "leverage": 32,
+   "vol": 1.0,
+   "sl": 202.41000366210938,
+   "tp1": 231.85498809814453,
+   "tp2": 241.66998291015625,
+   "entry_signal": 222.0399932861328
   }
  },
  "flags": {
