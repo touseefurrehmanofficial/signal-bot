@@ -352,10 +352,11 @@ COMMANDS = {
     "account": (lambda a="": ft.account_text(), "Futures balance, trades, TP and SL hits"),
     "pnl": (lambda a="": ft.pnl_text(), "Profit & loss: bot trades and yours, in $ and %"),
     "maxtrades": (lambda a="": maxtrades_text(a), "Max open trades, e.g. /maxtrades 10"),
+    "maxloss": (lambda a="": maxloss_text(a), "Max loss per trade, % of balance, e.g. /maxloss 10"),
     "pause": (lambda a="": pause_text(a), "Stop opening new auto-trades"),
     "resume": (lambda a="": resume_text(a), "Start opening auto-trades again"),
 }
-ALIASES = {"profit": "pnl", "report": "pnl", "position": "positions", "trades": "positions", "balance": "account", "max": "maxtrades", "signals": "signal", "demo": "demo_trade", "demotrade": "demo_trade", "plan": "coin", "stock": "coin", "result": "results", "risk": "size", "start": "help"}
+ALIASES = {"profit": "pnl", "report": "pnl", "position": "positions", "trades": "positions", "balance": "account", "max": "maxtrades", "loss": "maxloss", "maxrisk": "maxloss", "signals": "signal", "demo": "demo_trade", "demotrade": "demo_trade", "plan": "coin", "stock": "coin", "result": "results", "risk": "size", "start": "help"}
 HELP = "Commands:\n" + "\n".join(f"/{k} - {d}" for k, (_, d) in COMMANDS.items()) + "\n/help - this list\n\nNew signals are also sent automatically after each daily close."
 
 
@@ -531,6 +532,23 @@ def maxtrades_text(arg=""):
     b["max_trades"] = n
     save_notified()
     return f"\u2705 Max open trades set to {n}."
+
+
+def maxloss_text(arg=""):
+    b = ft.load_book()
+    a = arg.strip().lower().rstrip("%")
+    now = ft.max_loss_pct()
+    if a in ("", "show"):
+        return (f"Max loss per trade: {now:g}% of your balance.\nA new trade whose SL would lose more than that is not opened "
+                f"by the bot; you get it as a manual-trade card instead. Open trades are not changed.\nChange it with /maxloss 10 (any number from 0.5 to 100).")
+    try:
+        n = float(a)
+        assert 0.5 <= n <= 100
+    except Exception:
+        return "Send a number from 0.5 to 100, for example /maxloss 10"
+    b["max_loss_pct"] = n
+    save_notified()
+    return f"✅ Max loss per trade set to {n:g}% of your balance (was {now:g}%). It applies to new trades only; open trades are not changed."
 
 
 def pause_text(arg=""):

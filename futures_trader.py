@@ -10,7 +10,7 @@ RULES (set by the owner)
   * Leverage: the LOWER of
         - the highest leverage at which the position cannot be liquidated even if price went to zero
           (total open notional stays below LIQ_BUFFER x equity), and
-        - the leverage at which hitting the SL loses at most MAX_LOSS_PCT of equity (default 1%).
+        - the leverage at which hitting the SL loses at most the max-loss % of equity (/maxloss, else MAX_LOSS_PCT).
     If that is below 1x, or the order would be below the contract's minimum size, the trade is skipped.
   * At most `max_trades` open positions on the account (default 10; /maxtrades changes it).
   * TP1 (+0.5R) closes 80%, TP2 (+1R) closes the rest. If the position is too small to split, all of it closes at TP1.
@@ -41,7 +41,7 @@ BASE = "https://api.mexc.com"
 KEY, SECRET = os.environ.get("MEXC_API_KEY", ""), os.environ.get("MEXC_API_SECRET", "")
 STYLE = os.environ.get("TARGET_STYLE", "1")
 MARGIN_PCT = float(os.environ.get("MARGIN_PCT", "1"))
-MAX_LOSS_PCT = float(os.environ.get("MAX_LOSS_PCT", "1"))
+MAX_LOSS_PCT = float(os.environ.get("MAX_LOSS_PCT", "1"))      # default; /maxloss in Telegram overrides it (stored in trades.json)
 MIN_BALANCE = float(os.environ.get("MIN_BALANCE", "1"))
 LIQ_BUFFER = 0.9          # total open notional kept under 90% of equity: no liquidation price, with room for fees and funding
 SL_LIMIT_OFFSET = 0.005   # SL limit order price 0.5% under the SL trigger
@@ -280,6 +280,12 @@ def pnl_text():
     return "\n".join(lines)
 
 
+def max_loss_pct():
+    """the owner's max loss per trade, % of equity: the /maxloss setting if made, else MAX_LOSS_PCT."""
+    v = load_book().get("max_loss_pct")
+    return float(v) if v else MAX_LOSS_PCT
+
+
 def sizing(eq, price, sl, cinfo, other_notional):
     """Leverage and volume for one trade under the owner's rules. Returns (leverage, vol, notional, reason_if_skipped)."""
     margin = eq * MARGIN_PCT / 100
@@ -287,7 +293,8 @@ def sizing(eq, price, sl, cinfo, other_notional):
     if margin <= 0 or stop_frac <= 0:
         return 0, 0, 0, "price is not above the SL"
     lev_liq = math.floor((LIQ_BUFFER * eq - other_notional) / margin)
-    lev_risk = math.floor(MAX_LOSS_PCT / 100 * eq / (margin * stop_frac))
+    loss_pct = max_loss_pct()
+    lev_risk = math.floor(loss_pct / 100 * eq / (margin * stop_frac))
     max_lev = int(cinfo.get("maxLeverage") or 1)
     size, unit, min_vol = float(cinfo["contractSize"]), cinfo.get("volUnit") or 1, float(cinfo.get("minVol") or 1)
     lev = min(lev_liq, lev_risk, max_lev)
@@ -299,7 +306,9 @@ def sizing(eq, price, sl, cinfo, other_notional):
     # reaches the contract's minimum order: that is the farthest liquidation price available.
     lev = math.ceil(min_vol * size * price / margin)
     if lev > lev_risk:
-        return 0, 0, 0, f"the SL is {stop_frac * 100:.0f}% away, too far for a {MAX_LOSS_PCT:g}% loss limit"
+        loss = min_vol * size * price * stop_frac
+        return 0, 0, 0, (f"MEXC's smallest order would lose about ${loss:.2f} at the SL ({stop_frac * 100:.0f}% away), "
+                         f"more than your {loss_pct:g}% limit of ${loss_pct / 100 * eq:.2f}")
     if lev > max_lev:
         return 0, 0, 0, f"even at this contract's maximum {max_lev}X the order would be below its minimum of about ${min_vol * size * price:.2f}"
     return lev, min_vol, min_vol * size * price, None
@@ -587,7 +596,7 @@ def tick(state, send, persist):
             b["flags"]["key_seen"] = int(time.time() * 1000)
             persist()
             send(f"✅ MEXC futures connected\nFutures balance: ${eq:,.2f}\nPosition mode: {'Hedge' if mode == 1 else 'One-way'}\nMax open trades: {b['max_trades']}\n"
-                 f"Margin per trade: {MARGIN_PCT:g}% · Max loss per trade: {MAX_LOSS_PCT:g}%\nThe bot will open trades on new crypto signals, and on stock signals for stocks MEXC lists, from now on.")
+                 f"Margin per trade: {MARGIN_PCT:g}% · Max loss per trade: {max_loss_pct():g}%\nThe bot will open trades on new crypto signals, and on stock signals for stocks MEXC lists, from now on.")
         cinfo, prices, pos = contracts(), tickers(), positions()
         for t in [x for x in b["trades"].values() if x["status"] == "open" and x.get("tp1_hit") and not x.get("be_moved")]:
             if pos.get(t["position_id"]):
@@ -737,7 +746,7 @@ def account_text():
     b = load_book()
     recent = sorted([t for t in b["trades"].values() if t["status"] in ("closed", "skipped", "failed", "manual")], key=lambda t: -t.get("closed", t.get("time", 0)))[:8]
     lines = ["\U0001F4BC FUTURES ACCOUNT", f"Equity ${eq:,.2f} · available ${avail:,.2f}", f"Trading: {'PAUSED' if b['paused'] else 'on'} · max open trades {b['max_trades']}",
-             f"Margin per trade {MARGIN_PCT:g}% · max loss per trade {MAX_LOSS_PCT:g}%", "", stats_line(eq), ""]
+             f"Margin per trade {MARGIN_PCT:g}% · max loss per trade {max_loss_pct():g}%", "", stats_line(eq), ""]
     if recent:
         lines.append("Recent:")
         lines += [f"  {t['coin']}: {t.get('result') or t['status']}" + (f" {t['pnl']:+.2f}$" if t.get("pnl") is not None and t["status"] == "closed" else "")
