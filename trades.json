@@ -902,7 +902,7 @@
    "kind": "crypto",
    "name": "INJ USDT",
    "day": 1792108800000,
-   "status": "open",
+   "status": "closed",
    "time": 1792195855671,
    "leverage": 122,
    "vol": 1.0,
@@ -915,9 +915,12 @@
    ],
    "position_id": 1521968785,
    "entry": 8.695,
-   "last_hold": 1.0,
+   "last_hold": 0.0,
    "split": false,
-   "manual_close": true
+   "manual_close": true,
+   "pnl": 0.252,
+   "closed": 1792209409244,
+   "result": "closed by you"
   },
   "CVX:1791936000000": {
    "key": "CVX:1791936000000",
