@@ -391,6 +391,14 @@ def git(*args):
     return subprocess.run(["git", *args], cwd=HERE, capture_output=True, text=True, timeout=60)
 
 
+def code_version():
+    """the last commit that changed the bot's code or settings (the listener's own 'bot state' commits do not count)."""
+    try:
+        return git("log", "-1", "--format=%H", "--", "*.py", ".github", "*.txt").stdout.strip()
+    except Exception:
+        return ""
+
+
 def save_notified():
     """Save the listener's own files (notified.json, trades.json) to the repository. Nothing else writes them."""
     for _ in range(3):
@@ -599,7 +607,15 @@ def main():
     except Exception:
         pass
     offset, end, answered = None, time.time() + LISTEN_SECONDS, 0
+    start_code, code_checked = code_version(), time.time()
     while time.time() < end:
+        if time.time() - code_checked > 60:                    # new bot code pushed: hand over to a fresh listener now
+            code_checked = time.time()
+            refresh()
+            if start_code and code_version() not in ("", start_code):
+                print("new code on main; restarting the listener")
+                send("\U0001F504 Bot update received. Restarting with the new code; back in about a minute.")
+                break
         maybe_start_scan()
         try:
             watch_levels()
