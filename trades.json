@@ -916,7 +916,8 @@
    "position_id": 1521968785,
    "entry": 8.695,
    "last_hold": 1.0,
-   "split": false
+   "split": false,
+   "manual_close": true
   },
   "CVX:1791936000000": {
    "key": "CVX:1791936000000",
