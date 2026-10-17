@@ -693,15 +693,56 @@ def positions_view():
 
 def ask_confirm(action, pids):
     token = f"{int(time.time())}{len(_mem['pending'])}"
-    _mem["pending"][token] = (action, pids, time.time())
+    px = {}
+    if action == "close":                                       # the owner's rule: close at the price shown when Close was pressed
+        pos, prices = positions(), tickers()
+        px = {pid: prices[pos[pid]["symbol"]] for pid in pids if pid in pos and pos[pid]["symbol"] in prices}
+    _mem["pending"][token] = (action, pids, time.time(), px)
     return token
+
+
+def close_prices(token):
+    item = _mem["pending"].get(token)
+    return item[3] if item else {}
+
+
+CLOSE_WAIT = 60           # seconds a /positions limit close may wait for a fill before it is cancelled
+
+
+def limit_close(pid, symbol, vol, price):
+    """Close a position with a LIMIT order at `price` (the price when Close was pressed). Waits up to CLOSE_WAIT seconds;
+    whatever has not filled by then is cancelled, so the position keeps its SL. Returns (filled, avg price)."""
+    unit = contracts()[symbol]["priceUnit"]
+    px = to_unit(price, unit, ROUND_HALF_UP)
+    oid = api_post("/api/v1/private/order/create", {"symbol": symbol, "price": px, "vol": vol, "side": 4, "type": 1, "openType": 2, "positionId": pid})["orderId"]
+    o, end = {}, time.time() + CLOSE_WAIT
+    while time.time() < end:
+        o = api_get(f"/api/v1/private/order/get/{oid}") or {}
+        if int(o.get("state", 0)) in (3, 4, 5):
+            break
+        time.sleep(2)
+    if int(o.get("state", 0)) not in (3, 4, 5):
+        try:
+            api_post("/api/v1/private/order/cancel", [str(oid)])
+        except ApiError:
+            pass
+        o = api_get(f"/api/v1/private/order/get/{oid}") or o
+    filled = float(o.get("dealVol") or 0)
+    if filled >= vol:                                            # fully closed: clear its leftover TP/SL orders
+        for s in tpsl_orders(symbol):
+            if str(s.get("positionId")) == str(pid) and not s.get("isFinished"):
+                try:
+                    api_post("/api/v1/private/stoporder/cancel", [{"stopPlanOrderId": s["id"]}])
+                except ApiError:
+                    pass
+    return filled, float(o.get("dealAvgPrice") or px), px
 
 
 def run_confirmed(token):
     item = _mem["pending"].pop(token, None)
     if not item or time.time() - item[2] > 600:
         return "This confirmation expired. Send /positions again."
-    action, pids, _ = item
+    action, pids, _, pressed = item
     pos, prices, cinfo, out = positions(), tickers(), contracts(), []
     eq, _ = equity()
     b = load_book()
@@ -713,11 +754,18 @@ def run_confirmed(token):
         sym = p["symbol"]
         try:
             if action == "close":
-                market_close(pid, sym, float(p["holdVol"]), prices[sym])
-                for t in b["trades"].values():
-                    if t.get("position_id") == pid and t["status"] == "open":
-                        t["manual_close"] = True
-                out.append(f"\U0001F6D1 {sym.replace('_', ' ')}: closed at market")
+                vol = float(p["holdVol"])
+                filled, avg, px = limit_close(pid, sym, vol, pressed.get(pid, prices[sym]))
+                if filled > 0:
+                    for t in b["trades"].values():
+                        if t.get("position_id") == pid and t["status"] == "open":
+                            t["manual_close"] = True
+                name = sym.replace("_", " ")
+                if filled >= vol:
+                    out.append(f"\U0001F6D1 {name}: closed with a limit order at {avg:g}")
+                else:
+                    out.append(f"⏳ {name}: price moved away from {px:g}; the limit order filled {filled:g} of {vol:g} in {CLOSE_WAIT} s and the rest was cancelled. "
+                               f"The position stays open with its SL. Press Close again to try at the new price.")
             else:
                 lev, c, price = int(p["leverage"]), cinfo[sym], prices[sym]
                 margin = eq * MARGIN_PCT / 100

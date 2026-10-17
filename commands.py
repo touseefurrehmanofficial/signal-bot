@@ -558,7 +558,12 @@ def on_button(cq):
             return answer("Tick at least one position first")
         names = [b["text"][2:].split()[0] for row in rows for b in row if b.get("callback_data", "").startswith("t:") and b["text"].startswith("\u2611")]
         token = ft.ask_confirm(data, picked)
-        what = "CLOSE at market" if data == "close" else f"ADD {ft.MARGIN_PCT:g}% margin (same leverage) to"
+        if data == "close":
+            px = ft.close_prices(token)
+            names = [f"{n} at {px[p]:g}" if p in px else n for n, p in zip(names, picked)]
+            what = f"CLOSE with a limit order at the price now (waits up to {ft.CLOSE_WAIT} s; if price moves away it is cancelled and the SL stays)"
+        else:
+            what = f"ADD {ft.MARGIN_PCT:g}% margin (same leverage) to"
         edit(msg, f"{what}: {', '.join(names)}?", [[{"text": "\u2705 Yes", "callback_data": f"y:{token}"}, {"text": "\u2716 Cancel", "callback_data": "ref"}]])
         return answer()
     if data.startswith("y:"):
