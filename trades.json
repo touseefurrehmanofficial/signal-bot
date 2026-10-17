@@ -938,6 +938,17 @@
    "tp2": 241.66998291015625,
    "entry_signal": 222.0399932861328,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "CVX:1792108800000": {
+   "key": "CVX:1792108800000",
+   "coin": "CVX",
+   "symbol": "CVXSTOCK_USDT",
+   "kind": "stock",
+   "name": "CVXSTOCK USDT (CVX, stock breakout)",
+   "day": 1792108800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792210570490
   }
  },
  "flags": {
