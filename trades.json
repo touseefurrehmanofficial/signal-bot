@@ -902,14 +902,21 @@
    "kind": "crypto",
    "name": "INJ USDT",
    "day": 1792108800000,
-   "status": "opening",
+   "status": "open",
    "time": 1792195855671,
    "leverage": 122,
    "vol": 1.0,
    "sl": 6.757,
    "tp1": 9.727,
    "tp2": 10.717,
-   "entry_signal": 8.737
+   "entry_signal": 8.737,
+   "order_ids": [
+    "866230552760629760"
+   ],
+   "position_id": 1521968785,
+   "entry": 8.695,
+   "last_hold": 1.0,
+   "split": false
   }
  },
  "flags": {
