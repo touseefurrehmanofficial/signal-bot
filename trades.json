@@ -894,6 +894,22 @@
    "tp2": 60.85085000000001,
    "entry_signal": 55.13,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "INJ:1792108800000": {
+   "key": "INJ:1792108800000",
+   "coin": "INJ",
+   "symbol": "INJ_USDT",
+   "kind": "crypto",
+   "name": "INJ USDT",
+   "day": 1792108800000,
+   "status": "opening",
+   "time": 1792195855671,
+   "leverage": 122,
+   "vol": 1.0,
+   "sl": 6.757,
+   "tp1": 9.727,
+   "tp2": 10.717,
+   "entry_signal": 8.737
   }
  },
  "flags": {
