@@ -544,6 +544,12 @@ def follow(eq, pos, prices, send, persist, state=None):
         persist()
 
 
+def show_manual():
+    """/manualtrades: on = also send cards for signals the bot cannot open and TP/SL alerts for every signal;
+    off (default) = only trades the bot opened and signals the owner took by hand."""
+    return bool(load_book().get("manual_cards"))
+
+
 def manual(key, coin, t, kind, sym, reason, eq, send, persist, record=True):
     """The bot cannot open this signal: send the owner the full card to take it by hand, once per signal.
     The signal is then marked as handed over, so the bot never opens it later on top of a manual trade."""
@@ -554,6 +560,8 @@ def manual(key, coin, t, kind, sym, reason, eq, send, persist, record=True):
         b["trades"][key] = {"key": key, "coin": coin, "symbol": sym, "kind": kind, "name": label(coin, sym, kind), "day": t["day"],
                             "status": "manual", "reason": reason, "time": int(time.time() * 1000)}
     persist()
+    if not show_manual():                                       # owner's /manualtrades setting is off: stay quiet
+        return
     card = signal_card(coin, kind, t, sym if kind != "crypto" else None, t.get("ma20"), eq, 1.0)
     extra = ""
     try:                                                        # what MEXC's minimum order means at the bot's own margin

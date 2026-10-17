@@ -352,11 +352,12 @@ COMMANDS = {
     "account": (lambda a="": ft.account_text(), "Futures balance, trades, TP and SL hits"),
     "pnl": (lambda a="": ft.pnl_text(), "Profit & loss: bot trades and yours, in $ and %"),
     "maxtrades": (lambda a="": maxtrades_text(a), "Max open trades, e.g. /maxtrades 10"),
+    "manualtrades": (None, "On/off: cards for trades the bot cannot open"),
     "maxloss": (lambda a="": maxloss_text(a), "Max loss per trade, % of balance, e.g. /maxloss 10"),
     "pause": (lambda a="": pause_text(a), "Stop opening new auto-trades"),
     "resume": (lambda a="": resume_text(a), "Start opening auto-trades again"),
 }
-ALIASES = {"profit": "pnl", "report": "pnl", "position": "positions", "trades": "positions", "balance": "account", "max": "maxtrades", "loss": "maxloss", "maxrisk": "maxloss", "signals": "signal", "demo": "demo_trade", "demotrade": "demo_trade", "plan": "coin", "stock": "coin", "result": "results", "risk": "size", "start": "help"}
+ALIASES = {"profit": "pnl", "report": "pnl", "position": "positions", "trades": "positions", "balance": "account", "max": "maxtrades", "loss": "maxloss", "manual": "manualtrades", "manualcards": "manualtrades", "maxrisk": "maxloss", "signals": "signal", "demo": "demo_trade", "demotrade": "demo_trade", "plan": "coin", "stock": "coin", "result": "results", "risk": "size", "start": "help"}
 HELP = "Commands:\n" + "\n".join(f"/{k} - {d}" for k, (_, d) in COMMANDS.items()) + "\n/help - this list\n\nNew signals are also sent automatically after each daily close."
 
 
@@ -421,6 +422,43 @@ def save_notified():
     print("could not save notified.json")
 
 
+_pos_cache = {"t": 0.0, "pos": {}}
+
+
+def followed_keys(plans):
+    """With /manualtrades off: the plans whose TP/SL alerts still go out = ones the bot opened + ones the owner took by
+    hand (a long on that contract opened within 6 days of the signal, not a bot position). Remembered once seen,
+    so the SL alert still arrives after the position is closed."""
+    b, now = ft.load_book(), time.time()
+    taken = b.setdefault("followed", {})
+    if now - _pos_cache["t"] > 30:
+        _pos_cache["t"] = now
+        try:
+            _pos_cache["pos"] = ft.positions()
+        except Exception:
+            pass                                                # keep the last list
+    bot_pids = {t.get("position_id") for t in b["trades"].values() if t.get("position_id")}
+    keys, mexc = set(), (load("state.json").get("mexc") or {})
+    for key, name, kind, t, *_ in plans:
+        bot_key = (f"dip:{name}" if kind == "dip" else name) + f":{t['day']}"
+        bt = b["trades"].get(bot_key) or {}
+        if bt.get("position_id"):
+            keys.add(key)
+            continue
+        sym = ft.sym_of(name) if kind == "crypto" else mexc.get(name)
+        if key not in taken and any(p["symbol"] == sym and p["positionId"] not in bot_pids and int(p.get("positionType") or 1) == 1
+                                    and 0 <= int(p.get("createTime") or 0) - t["day"] <= ft.SIGNAL_WINDOW for p in _pos_cache["pos"].values()):
+            taken[key] = int(now * 1000)
+            send(f"\U0001F440 I see you took {pair_name(name, kind, sym if kind != 'crypto' else None)} from the bot's signal. "
+                 f"I'll send its TP and SL updates.")
+            save_notified()
+        if key in taken:
+            keys.add(key)
+    for k in [k for k, v in taken.items() if now * 1000 - v > 120 * 86_400_000]:
+        taken.pop(k)
+    return keys
+
+
 def watch_levels():
     if time.time() - _watch["t"] < 12:
         return
@@ -445,6 +483,7 @@ def watch_levels():
         t = p["last"]
         if c in mexc and t["status"] in ("open", "stopped") and t["day"] + 86_400_000 >= BOT_START:
             plans.append((f"d:{c}:{t['day']}", c, "dip", t, ["0.3", "0.5"], t["status"] == "open"))
+    allowed = None if ft.show_manual() else followed_keys(plans)
     for key, name, kind, t, levels, tracking in plans:
         live.add(key)
         if f"{key}:sl" in seen:
@@ -465,7 +504,7 @@ def watch_levels():
         seen.update(f"{key}:{lv}" for lv in fresh)
         if stopped:
             seen.add(f"{key}:sl")
-        if baseline:
+        if baseline or (allowed is not None and key not in allowed):   # marked as seen either way: no backlog if turned on later
             continue
         pair, shown = pair_name(name, kind, mexc.get(name) if kind != "crypto" else None), dict(t, hits={lv: 1 for lv in hit})
         if stopped and len(hit) < len(levels):
@@ -504,6 +543,11 @@ def on_button(cq):
                     btn["text"] = ("\u2611" if btn["text"].startswith("\u2610") else "\u2610") + btn["text"][1:]
         edit(msg, rows=rows)
         return answer()
+    if data in ("mm:on", "mm:off"):
+        ft.load_book()["manual_cards"] = data == "mm:on"
+        save_notified()
+        edit(msg, *manual_mode_view())
+        return answer("Manual-trade messages " + ("ON" if data == "mm:on" else "OFF"))
     if data == "ref":
         text, rows = ft.positions_view()
         edit(msg, text, rows)
@@ -540,6 +584,18 @@ def maxtrades_text(arg=""):
     b["max_trades"] = n
     save_notified()
     return f"\u2705 Max open trades set to {n}."
+
+
+def manual_mode_view():
+    on = ft.show_manual()
+    text = ("✋ MANUAL-TRADE MESSAGES: " + ("ON" if on else "OFF") + "\n\n"
+            "ON: you also get a card for every signal the bot could not open (leverage, minimum order, max loss, region), "
+            "and TP/SL alerts for every signal.\n\n"
+            "OFF: you only get messages for trades the bot opened, plus TP/SL alerts for signals you took yourself on MEXC "
+            "(the bot spots them: a long on that coin opened within 6 days of its signal).\n\n"
+            "Either way the bot never opens a signal it handed over, and /signal still lists everything you can enter.")
+    rows = [[{"text": ("✅ " if on else "") + "On", "callback_data": "mm:on"}, {"text": ("" if on else "✅ ") + "Off", "callback_data": "mm:off"}]]
+    return text, rows
 
 
 def maxloss_text(arg=""):
@@ -656,6 +712,10 @@ def main():
                 continue                                       # ordinary text that is not a command word: stay quiet
             refresh()
             try:
+                if cmd == "manualtrades":
+                    send_kb(*manual_mode_view())
+                    answered += 1
+                    continue
                 if cmd == "positions":
                     text, rows = ft.positions_view()
                     send_kb(text, rows) if rows else send(text)
