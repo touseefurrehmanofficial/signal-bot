@@ -13,7 +13,7 @@ RULES (set by the owner)
         - the leverage at which hitting the SL loses at most the max-loss % of equity (/maxloss, else MAX_LOSS_PCT).
     If that is below 1x, or the order would be below the contract's minimum size, the trade is skipped.
   * At most `max_trades` open positions on the account (default 10; /maxtrades changes it).
-  * TP1 (+0.5R) closes 80%, TP2 (+1R) closes the rest. If the position is too small to split, all of it closes at TP1.
+  * TP1 (+0.5R) closes 60% on crypto (80% on stocks and dips), TP2 closes the rest. If the position is too small to split, all of it closes at TP1.
   * TP and SL are exchange-side TP/SL orders of the LIMIT type, so they work even if this bot is offline.
     The SL limit price sits SL_LIMIT_OFFSET below the trigger so it still fills in a fast fall.
   * No new trades while futures equity is below MIN_BALANCE (default $1), or while paused (/pause).
@@ -46,7 +46,8 @@ MIN_BALANCE = float(os.environ.get("MIN_BALANCE", "1"))
 LIQ_BUFFER = 0.9          # total open notional kept under 90% of equity: no liquidation price, with room for fees and funding
 SL_LIMIT_OFFSET = 0.005   # SL limit order price 0.5% under the SL trigger
 BE_FEES = 0.0016          # after TP1 the stop moves to entry + 0.16% (taker fee in and out), so the rest closes at about $0
-TP1_SHARE = 0.8
+TP1_SHARE = {"crypto": 0.6}     # share closed at TP1 when the position splits; crypto 60/40 (tested, stage 52), stocks and dips 80/20
+tp1_share = lambda kind: TP1_SHARE.get(kind, 0.8)
 SIGNAL_DAYS = 3
 ALIAS = {"FIL": "FILECOIN"}
 
@@ -404,9 +405,10 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
             api_post("/api/v1/private/position/change_leverage", {"openType": 2, "symbol": sym, "positionType": 1, "leverage": lev})
         except ApiError:
             pass                                                # the order below carries the leverage too
-        # SL and TP are attached to the entry order itself (the order call MEXC accepts); 80% carries TP1, 20% carries TP2.
+        # SL and TP are attached to the entry order itself (the order call MEXC accepts); part A carries TP1, part B TP2.
         unit, min_vol = cinfo["priceUnit"], float(cinfo.get("minVol") or 1)
-        vol_a = to_unit(vol * TP1_SHARE, cinfo.get("volUnit") or 1)
+        trade["tp1_share"] = share = tp1_share(kind)
+        vol_a = to_unit(vol * share, cinfo.get("volUnit") or 1)
         split = vol_a >= min_vol and vol - vol_a >= min_vol
         legs = [(vol_a, tp1, "a"), (vol - vol_a, tp2, "b")] if split else [(vol, tp1, "a")]
         filled, cost, pid, err = 0.0, 0.0, None, None
@@ -461,7 +463,7 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
                 persist()
                 send(f"⚠️ {name}: no stop loss could be placed ({e}), so the position was closed at once.")
                 return
-        if err:                                                 # the 20% leg was refused: the 80% leg stands with its own TP1 and SL
+        if err:                                                 # the TP2 leg was refused: the TP1 leg stands with its own TP1 and SL
             send(f"ℹ️ {name}: the TP2 part was not opened ({err}); the trade runs with TP1 only.")
         margin = value / lev
         loss_at_sl = (avg - sl) / avg * value
@@ -469,7 +471,7 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
         liq_text = ("Liquidation: none" if liq is None else
                     f"Liquidation ≈ {liq:g} (cross-margin estimate)" + (" ⚠️ BEFORE the SL" if liq >= sl else ""))
         send(f"\U0001F7E2 TRADE OPENED — {name}\n\nDirection: LONG · Cross {lev}X\nEntry: {avg:g}\nSize: {filled:g} contracts ≈ ${value:,.2f} (margin ${margin:,.2f})\n"
-             + (f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} (80%)\n\U0001F3AF TP2: {to_unit(tp2, cinfo['priceUnit'], ROUND_HALF_UP):g} (20%)\n" if trade["split"]
+             + (f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} ({vol_a / filled:.0%})\n\U0001F3AF TP2: {to_unit(tp2, cinfo['priceUnit'], ROUND_HALF_UP):g} ({1 - vol_a / filled:.0%})\n" if trade["split"] and filled > vol_a
                 else f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} (100%)\n")
              + f"\U0001F6E1 SL: {to_unit(sl, cinfo['priceUnit'], ROUND_HALF_UP):g} (on the exchange)\nLoss if SL is hit ≈ ${loss_at_sl:,.2f} · {liq_text}\n\n" + stats_line(eq))
     except ApiError as e:
@@ -526,7 +528,7 @@ def follow(eq, pos, prices, send, persist, state=None):
                     sl_text = f"\U0001F512 SL moved to breakeven {t['sl']:g} for the rest (a fast gap through it can still cost a little)."
                 except ApiError as e:
                     sl_text = f"\u26A0\uFE0F Could not move the SL to breakeven yet ({e}); retrying. SL is still {t['sl']:g}."
-                send(f"\U0001F3AF {t['name']} TP 1 HIT SUCCESSFULLY ✅\U0001F525\n80% closed at about {t['tp1']:g} · profit ≈ {t['pnl']:+.2f}$\n"
+                send(f"\U0001F3AF {t['name']} TP 1 HIT SUCCESSFULLY ✅\U0001F525\n{t.get('tp1_share', 0.8):.0%} closed at about {t['tp1']:g} · profit ≈ {t['pnl']:+.2f}$\n"
                      f"{sl_text}\nStay focused for TP 2 \U0001F680\n\n" + stats_line(eq))
         elif hit_tp:
             t["tp2_hit"] = True
