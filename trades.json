@@ -925,14 +925,15 @@
    "kind": "stock",
    "name": "CVXSTOCK USDT (CVX, stock breakout)",
    "day": 1791936000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792198207318,
    "leverage": 32,
    "vol": 1.0,
    "sl": 202.41000366210938,
    "tp1": 231.85498809814453,
    "tp2": 241.66998291015625,
-   "entry_signal": 222.0399932861328
+   "entry_signal": 222.0399932861328,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -980,7 +981,8 @@
   "KEYSSTOCK_USDT",
   "MRVLSTOCK_USDT",
   "INTCSTOCK_USDT",
-  "HPESTOCK_USDT"
+  "HPESTOCK_USDT",
+  "CVXSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
