@@ -750,7 +750,7 @@
    "kind": "crypto",
    "name": "PYTH USDT",
    "day": 1792022400000,
-   "status": "open",
+   "status": "closed",
    "time": 1792164172419,
    "leverage": 22,
    "vol": 1.0,
@@ -763,8 +763,11 @@
    ],
    "position_id": 1521721761,
    "entry": 0.08568,
-   "last_hold": 1.0,
-   "split": false
+   "last_hold": 0.0,
+   "split": false,
+   "pnl": -0.1188,
+   "closed": 1792333858100,
+   "result": "SL"
   },
   "AAPL:1792108800000": {
    "key": "AAPL:1792108800000",
