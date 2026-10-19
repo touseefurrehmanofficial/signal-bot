@@ -1044,6 +1044,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.53",
    "time": 1792417132689
+  },
+  "V:1792368000000": {
+   "key": "V:1792368000000",
+   "coin": "V",
+   "symbol": "VSTOCK_USDT",
+   "kind": "stock",
+   "name": "VSTOCK USDT (V, stock breakout)",
+   "day": 1792368000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792445298640
   }
  },
  "flags": {
