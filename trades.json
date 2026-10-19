@@ -1000,6 +1000,17 @@
    "entry": 95.5,
    "last_hold": 1.0,
    "split": false
+  },
+  "dip:CRWD:1792108800000": {
+   "key": "dip:CRWD:1792108800000",
+   "coin": "CRWD",
+   "symbol": "CRWDSTOCK_USDT",
+   "kind": "dip",
+   "name": "CRWDSTOCK USDT (CRWD, stock dip)",
+   "day": 1792108800000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.29",
+   "time": 1792417126560
   }
  },
  "flags": {
