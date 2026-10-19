@@ -1011,6 +1011,22 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.29",
    "time": 1792417126560
+  },
+  "dip:PANW:1792108800000": {
+   "key": "dip:PANW:1792108800000",
+   "coin": "PANW",
+   "symbol": "PANWSTOCK_USDT",
+   "kind": "dip",
+   "name": "PANWSTOCK USDT (PANW, stock dip)",
+   "day": 1792108800000,
+   "status": "opening",
+   "time": 1792417128412,
+   "leverage": 48,
+   "vol": 1.0,
+   "sl": 288.577,
+   "tp1": 358.0269,
+   "tp2": 368.7115,
+   "entry_signal": 342.0
   }
  },
  "flags": {
