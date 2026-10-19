@@ -1029,6 +1029,17 @@
    "entry_signal": 342.0,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:TWLO:1792108800000": {
+   "key": "dip:TWLO:1792108800000",
+   "coin": "TWLO",
+   "symbol": "TWLOSTOCK_USDT",
+   "kind": "dip",
+   "name": "TWLOSTOCK USDT (TWLO, stock dip)",
+   "day": 1792108800000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.53",
+   "time": 1792417132689
   }
  },
  "flags": {
