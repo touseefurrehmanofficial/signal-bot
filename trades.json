@@ -984,14 +984,22 @@
    "kind": "dip",
    "name": "EWJ USDT (EWJ, stock dip)",
    "day": 1792108800000,
-   "status": "opening",
+   "status": "open",
    "time": 1792417119996,
    "leverage": 13,
    "vol": 1.0,
    "sl": 90.8135,
    "tp1": 96.09994999999999,
    "tp2": 96.91324999999999,
-   "entry_signal": 94.88
+   "entry_signal": 94.88,
+   "tp1_share": 0.8,
+   "order_ids": [
+    "867158603623109312"
+   ],
+   "position_id": 1523381125,
+   "entry": 95.5,
+   "last_hold": 1.0,
+   "split": false
   }
  },
  "flags": {
