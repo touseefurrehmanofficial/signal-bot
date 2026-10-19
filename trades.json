@@ -960,7 +960,7 @@
    "kind": "dip",
    "name": "VUG USDT (VUG, stock dip)",
    "day": 1792108800000,
-   "status": "open",
+   "status": "closed",
    "time": 1792417112632,
    "leverage": 13,
    "vol": 1.0,
@@ -974,8 +974,12 @@
    ],
    "position_id": 1523381035,
    "entry": 89.2,
-   "last_hold": 1.0,
-   "split": false
+   "last_hold": 0.0,
+   "split": false,
+   "pnl": -0.0019,
+   "tp1_hit": true,
+   "closed": 1792417147072,
+   "result": "TP1"
   },
   "dip:EWJ:1792108800000": {
    "key": "dip:EWJ:1792108800000",
