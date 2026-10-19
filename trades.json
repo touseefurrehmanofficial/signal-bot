@@ -952,6 +952,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792210570490
+  },
+  "dip:VUG:1792108800000": {
+   "key": "dip:VUG:1792108800000",
+   "coin": "VUG",
+   "symbol": "VUG_USDT",
+   "kind": "dip",
+   "name": "VUG USDT (VUG, stock dip)",
+   "day": 1792108800000,
+   "status": "opening",
+   "time": 1792417112632,
+   "leverage": 13,
+   "vol": 1.0,
+   "sl": 84.325,
+   "tp1": 89.01150000000001,
+   "tp2": 89.73250000000002,
+   "entry_signal": 87.93
   }
  },
  "flags": {
