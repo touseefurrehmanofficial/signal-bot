@@ -104,6 +104,15 @@ def tickers():
     return {x["symbol"]: float(x["lastPrice"]) for x in api_get("/api/v1/contract/ticker", private=False)}
 
 
+def book(symbol):
+    """best bid and ask (0, 0 if the order book is empty or unavailable)."""
+    try:
+        d = api_get(f"/api/v1/contract/depth/{symbol}", {"limit": 5}, private=False) or {}
+        return float(d["bids"][0][0]), float(d["asks"][0][0])
+    except (ApiError, KeyError, IndexError, TypeError, ValueError):
+        return 0.0, 0.0
+
+
 def equity():
     a = api_get("/api/v1/private/account/asset/USDT")
     return float(a.get("equity") or 0), float(a.get("availableBalance") or 0)
@@ -646,9 +655,15 @@ def tick(state, send, persist):
                 continue
             if sym not in cinfo or not cinfo[sym].get("apiAllowed") or sym not in prices:
                 continue
-            price = prices[sym]
-            if not (t["stop"] < price <= t["entry"] + 0.25 * (t["entry"] - t["stop"])):
+            r = t["entry"] - t["stop"]
+            ceiling = t["entry"] + (0.1 if kind == "dip" else 0.25) * r    # dips: TP1 is only +0.3R away
+            if not (t["stop"] < prices[sym] <= ceiling):
                 continue                                        # outside the entry zone right now; checked again next time
+            bid, ask = book(sym)                                # a market buy pays the ASK, not the last price
+            if not ask or not (t["stop"] < ask <= ceiling):
+                continue
+            if (ask - bid) / ask > min(0.005, 0.1 * r / t["entry"]):
+                continue                                        # buy/sell gap too wide (thin stock contracts); retried later
             if sym in set(b.get("blocked") or []):              # MEXC refuses this contract for the bot: hand it over
                 manual(key, coin, t, kind, sym, "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)", eq, send, persist)
                 continue
