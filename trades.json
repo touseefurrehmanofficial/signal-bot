@@ -1095,6 +1095,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792531730672
+  },
+  "V:1792454400000": {
+   "key": "V:1792454400000",
+   "coin": "V",
+   "symbol": "VSTOCK_USDT",
+   "kind": "stock",
+   "name": "VSTOCK USDT (V, stock breakout)",
+   "day": 1792454400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792531732051
   }
  },
  "flags": {
