@@ -1114,14 +1114,16 @@
    "kind": "stock",
    "name": "UNHSTOCK USDT (UNH, stock breakout)",
    "day": 1792454400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792531733608,
    "leverage": 52,
    "vol": 1.0,
    "sl": 365.20001220703125,
    "tp1": 446.2900085449219,
    "tp2": 473.32000732421875,
-   "entry_signal": 419.260009765625
+   "entry_signal": 419.260009765625,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1172,7 +1174,8 @@
   "HPESTOCK_USDT",
   "CVXSTOCK_USDT",
   "PANWSTOCK_USDT",
-  "DISSTOCK_USDT"
+  "DISSTOCK_USDT",
+  "UNHSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
