@@ -1074,14 +1074,16 @@
    "kind": "stock",
    "name": "DISSTOCK USDT (DIS, stock breakout)",
    "day": 1792454400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792531726812,
    "leverage": 14,
    "vol": 1.0,
    "sl": 101.33000183105469,
    "tp1": 116.83999633789062,
    "tp2": 122.00999450683594,
-   "entry_signal": 111.66999816894531
+   "entry_signal": 111.66999816894531,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1131,7 +1133,8 @@
   "INTCSTOCK_USDT",
   "HPESTOCK_USDT",
   "CVXSTOCK_USDT",
-  "PANWSTOCK_USDT"
+  "PANWSTOCK_USDT",
+  "DISSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
