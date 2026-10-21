@@ -1139,6 +1139,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792618111155
+  },
+  "TSLA:1792540800000": {
+   "key": "TSLA:1792540800000",
+   "coin": "TSLA",
+   "symbol": "TESLA_USDT",
+   "kind": "stock",
+   "name": "TESLA USDT (TSLA, stock breakout)",
+   "day": 1792540800000,
+   "status": "opening",
+   "time": 1792618112610,
+   "leverage": 46,
+   "vol": 1.0,
+   "sl": 352.8399963378906,
+   "tp1": 403.2850036621094,
+   "tp2": 420.1000061035156,
+   "entry_signal": 386.4700012207031
   }
  },
  "flags": {
