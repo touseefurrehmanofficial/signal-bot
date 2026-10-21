@@ -1198,14 +1198,16 @@
    "kind": "stock",
    "name": "IBMSTOCK USDT (IBM, stock breakout)",
    "day": 1792540800000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792618121621,
    "leverage": 30,
    "vol": 1.0,
    "sl": 219.92999267578125,
    "tp1": 267.22501373291016,
    "tp2": 282.9900207519531,
-   "entry_signal": 251.4600067138672
+   "entry_signal": 251.4600067138672,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1258,7 +1260,8 @@
   "PANWSTOCK_USDT",
   "DISSTOCK_USDT",
   "UNHSTOCK_USDT",
-  "TESLA_USDT"
+  "TESLA_USDT",
+  "IBMSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
