@@ -1147,14 +1147,16 @@
    "kind": "stock",
    "name": "TESLA USDT (TSLA, stock breakout)",
    "day": 1792540800000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792618112610,
    "leverage": 46,
    "vol": 1.0,
    "sl": 352.8399963378906,
    "tp1": 403.2850036621094,
    "tp2": 420.1000061035156,
-   "entry_signal": 386.4700012207031
+   "entry_signal": 386.4700012207031,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1206,7 +1208,8 @@
   "CVXSTOCK_USDT",
   "PANWSTOCK_USDT",
   "DISSTOCK_USDT",
-  "UNHSTOCK_USDT"
+  "UNHSTOCK_USDT",
+  "TESLA_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
