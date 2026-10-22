@@ -1208,6 +1208,17 @@
    "entry_signal": 251.4600067138672,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "AAPL:1792627200000": {
+   "key": "AAPL:1792627200000",
+   "coin": "AAPL",
+   "symbol": "AAPLSTOCK_USDT",
+   "kind": "stock",
+   "name": "AAPLSTOCK USDT (AAPL, stock breakout)",
+   "day": 1792627200000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792704529585
   }
  },
  "flags": {
