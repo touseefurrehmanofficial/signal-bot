@@ -1263,6 +1263,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792704535668
+  },
+  "UNH:1792627200000": {
+   "key": "UNH:1792627200000",
+   "coin": "UNH",
+   "symbol": "UNHSTOCK_USDT",
+   "kind": "stock",
+   "name": "UNHSTOCK USDT (UNH, stock breakout)",
+   "day": 1792627200000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792704537162
   }
  },
  "flags": {
