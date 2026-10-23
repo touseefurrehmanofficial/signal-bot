@@ -1311,14 +1311,16 @@
    "kind": "dip",
    "name": "AMZNSTOCK USDT (AMZN, stock dip)",
    "day": 1792713600000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792790932421,
    "leverage": 34,
    "vol": 1.0,
    "sl": 228.563,
    "tp1": 253.8311,
    "tp2": 257.7185,
-   "entry_signal": 248.0
+   "entry_signal": 248.0,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1373,7 +1375,8 @@
   "UNHSTOCK_USDT",
   "TESLA_USDT",
   "IBMSTOCK_USDT",
-  "METASTOCK_USDT"
+  "METASTOCK_USDT",
+  "AMZNSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
