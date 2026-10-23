@@ -1285,6 +1285,22 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.62",
    "time": 1792766071840
+  },
+  "dip:META:1792627200000": {
+   "key": "dip:META:1792627200000",
+   "coin": "META",
+   "symbol": "METASTOCK_USDT",
+   "kind": "dip",
+   "name": "METASTOCK USDT (META, stock dip)",
+   "day": 1792627200000,
+   "status": "opening",
+   "time": 1792779818748,
+   "leverage": 9,
+   "vol": 1.0,
+   "sl": 573.797,
+   "tp1": 671.3659,
+   "tp2": 686.3765000000001,
+   "entry_signal": 648.85
   }
  },
  "flags": {
