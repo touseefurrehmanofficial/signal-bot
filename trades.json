@@ -1321,6 +1321,22 @@
    "entry_signal": 248.0,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:ADI:1792713600000": {
+   "key": "dip:ADI:1792713600000",
+   "coin": "ADI",
+   "symbol": "ADISTOCK_USDT",
+   "kind": "dip",
+   "name": "ADISTOCK USDT (ADI, stock dip)",
+   "day": 1792713600000,
+   "status": "opening",
+   "time": 1792790936472,
+   "leverage": 6,
+   "vol": 1.0,
+   "sl": 353.245,
+   "tp1": 402.4175,
+   "tp2": 409.98249999999996,
+   "entry_signal": 391.07
   }
  },
  "flags": {
