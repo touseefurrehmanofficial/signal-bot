@@ -1293,14 +1293,16 @@
    "kind": "dip",
    "name": "METASTOCK USDT (META, stock dip)",
    "day": 1792627200000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792779818748,
    "leverage": 9,
    "vol": 1.0,
    "sl": 573.797,
    "tp1": 671.3659,
    "tp2": 686.3765000000001,
-   "entry_signal": 648.85
+   "entry_signal": 648.85,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1354,7 +1356,8 @@
   "DISSTOCK_USDT",
   "UNHSTOCK_USDT",
   "TESLA_USDT",
-  "IBMSTOCK_USDT"
+  "IBMSTOCK_USDT",
+  "METASTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
