@@ -1416,14 +1416,22 @@
    "kind": "dip",
    "name": "SPY USDT (SPY, stock dip)",
    "day": 1792713600000,
-   "status": "opening",
+   "status": "open",
    "time": 1792794843338,
    "leverage": 11,
    "vol": 1.0,
    "sl": 738.59,
    "tp1": 766.384,
    "tp2": 770.6600000000001,
-   "entry_signal": 759.97
+   "entry_signal": 759.97,
+   "tp1_share": 0.8,
+   "order_ids": [
+    "868742888773999360"
+   ],
+   "position_id": 1526152142,
+   "entry": 762.05,
+   "last_hold": 1.0,
+   "split": false
   }
  },
  "flags": {
