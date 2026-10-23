@@ -1390,6 +1390,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792790946927
+  },
+  "dip:P:1792713600000": {
+   "key": "dip:P:1792713600000",
+   "coin": "P",
+   "symbol": "PSTOCK_USDT",
+   "kind": "dip",
+   "name": "PSTOCK USDT (P, stock dip)",
+   "day": 1792713600000,
+   "status": "opening",
+   "time": 1792790978817,
+   "leverage": 4,
+   "vol": 2.0,
+   "sl": 101.062,
+   "tp1": 130.0104,
+   "tp2": 134.464,
+   "entry_signal": 123.33
   }
  },
  "flags": {
