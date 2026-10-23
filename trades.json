@@ -1408,6 +1408,22 @@
    "entry_signal": 123.33,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:SPY:1792713600000": {
+   "key": "dip:SPY:1792713600000",
+   "coin": "SPY",
+   "symbol": "SPY_USDT",
+   "kind": "dip",
+   "name": "SPY USDT (SPY, stock dip)",
+   "day": 1792713600000,
+   "status": "opening",
+   "time": 1792794843338,
+   "leverage": 11,
+   "vol": 1.0,
+   "sl": 738.59,
+   "tp1": 766.384,
+   "tp2": 770.6600000000001,
+   "entry_signal": 759.97
   }
  },
  "flags": {
