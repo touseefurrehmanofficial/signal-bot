@@ -1379,6 +1379,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792790945661
+  },
+  "IBM:1792713600000": {
+   "key": "IBM:1792713600000",
+   "coin": "IBM",
+   "symbol": "IBMSTOCK_USDT",
+   "kind": "stock",
+   "name": "IBMSTOCK USDT (IBM, stock breakout)",
+   "day": 1792713600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792790946927
   }
  },
  "flags": {
