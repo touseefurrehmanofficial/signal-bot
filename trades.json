@@ -1398,14 +1398,16 @@
    "kind": "dip",
    "name": "PSTOCK USDT (P, stock dip)",
    "day": 1792713600000,
-   "status": "opening",
+   "status": "failed",
    "time": 1792790978817,
    "leverage": 4,
    "vol": 2.0,
    "sl": 101.062,
    "tp1": 130.0104,
    "tp2": 134.464,
-   "entry_signal": 123.33
+   "entry_signal": 123.33,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1463,7 +1465,8 @@
   "METASTOCK_USDT",
   "AMZNSTOCK_USDT",
   "ADISTOCK_USDT",
-  "FCXSTOCK_USDT"
+  "FCXSTOCK_USDT",
+  "PSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
