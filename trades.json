@@ -1368,6 +1368,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1792790944229
+  },
+  "CVX:1792713600000": {
+   "key": "CVX:1792713600000",
+   "coin": "CVX",
+   "symbol": "CVXSTOCK_USDT",
+   "kind": "stock",
+   "name": "CVXSTOCK USDT (CVX, stock breakout)",
+   "day": 1792713600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1792790945661
   }
  },
  "flags": {
