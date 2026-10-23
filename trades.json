@@ -1339,6 +1339,22 @@
    "entry_signal": 391.07,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:FCX:1792713600000": {
+   "key": "dip:FCX:1792713600000",
+   "coin": "FCX",
+   "symbol": "FCXSTOCK_USDT",
+   "kind": "dip",
+   "name": "FCXSTOCK USDT (FCX, stock dip)",
+   "day": 1792713600000,
+   "status": "opening",
+   "time": 1792790940473,
+   "leverage": 9,
+   "vol": 1.0,
+   "sl": 57.3141,
+   "tp1": 67.53977,
+   "tp2": 69.11295000000001,
+   "entry_signal": 65.18
   }
  },
  "flags": {
