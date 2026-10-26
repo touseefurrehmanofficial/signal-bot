@@ -1436,6 +1436,17 @@
    "tp1_hit": true,
    "closed": 1793024156115,
    "result": "TP1"
+  },
+  "TSLA:1792972800000": {
+   "key": "TSLA:1792972800000",
+   "coin": "TSLA",
+   "symbol": "TESLA_USDT",
+   "kind": "stock",
+   "name": "TESLA USDT (TSLA, stock breakout)",
+   "day": 1792972800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793050201996
   }
  },
  "flags": {
