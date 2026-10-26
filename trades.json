@@ -1447,6 +1447,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793050201996
+  },
+  "XOM:1792972800000": {
+   "key": "XOM:1792972800000",
+   "coin": "XOM",
+   "symbol": "XOMSTOCK_USDT",
+   "kind": "stock",
+   "name": "XOMSTOCK USDT (XOM, stock breakout)",
+   "day": 1792972800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793050203914
   }
  },
  "flags": {
