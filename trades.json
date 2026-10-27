@@ -1466,14 +1466,16 @@
    "kind": "dip",
    "name": "TGTSTOCK USDT (TGT, stock dip)",
    "day": 1792972800000,
-   "status": "opening",
+   "status": "failed",
    "time": 1793125463778,
    "leverage": 14,
    "vol": 8.0,
    "sl": 136.108,
    "tp1": 152.2566,
    "tp2": 154.74099999999999,
-   "entry_signal": 148.53
+   "entry_signal": 148.53,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1532,7 +1534,8 @@
   "AMZNSTOCK_USDT",
   "ADISTOCK_USDT",
   "FCXSTOCK_USDT",
-  "PSTOCK_USDT"
+  "PSTOCK_USDT",
+  "TGTSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
