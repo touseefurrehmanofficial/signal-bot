@@ -1476,6 +1476,17 @@
    "entry_signal": 148.53,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "TSLA:1793059200000": {
+   "key": "TSLA:1793059200000",
+   "coin": "TSLA",
+   "symbol": "TESLA_USDT",
+   "kind": "stock",
+   "name": "TESLA USDT (TSLA, stock breakout)",
+   "day": 1793059200000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793136580192
   }
  },
  "flags": {
