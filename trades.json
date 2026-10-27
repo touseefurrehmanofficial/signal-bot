@@ -1458,6 +1458,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793050203914
+  },
+  "dip:TGT:1792972800000": {
+   "key": "dip:TGT:1792972800000",
+   "coin": "TGT",
+   "symbol": "TGTSTOCK_USDT",
+   "kind": "dip",
+   "name": "TGTSTOCK USDT (TGT, stock dip)",
+   "day": 1792972800000,
+   "status": "opening",
+   "time": 1793125463778,
+   "leverage": 14,
+   "vol": 8.0,
+   "sl": 136.108,
+   "tp1": 152.2566,
+   "tp2": 154.74099999999999,
+   "entry_signal": 148.53
   }
  },
  "flags": {
