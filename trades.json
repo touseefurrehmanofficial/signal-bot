@@ -1487,6 +1487,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793136580192
+  },
+  "dip:VLO:1793059200000": {
+   "key": "dip:VLO:1793059200000",
+   "coin": "VLO",
+   "symbol": "VLOSTOCK_USDT",
+   "kind": "dip",
+   "name": "VLOSTOCK USDT (VLO, stock dip)",
+   "day": 1793059200000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.89",
+   "time": 1793211924962
   }
  },
  "flags": {
