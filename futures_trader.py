@@ -82,8 +82,14 @@ def _check(r):
 def api_get(path, params=None, private=True):
     params = {k: v for k, v in (params or {}).items() if v is not None}
     q = "&".join(f"{k}={params[k]}" for k in sorted(params))
-    r = requests.get(BASE + path + ("?" + q if q else ""), headers=_headers(q) if private else {}, timeout=15)
-    return _check(r)
+    for attempt in range(3):                                    # MEXC "requests are too frequent" (510): wait and retry quietly
+        r = requests.get(BASE + path + ("?" + q if q else ""), headers=_headers(q) if private else {}, timeout=15)
+        try:
+            return _check(r)
+        except ApiError as e:
+            if "code 510" not in str(e) or attempt == 2:
+                raise
+            time.sleep(2 + 3 * attempt)
 
 
 def api_post(path, body):
@@ -101,16 +107,23 @@ def contracts():
 
 
 def tickers():
-    return {x["symbol"]: float(x["lastPrice"]) for x in api_get("/api/v1/contract/ticker", private=False)}
+    if time.time() - _mem.get("tk_t", 0) > 10:                  # one ticker list per 10 s is plenty
+        _mem["tk"], _mem["tk_t"] = {x["symbol"]: float(x["lastPrice"]) for x in api_get("/api/v1/contract/ticker", private=False)}, time.time()
+    return _mem["tk"]
 
 
 def book(symbol):
-    """best bid and ask (0, 0 if the order book is empty or unavailable)."""
+    """best bid and ask (0, 0 if the order book is empty or unavailable); cached 60 s per contract."""
+    hit = _mem.setdefault("book", {}).get(symbol)
+    if hit and time.time() - hit[2] < 60:
+        return hit[0], hit[1]
     try:
         d = api_get(f"/api/v1/contract/depth/{symbol}", {"limit": 5}, private=False) or {}
-        return float(d["bids"][0][0]), float(d["asks"][0][0])
+        out = float(d["bids"][0][0]), float(d["asks"][0][0])
     except (ApiError, KeyError, IndexError, TypeError, ValueError):
-        return 0.0, 0.0
+        out = 0.0, 0.0
+    _mem["book"][symbol] = (*out, time.time())
+    return out
 
 
 def equity():
@@ -617,6 +630,10 @@ def tick(state, send, persist):
             send(f"✅ MEXC futures connected\nFutures balance: ${eq:,.2f}\nPosition mode: {'Hedge' if mode == 1 else 'One-way'}\nMax open trades: {b['max_trades']}\n"
                  f"Margin per trade: {MARGIN_PCT:g}% · Max loss per trade: {max_loss_pct():g}%\nThe bot will open trades on new crypto signals, and on stock signals for stocks MEXC lists, from now on.")
         cinfo, prices, pos = contracts(), tickers(), positions()
+        if _mem.get("err_since"):                               # a run of errors ended
+            if _mem.get("err_told"):
+                send("✅ MEXC API is answering normally again.")
+            _mem["err_since"], _mem["err_told"] = 0, False
         for t in [x for x in b["trades"].values() if x["status"] == "open" and x.get("tp1_hit") and not x.get("be_moved")]:
             if pos.get(t["position_id"]):
                 try:
@@ -671,10 +688,13 @@ def tick(state, send, persist):
             pos = positions()
             eq, _ = equity()
     except ApiError as e:
+        # Short hiccups (rate limits, brief outages) are retried quietly; the owner is told only if they last 10+ minutes.
+        now = time.time()
+        _mem["err_since"] = _mem.get("err_since") or now
         last = _mem["err_t"].get(str(e), 0)
-        if time.time() - last > 3600:
-            _mem["err_t"][str(e)] = time.time()
-            send(f"⚠️ MEXC API problem: {e}\nThe bot keeps retrying; open positions keep their exchange-side TP/SL.")
+        if now - _mem["err_since"] >= 600 and now - last > 3600:
+            _mem["err_t"][str(e)], _mem["err_told"] = now, True
+            send(f"⚠️ MEXC API problem for {int((now - _mem['err_since']) // 60)} minutes: {e}\nThe bot keeps retrying; open positions keep their exchange-side TP/SL.")
     except requests.RequestException:
         pass
 
