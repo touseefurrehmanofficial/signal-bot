@@ -1531,6 +1531,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793309477833
+  },
+  "dip:FTNT:1793232000000": {
+   "key": "dip:FTNT:1793232000000",
+   "coin": "FTNT",
+   "symbol": "FTNTSTOCK_USDT",
+   "kind": "dip",
+   "name": "FTNTSTOCK USDT (FTNT, stock dip)",
+   "day": 1793232000000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.38",
+   "time": 1793309479712
   }
  },
  "flags": {
