@@ -1498,6 +1498,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.89",
    "time": 1793211924962
+  },
+  "PEPE:1793145600000": {
+   "key": "PEPE:1793145600000",
+   "coin": "PEPE",
+   "symbol": "PEPE_USDT",
+   "kind": "crypto",
+   "name": "PEPE USDT",
+   "day": 1793145600000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $12.98 at the SL (25% away), more than your 10% limit of $1.01",
+   "time": 1793232659619
   }
  },
  "flags": {
