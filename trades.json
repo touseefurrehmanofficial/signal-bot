@@ -1587,6 +1587,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793340399605
+  },
+  "dip:SPY:1793318400000": {
+   "key": "dip:SPY:1793318400000",
+   "coin": "SPY",
+   "symbol": "SPY_USDT",
+   "kind": "dip",
+   "name": "SPY USDT (SPY, stock dip)",
+   "day": 1793318400000,
+   "status": "opening",
+   "time": 1793395823244,
+   "leverage": 89,
+   "vol": 7.0,
+   "sl": 733.217,
+   "tp1": 762.4709,
+   "tp2": 766.9715000000001,
+   "entry_signal": 755.72
   }
  },
  "flags": {
