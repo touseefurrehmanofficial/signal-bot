@@ -1642,14 +1642,16 @@
    "kind": "dip",
    "name": "CRMSTOCK USDT (CRM, stock dip)",
    "day": 1793318400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1793395834402,
    "leverage": 36,
    "vol": 1.0,
    "sl": 202.738,
    "tp1": 237.09959999999998,
    "tp2": 242.38599999999997,
-   "entry_signal": 229.17
+   "entry_signal": 229.17,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1709,7 +1711,8 @@
   "ADISTOCK_USDT",
   "FCXSTOCK_USDT",
   "PSTOCK_USDT",
-  "TGTSTOCK_USDT"
+  "TGTSTOCK_USDT",
+  "CRMSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
