@@ -1576,6 +1576,17 @@
    "tp1_hit": true,
    "closed": 1793334727083,
    "result": "TP1"
+  },
+  "WMT:1793232000000": {
+   "key": "WMT:1793232000000",
+   "coin": "WMT",
+   "symbol": "WMTSTOCK_USDT",
+   "kind": "stock",
+   "name": "WMTSTOCK USDT (WMT, stock breakout)",
+   "day": 1793232000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793340399605
   }
  },
  "flags": {
