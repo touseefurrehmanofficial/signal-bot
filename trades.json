@@ -1,6 +1,6 @@
 {
  "max_trades": 50,
- "paused": false,
+ "paused": true,
  "trades": {
   "APT:1791676800000": {
    "key": "APT:1791676800000",
