@@ -466,7 +466,7 @@
    "kind": "dip",
    "name": "EWT USDT (EWT, stock dip)",
    "day": 1792022400000,
-   "status": "open",
+   "status": "closed",
    "time": 1792124604428,
    "leverage": 50,
    "vol": 3.0,
@@ -480,8 +480,11 @@
    ],
    "position_id": 1521384923,
    "entry": 109.75,
-   "last_hold": 3.0,
-   "split": true
+   "last_hold": 0.0,
+   "split": true,
+   "pnl": -0.2204,
+   "closed": 1793322575604,
+   "result": "SL"
   },
   "dip:SMH:1792022400000": {
    "key": "dip:SMH:1792022400000",
@@ -490,7 +493,7 @@
    "kind": "dip",
    "name": "SMH USDT (SMH, stock dip)",
    "day": 1792022400000,
-   "status": "open",
+   "status": "closed",
    "time": 1792124612947,
    "leverage": 20,
    "vol": 2.0,
@@ -504,8 +507,11 @@
    ],
    "position_id": 1521384965,
    "entry": 561.56,
-   "last_hold": 2.0,
-   "split": true
+   "last_hold": 0.0,
+   "split": true,
+   "pnl": -0.0998,
+   "closed": 1793322958307,
+   "result": "SL"
   },
   "dip:NVDA:1792022400000": {
    "key": "dip:NVDA:1792022400000",
@@ -1487,6 +1493,100 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793136580192
+  },
+  "dip:VLO:1793059200000": {
+   "key": "dip:VLO:1793059200000",
+   "coin": "VLO",
+   "symbol": "VLOSTOCK_USDT",
+   "kind": "dip",
+   "name": "VLOSTOCK USDT (VLO, stock dip)",
+   "day": 1793059200000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.89",
+   "time": 1793211924962
+  },
+  "PEPE:1793145600000": {
+   "key": "PEPE:1793145600000",
+   "coin": "PEPE",
+   "symbol": "PEPE_USDT",
+   "kind": "crypto",
+   "name": "PEPE USDT",
+   "day": 1793145600000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $12.98 at the SL (25% away), more than your 10% limit of $1.01",
+   "time": 1793232659619
+  },
+  "AAPL:1793232000000": {
+   "key": "AAPL:1793232000000",
+   "coin": "AAPL",
+   "symbol": "AAPLSTOCK_USDT",
+   "kind": "stock",
+   "name": "AAPLSTOCK USDT (AAPL, stock breakout)",
+   "day": 1793232000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793309476023
+  },
+  "IBM:1793232000000": {
+   "key": "IBM:1793232000000",
+   "coin": "IBM",
+   "symbol": "IBMSTOCK_USDT",
+   "kind": "stock",
+   "name": "IBMSTOCK USDT (IBM, stock breakout)",
+   "day": 1793232000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793309477833
+  },
+  "dip:FTNT:1793232000000": {
+   "key": "dip:FTNT:1793232000000",
+   "coin": "FTNT",
+   "symbol": "FTNTSTOCK_USDT",
+   "kind": "dip",
+   "name": "FTNTSTOCK USDT (FTNT, stock dip)",
+   "day": 1793232000000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.38",
+   "time": 1793309479712
+  },
+  "TRX:1793232000000": {
+   "key": "TRX:1793232000000",
+   "coin": "TRX",
+   "symbol": "TRX_USDT",
+   "kind": "crypto",
+   "name": "TRX USDT",
+   "day": 1793232000000,
+   "status": "closed",
+   "time": 1793319241962,
+   "leverage": 93,
+   "vol": 1.0,
+   "sl": 0.3274,
+   "tp1": 0.3649,
+   "tp2": 0.37739999999999996,
+   "entry_signal": 0.3524,
+   "tp1_share": 0.6,
+   "order_ids": [
+    "870942376645293056"
+   ],
+   "position_id": 1529687688,
+   "entry": 0.35659,
+   "last_hold": 0.0,
+   "split": false,
+   "pnl": 0.0831,
+   "tp1_hit": true,
+   "closed": 1793334727083,
+   "result": "TP1"
+  },
+  "WMT:1793232000000": {
+   "key": "WMT:1793232000000",
+   "coin": "WMT",
+   "symbol": "WMTSTOCK_USDT",
+   "kind": "stock",
+   "name": "WMTSTOCK USDT (WMT, stock breakout)",
+   "day": 1793232000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793340399605
   }
  },
  "flags": {
@@ -1580,6 +1680,11 @@
    [
     1792627200000,
     "AAPL:1792627200000",
+    "stock"
+   ],
+   [
+    1793232000000,
+    "AAPL:1793232000000",
     "stock"
    ]
   ],
@@ -1801,6 +1906,11 @@
    [
     1792627200000,
     "WMT:1792627200000",
+    "stock"
+   ],
+   [
+    1793232000000,
+    "WMT:1793232000000",
     "stock"
    ]
   ],
@@ -2063,6 +2173,11 @@
     1792713600000,
     "IBM:1792713600000",
     "stock"
+   ],
+   [
+    1793232000000,
+    "IBM:1793232000000",
+    "stock"
    ]
   ],
   "METASTOCK_USDT": [
@@ -2112,6 +2227,34 @@
     1792972800000,
     "dip:TGT:1792972800000",
     "dip"
+   ]
+  ],
+  "VLOSTOCK_USDT": [
+   [
+    1793059200000,
+    "dip:VLO:1793059200000",
+    "dip"
+   ]
+  ],
+  "PEPE_USDT": [
+   [
+    1793145600000,
+    "PEPE:1793145600000",
+    "crypto"
+   ]
+  ],
+  "FTNTSTOCK_USDT": [
+   [
+    1793232000000,
+    "dip:FTNT:1793232000000",
+    "dip"
+   ]
+  ],
+  "TRX_USDT": [
+   [
+    1793232000000,
+    "TRX:1793232000000",
+    "crypto"
    ]
   ]
  },
