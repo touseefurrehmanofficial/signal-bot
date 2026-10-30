@@ -466,7 +466,7 @@
    "kind": "dip",
    "name": "EWT USDT (EWT, stock dip)",
    "day": 1792022400000,
-   "status": "open",
+   "status": "closed",
    "time": 1792124604428,
    "leverage": 50,
    "vol": 3.0,
@@ -480,8 +480,11 @@
    ],
    "position_id": 1521384923,
    "entry": 109.75,
-   "last_hold": 3.0,
-   "split": true
+   "last_hold": 0.0,
+   "split": true,
+   "pnl": -0.2204,
+   "closed": 1793322575604,
+   "result": "SL"
   },
   "dip:SMH:1792022400000": {
    "key": "dip:SMH:1792022400000",
@@ -490,7 +493,7 @@
    "kind": "dip",
    "name": "SMH USDT (SMH, stock dip)",
    "day": 1792022400000,
-   "status": "open",
+   "status": "closed",
    "time": 1792124612947,
    "leverage": 20,
    "vol": 2.0,
@@ -504,8 +507,11 @@
    ],
    "position_id": 1521384965,
    "entry": 561.56,
-   "last_hold": 2.0,
-   "split": true
+   "last_hold": 0.0,
+   "split": true,
+   "pnl": -0.0998,
+   "closed": 1793322958307,
+   "result": "SL"
   },
   "dip:NVDA:1792022400000": {
    "key": "dip:NVDA:1792022400000",
