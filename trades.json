@@ -1693,14 +1693,16 @@
    "kind": "dip",
    "name": "HPQSTOCK USDT (HPQ, stock dip)",
    "day": 1793318400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1793399724821,
    "leverage": 11,
    "vol": 2.0,
    "sl": 24.487,
    "tp1": 30.0679,
    "tp2": 30.926500000000004,
-   "entry_signal": 28.78
+   "entry_signal": 28.78,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1761,7 +1763,8 @@
   "FCXSTOCK_USDT",
   "PSTOCK_USDT",
   "TGTSTOCK_USDT",
-  "CRMSTOCK_USDT"
+  "CRMSTOCK_USDT",
+  "HPQSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
