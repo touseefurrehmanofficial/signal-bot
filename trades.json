@@ -1542,6 +1542,22 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.38",
    "time": 1793309479712
+  },
+  "TRX:1793232000000": {
+   "key": "TRX:1793232000000",
+   "coin": "TRX",
+   "symbol": "TRX_USDT",
+   "kind": "crypto",
+   "name": "TRX USDT",
+   "day": 1793232000000,
+   "status": "opening",
+   "time": 1793319241962,
+   "leverage": 93,
+   "vol": 1.0,
+   "sl": 0.3274,
+   "tp1": 0.3649,
+   "tp2": 0.37739999999999996,
+   "entry_signal": 0.3524
   }
  },
  "flags": {
