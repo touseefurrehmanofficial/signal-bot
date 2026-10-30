@@ -1550,14 +1550,22 @@
    "kind": "crypto",
    "name": "TRX USDT",
    "day": 1793232000000,
-   "status": "opening",
+   "status": "open",
    "time": 1793319241962,
    "leverage": 93,
    "vol": 1.0,
    "sl": 0.3274,
    "tp1": 0.3649,
    "tp2": 0.37739999999999996,
-   "entry_signal": 0.3524
+   "entry_signal": 0.3524,
+   "tp1_share": 0.6,
+   "order_ids": [
+    "870942376645293056"
+   ],
+   "position_id": 1529687688,
+   "entry": 0.35659,
+   "last_hold": 1.0,
+   "split": false
   }
  },
  "flags": {
