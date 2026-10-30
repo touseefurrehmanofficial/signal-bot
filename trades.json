@@ -1612,6 +1612,17 @@
    "entry": 757.7699999999999,
    "last_hold": 7.0,
    "split": true
+  },
+  "dip:MSFT:1793318400000": {
+   "key": "dip:MSFT:1793318400000",
+   "coin": "MSFT",
+   "symbol": "MSFTSTOCK_USDT",
+   "kind": "dip",
+   "name": "MSFTSTOCK USDT (MSFT, stock dip)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793395831027
   }
  },
  "flags": {
