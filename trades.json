@@ -1634,6 +1634,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793395832697
+  },
+  "dip:CRM:1793318400000": {
+   "key": "dip:CRM:1793318400000",
+   "coin": "CRM",
+   "symbol": "CRMSTOCK_USDT",
+   "kind": "dip",
+   "name": "CRMSTOCK USDT (CRM, stock dip)",
+   "day": 1793318400000,
+   "status": "opening",
+   "time": 1793395834402,
+   "leverage": 36,
+   "vol": 1.0,
+   "sl": 202.738,
+   "tp1": 237.09959999999998,
+   "tp2": 242.38599999999997,
+   "entry_signal": 229.17
   }
  },
  "flags": {
