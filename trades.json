@@ -1685,6 +1685,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793395842678
+  },
+  "dip:HPQ:1793318400000": {
+   "key": "dip:HPQ:1793318400000",
+   "coin": "HPQ",
+   "symbol": "HPQSTOCK_USDT",
+   "kind": "dip",
+   "name": "HPQSTOCK USDT (HPQ, stock dip)",
+   "day": 1793318400000,
+   "status": "opening",
+   "time": 1793399724821,
+   "leverage": 11,
+   "vol": 2.0,
+   "sl": 24.487,
+   "tp1": 30.0679,
+   "tp2": 30.926500000000004,
+   "entry_signal": 28.78
   }
  },
  "flags": {
