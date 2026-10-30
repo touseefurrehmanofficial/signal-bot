@@ -1623,6 +1623,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793395831027
+  },
+  "PFE:1793318400000": {
+   "key": "PFE:1793318400000",
+   "coin": "PFE",
+   "symbol": "PFESTOCK_USDT",
+   "kind": "stock",
+   "name": "PFESTOCK USDT (PFE, stock breakout)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793395832697
   }
  },
  "flags": {
