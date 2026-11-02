@@ -1595,7 +1595,7 @@
    "kind": "dip",
    "name": "SPY USDT (SPY, stock dip)",
    "day": 1793318400000,
-   "status": "open",
+   "status": "closed",
    "time": 1793395823244,
    "leverage": 89,
    "vol": 7.0,
@@ -1610,11 +1610,13 @@
    ],
    "position_id": 1530303261,
    "entry": 757.7699999999999,
-   "last_hold": 2.0,
+   "last_hold": 0.0,
    "split": true,
-   "pnl": 0.0235,
+   "pnl": 0.0259,
    "tp1_hit": true,
-   "be_moved": true
+   "be_moved": true,
+   "closed": 1793641535162,
+   "result": "TP1 + breakeven"
   },
   "dip:MSFT:1793318400000": {
    "key": "dip:MSFT:1793318400000",
