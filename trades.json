@@ -1738,14 +1738,16 @@
    "kind": "dip",
    "name": "CSCOSTOCK USDT (CSCO, stock dip)",
    "day": 1793318400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1793636295688,
    "leverage": 60,
    "vol": 1.0,
    "sl": 94.8905,
    "tp1": 107.39585000000001,
    "tp2": 109.31975,
-   "entry_signal": 104.51
+   "entry_signal": 104.51,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -1807,7 +1809,8 @@
   "PSTOCK_USDT",
   "TGTSTOCK_USDT",
   "CRMSTOCK_USDT",
-  "HPQSTOCK_USDT"
+  "HPQSTOCK_USDT",
+  "CSCOSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
