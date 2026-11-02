@@ -1714,14 +1714,22 @@
    "kind": "dip",
    "name": "IGV USDT (IGV, stock dip)",
    "day": 1793318400000,
-   "status": "opening",
+   "status": "open",
    "time": 1793636287980,
    "leverage": 6,
    "vol": 1.0,
    "sl": 95.4595,
    "tp1": 106.93915000000001,
    "tp2": 108.70525,
-   "entry_signal": 104.29
+   "entry_signal": 104.29,
+   "tp1_share": 0.8,
+   "order_ids": [
+    "872272165584564992"
+   ],
+   "position_id": 1531488398,
+   "entry": 104.36,
+   "last_hold": 1.0,
+   "split": false
   }
  },
  "flags": {
