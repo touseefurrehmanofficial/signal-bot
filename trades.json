@@ -1788,6 +1788,17 @@
    "entry_signal": 235.99,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:NTAP:1793318400000": {
+   "key": "dip:NTAP:1793318400000",
+   "coin": "NTAP",
+   "symbol": "NTAPSTOCK_USDT",
+   "kind": "dip",
+   "name": "NTAPSTOCK USDT (NTAP, stock dip)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $0.23 at the SL (12% away), more than your 10% limit of $0.17",
+   "time": 1793636520793
   }
  },
  "flags": {
