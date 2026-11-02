@@ -1599,7 +1599,7 @@
    "time": 1793395823244,
    "leverage": 89,
    "vol": 7.0,
-   "sl": 733.217,
+   "sl": 758.98,
    "tp1": 762.4709,
    "tp2": 766.9715000000001,
    "entry_signal": 755.72,
@@ -1610,8 +1610,11 @@
    ],
    "position_id": 1530303261,
    "entry": 757.7699999999999,
-   "last_hold": 7.0,
-   "split": true
+   "last_hold": 2.0,
+   "split": true,
+   "pnl": 0.0235,
+   "tp1_hit": true,
+   "be_moved": true
   },
   "dip:MSFT:1793318400000": {
    "key": "dip:MSFT:1793318400000",
