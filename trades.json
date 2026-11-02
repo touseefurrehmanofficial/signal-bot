@@ -1730,6 +1730,22 @@
    "entry": 104.36,
    "last_hold": 1.0,
    "split": false
+  },
+  "dip:CSCO:1793318400000": {
+   "key": "dip:CSCO:1793318400000",
+   "coin": "CSCO",
+   "symbol": "CSCOSTOCK_USDT",
+   "kind": "dip",
+   "name": "CSCOSTOCK USDT (CSCO, stock dip)",
+   "day": 1793318400000,
+   "status": "opening",
+   "time": 1793636295688,
+   "leverage": 60,
+   "vol": 1.0,
+   "sl": 94.8905,
+   "tp1": 107.39585000000001,
+   "tp2": 109.31975,
+   "entry_signal": 104.51
   }
  },
  "flags": {
