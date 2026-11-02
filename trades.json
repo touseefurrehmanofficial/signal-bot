@@ -1770,6 +1770,22 @@
    "status": "manual",
    "reason": "MEXC's smallest order would lose about $0.35 at the SL (16% away), more than your 10% limit of $0.18",
    "time": 1793636303841
+  },
+  "dip:ILMN:1793318400000": {
+   "key": "dip:ILMN:1793318400000",
+   "coin": "ILMN",
+   "symbol": "ILMNSTOCK_USDT",
+   "kind": "dip",
+   "name": "ILMNSTOCK USDT (ILMN, stock dip)",
+   "day": 1793318400000,
+   "status": "opening",
+   "time": 1793636307124,
+   "leverage": 13,
+   "vol": 1.0,
+   "sl": 183.051,
+   "tp1": 251.8717,
+   "tp2": 262.45950000000005,
+   "entry_signal": 235.99
   }
  },
  "flags": {
