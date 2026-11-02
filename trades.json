@@ -1748,6 +1748,17 @@
    "entry_signal": 104.51,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:PLTR:1793318400000": {
+   "key": "dip:PLTR:1793318400000",
+   "coin": "PLTR",
+   "symbol": "PLTRSTOCK_USDT",
+   "kind": "dip",
+   "name": "PLTRSTOCK USDT (PLTR, stock dip)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $0.27 at the SL (14% away), more than your 10% limit of $0.18",
+   "time": 1793636300974
   }
  },
  "flags": {
