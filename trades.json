@@ -1759,6 +1759,17 @@
    "status": "manual",
    "reason": "MEXC's smallest order would lose about $0.27 at the SL (14% away), more than your 10% limit of $0.18",
    "time": 1793636300974
+  },
+  "dip:DDOG:1793318400000": {
+   "key": "dip:DDOG:1793318400000",
+   "coin": "DDOG",
+   "symbol": "DDOGSTOCK_USDT",
+   "kind": "dip",
+   "name": "DDOGSTOCK USDT (DDOG, stock dip)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $0.35 at the SL (16% away), more than your 10% limit of $0.18",
+   "time": 1793636303841
   }
  },
  "flags": {
