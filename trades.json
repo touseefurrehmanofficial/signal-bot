@@ -1706,6 +1706,22 @@
    "entry_signal": 28.78,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:IGV:1793318400000": {
+   "key": "dip:IGV:1793318400000",
+   "coin": "IGV",
+   "symbol": "IGV_USDT",
+   "kind": "dip",
+   "name": "IGV USDT (IGV, stock dip)",
+   "day": 1793318400000,
+   "status": "opening",
+   "time": 1793636287980,
+   "leverage": 6,
+   "vol": 1.0,
+   "sl": 95.4595,
+   "tp1": 106.93915000000001,
+   "tp2": 108.70525,
+   "entry_signal": 104.29
   }
  },
  "flags": {
