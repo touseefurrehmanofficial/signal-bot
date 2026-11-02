@@ -1716,7 +1716,7 @@
    "kind": "dip",
    "name": "IGV USDT (IGV, stock dip)",
    "day": 1793318400000,
-   "status": "open",
+   "status": "closed",
    "time": 1793636287980,
    "leverage": 6,
    "vol": 1.0,
@@ -1730,8 +1730,12 @@
    ],
    "position_id": 1531488398,
    "entry": 104.36,
-   "last_hold": 1.0,
-   "split": false
+   "last_hold": 0.0,
+   "split": false,
+   "pnl": 0.0026,
+   "tp1_hit": true,
+   "closed": 1793641689019,
+   "result": "TP1"
   },
   "dip:CSCO:1793318400000": {
    "key": "dip:CSCO:1793318400000",
