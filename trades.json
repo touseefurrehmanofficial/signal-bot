@@ -1918,6 +1918,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.81",
    "time": 1793730324170
+  },
+  "dip:MU:1793577600000": {
+   "key": "dip:MU:1793577600000",
+   "coin": "MU",
+   "symbol": "MUSTOCK_USDT",
+   "kind": "dip",
+   "name": "MUSTOCK USDT (MU, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $1.69 at the SL (20% away), more than your 10% limit of $1.08",
+   "time": 1793735670842
   }
  },
  "flags": {
