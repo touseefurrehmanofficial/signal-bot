@@ -1805,6 +1805,17 @@
    "status": "manual",
    "reason": "MEXC's smallest order would lose about $0.23 at the SL (12% away), more than your 10% limit of $0.17",
    "time": 1793636520793
+  },
+  "KO:1793577600000": {
+   "key": "KO:1793577600000",
+   "coin": "KO",
+   "symbol": "KOSTOCK_USDT",
+   "kind": "stock",
+   "name": "KOSTOCK USDT (KO, stock breakout)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793717394425
   }
  },
  "flags": {
