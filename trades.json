@@ -1812,7 +1812,7 @@
   "key_seen": 1791959928921,
   "ledger_start": 1791548462925,
   "start_equity": 7.4241,
-  "low": true
+  "low": false
  },
  "skips": {
   "APT:1791676800000": "no leverage keeps liquidation at 0 (equity $6.17, open positions $35.16, margin $0.06)",
