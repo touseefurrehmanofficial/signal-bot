@@ -1907,6 +1907,17 @@
    "entry": 98.74,
    "last_hold": 5.0,
    "split": true
+  },
+  "dip:DVN:1793577600000": {
+   "key": "dip:DVN:1793577600000",
+   "coin": "DVN",
+   "symbol": "DVNSTOCK_USDT",
+   "kind": "dip",
+   "name": "DVNSTOCK USDT (DVN, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.81",
+   "time": 1793730324170
   }
  },
  "flags": {
