@@ -1929,6 +1929,17 @@
    "status": "manual",
    "reason": "MEXC's smallest order would lose about $1.69 at the SL (20% away), more than your 10% limit of $1.08",
    "time": 1793735670842
+  },
+  "dip:AAPL:1793664000000": {
+   "key": "dip:AAPL:1793664000000",
+   "coin": "AAPL",
+   "symbol": "AAPLSTOCK_USDT",
+   "kind": "dip",
+   "name": "AAPLSTOCK USDT (AAPL, stock dip)",
+   "day": 1793664000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793741333287
   }
  },
  "flags": {
