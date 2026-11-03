@@ -1882,6 +1882,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793717795375
+  },
+  "dip:EWT:1793577600000": {
+   "key": "dip:EWT:1793577600000",
+   "coin": "EWT",
+   "symbol": "EWT_USDT",
+   "kind": "dip",
+   "name": "EWT USDT (EWT, stock dip)",
+   "day": 1793577600000,
+   "status": "opening",
+   "time": 1793730292342,
+   "leverage": 50,
+   "vol": 5.0,
+   "sl": 92.6095,
+   "tp1": 103.07515,
+   "tp2": 104.68525,
+   "entry_signal": 100.66
   }
  },
  "flags": {
