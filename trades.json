@@ -1838,6 +1838,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793717398190
+  },
+  "dip:MPC:1793577600000": {
+   "key": "dip:MPC:1793577600000",
+   "coin": "MPC",
+   "symbol": "MPCSTOCK_USDT",
+   "kind": "dip",
+   "name": "MPCSTOCK USDT (MPC, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.23",
+   "time": 1793717399887
   }
  },
  "flags": {
