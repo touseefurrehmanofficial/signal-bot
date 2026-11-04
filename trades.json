@@ -1951,6 +1951,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793741335251
+  },
+  "dip:DELL:1793577600000": {
+   "key": "dip:DELL:1793577600000",
+   "coin": "DELL",
+   "symbol": "DELLSTOCK_USDT",
+   "kind": "dip",
+   "name": "DELLSTOCK USDT (DELL, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $1.08 at the SL (27% away), more than your 10% limit of $1.02",
+   "time": 1793755871814
   }
  },
  "flags": {
