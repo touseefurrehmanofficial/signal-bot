@@ -2035,6 +2035,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793827796954
+  },
+  "DIS:1793750400000": {
+   "key": "DIS:1793750400000",
+   "coin": "DIS",
+   "symbol": "DISSTOCK_USDT",
+   "kind": "stock",
+   "name": "DISSTOCK USDT (DIS, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793827798767
   }
  },
  "flags": {
