@@ -2104,6 +2104,17 @@
    "entry_signal": 280.2200012207031,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "HD:1793750400000": {
+   "key": "HD:1793750400000",
+   "coin": "HD",
+   "symbol": "HDSTOCK_USDT",
+   "kind": "stock",
+   "name": "HDSTOCK USDT (HD, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.55",
+   "time": 1793827814763
   }
  },
  "flags": {
