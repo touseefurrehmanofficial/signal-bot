@@ -2054,14 +2054,16 @@
    "kind": "stock",
    "name": "PGSTOCK USDT (PG, stock breakout)",
    "day": 1793750400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1793827801109,
    "leverage": 20,
    "vol": 1.0,
    "sl": 146.84786987304688,
    "tp1": 177.5560760498047,
    "tp2": 187.79214477539062,
-   "entry_signal": 167.32000732421875
+   "entry_signal": 167.32000732421875,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2127,7 +2129,8 @@
   "HPQSTOCK_USDT",
   "CSCOSTOCK_USDT",
   "ILMNSTOCK_USDT",
-  "PSXSTOCK_USDT"
+  "PSXSTOCK_USDT",
+  "PGSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
