@@ -2094,14 +2094,16 @@
    "kind": "stock",
    "name": "MCDSTOCK USDT (MCD, stock breakout)",
    "day": 1793750400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1793827810015,
    "leverage": 47,
    "vol": 1.0,
    "sl": 230.8800048828125,
    "tp1": 304.88999938964844,
    "tp2": 329.55999755859375,
-   "entry_signal": 280.2200012207031
+   "entry_signal": 280.2200012207031,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2168,7 +2170,8 @@
   "CSCOSTOCK_USDT",
   "ILMNSTOCK_USDT",
   "PSXSTOCK_USDT",
-  "PGSTOCK_USDT"
+  "PGSTOCK_USDT",
+  "MCDSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
