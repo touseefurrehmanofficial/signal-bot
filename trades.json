@@ -1981,14 +1981,16 @@
    "kind": "dip",
    "name": "PSXSTOCK USDT (PSX, stock dip)",
    "day": 1793664000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1793802649974,
    "leverage": 20,
    "vol": 8.0,
    "sl": 242.34,
    "tp1": 280.82,
    "tp2": 286.74,
-   "entry_signal": 271.94
+   "entry_signal": 271.94,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2053,7 +2055,8 @@
   "CRMSTOCK_USDT",
   "HPQSTOCK_USDT",
   "CSCOSTOCK_USDT",
-  "ILMNSTOCK_USDT"
+  "ILMNSTOCK_USDT",
+  "PSXSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
