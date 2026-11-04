@@ -2086,6 +2086,22 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793827808084
+  },
+  "MCD:1793750400000": {
+   "key": "MCD:1793750400000",
+   "coin": "MCD",
+   "symbol": "MCDSTOCK_USDT",
+   "kind": "stock",
+   "name": "MCDSTOCK USDT (MCD, stock breakout)",
+   "day": 1793750400000,
+   "status": "opening",
+   "time": 1793827810015,
+   "leverage": 47,
+   "vol": 1.0,
+   "sl": 230.8800048828125,
+   "tp1": 304.88999938964844,
+   "tp2": 329.55999755859375,
+   "entry_signal": 280.2200012207031
   }
  },
  "flags": {
