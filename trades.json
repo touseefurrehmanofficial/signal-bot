@@ -2002,6 +2002,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793827791337
+  },
+  "MSFT:1793750400000": {
+   "key": "MSFT:1793750400000",
+   "coin": "MSFT",
+   "symbol": "MSFTSTOCK_USDT",
+   "kind": "stock",
+   "name": "MSFTSTOCK USDT (MSFT, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793827793258
   }
  },
  "flags": {
