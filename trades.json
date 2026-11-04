@@ -1962,6 +1962,17 @@
    "status": "manual",
    "reason": "MEXC's smallest order would lose about $1.08 at the SL (27% away), more than your 10% limit of $1.02",
    "time": 1793755871814
+  },
+  "dip:AMD:1793664000000": {
+   "key": "dip:AMD:1793664000000",
+   "coin": "AMD",
+   "symbol": "AMDSTOCK_USDT",
+   "kind": "dip",
+   "name": "AMDSTOCK USDT (AMD, stock dip)",
+   "day": 1793664000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793794254601
   }
  },
  "flags": {
