@@ -2150,14 +2150,16 @@
    "kind": "dip",
    "name": "OXYSTOCK USDT (OXY, stock dip)",
    "day": 1793750400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1793897085475,
    "leverage": 50,
    "vol": 2.0,
    "sl": 52.212,
    "tp1": 58.865399999999994,
    "tp2": 59.888999999999996,
-   "entry_signal": 57.33
+   "entry_signal": 57.33,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2225,7 +2227,8 @@
   "ILMNSTOCK_USDT",
   "PSXSTOCK_USDT",
   "PGSTOCK_USDT",
-  "MCDSTOCK_USDT"
+  "MCDSTOCK_USDT",
+  "OXYSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
