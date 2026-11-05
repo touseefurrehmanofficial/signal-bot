@@ -1890,7 +1890,7 @@
    "kind": "dip",
    "name": "EWT USDT (EWT, stock dip)",
    "day": 1793577600000,
-   "status": "open",
+   "status": "closed",
    "time": 1793730292342,
    "leverage": 50,
    "vol": 5.0,
@@ -1905,8 +1905,11 @@
    ],
    "position_id": 1532096308,
    "entry": 98.74,
-   "last_hold": 5.0,
-   "split": true
+   "last_hold": 0.0,
+   "split": true,
+   "pnl": -0.3065,
+   "closed": 1793842279876,
+   "result": "SL"
   },
   "dip:DVN:1793577600000": {
    "key": "dip:DVN:1793577600000",
