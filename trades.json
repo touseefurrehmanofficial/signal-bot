@@ -2142,6 +2142,22 @@
    "entry": 63.99,
    "last_hold": 1.0,
    "split": false
+  },
+  "dip:OXY:1793750400000": {
+   "key": "dip:OXY:1793750400000",
+   "coin": "OXY",
+   "symbol": "OXYSTOCK_USDT",
+   "kind": "dip",
+   "name": "OXYSTOCK USDT (OXY, stock dip)",
+   "day": 1793750400000,
+   "status": "opening",
+   "time": 1793897085475,
+   "leverage": 50,
+   "vol": 2.0,
+   "sl": 52.212,
+   "tp1": 58.865399999999994,
+   "tp2": 59.888999999999996,
+   "entry_signal": 57.33
   }
  },
  "flags": {
