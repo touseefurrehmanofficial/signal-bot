@@ -2118,6 +2118,22 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.55",
    "time": 1793827814763
+  },
+  "dip:XLE:1793750400000": {
+   "key": "dip:XLE:1793750400000",
+   "coin": "XLE",
+   "symbol": "XLE_USDT",
+   "kind": "dip",
+   "name": "XLE USDT (XLE, stock dip)",
+   "day": 1793750400000,
+   "status": "opening",
+   "time": 1793896493305,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 58.6855,
+   "tp1": 64.97035000000001,
+   "tp2": 65.93725,
+   "entry_signal": 63.52
   }
  },
  "flags": {
