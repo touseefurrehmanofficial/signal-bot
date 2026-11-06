@@ -2276,6 +2276,17 @@
    "entry_signal": 160.38,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:HPE:1793923200000": {
+   "key": "dip:HPE:1793923200000",
+   "coin": "HPE",
+   "symbol": "HPESTOCK_USDT",
+   "kind": "dip",
+   "name": "HPESTOCK USDT (HPE, stock dip)",
+   "day": 1793923200000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794000554364
   }
  },
  "flags": {
