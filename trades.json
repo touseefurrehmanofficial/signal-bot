@@ -2182,6 +2182,22 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.02",
    "time": 1793986810350
+  },
+  "dip:DIA:1793836800000": {
+   "key": "dip:DIA:1793836800000",
+   "coin": "DIA",
+   "symbol": "DIASTOCK_USDT",
+   "kind": "dip",
+   "name": "DIASTOCK USDT (DIA, stock dip)",
+   "day": 1793836800000,
+   "status": "opening",
+   "time": 1793989335502,
+   "leverage": 20,
+   "vol": 28.0,
+   "sl": 494.268,
+   "tp1": 520.2706,
+   "tp2": 524.271,
+   "entry_signal": 514.27
   }
  },
  "flags": {
