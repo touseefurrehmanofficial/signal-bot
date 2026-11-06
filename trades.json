@@ -2211,6 +2211,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793989340068
+  },
+  "dip:CVX:1793836800000": {
+   "key": "dip:CVX:1793836800000",
+   "coin": "CVX",
+   "symbol": "CVXSTOCK_USDT",
+   "kind": "dip",
+   "name": "CVXSTOCK USDT (CVX, stock dip)",
+   "day": 1793836800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793991120095
   }
  },
  "flags": {
