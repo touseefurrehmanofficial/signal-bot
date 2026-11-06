@@ -2200,6 +2200,17 @@
    "entry_signal": 514.27,
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:XOM:1793836800000": {
+   "key": "dip:XOM:1793836800000",
+   "coin": "XOM",
+   "symbol": "XOMSTOCK_USDT",
+   "kind": "dip",
+   "name": "XOMSTOCK USDT (XOM, stock dip)",
+   "day": 1793836800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793989340068
   }
  },
  "flags": {
