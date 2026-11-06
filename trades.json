@@ -2247,6 +2247,17 @@
    "entry": 736.9,
    "last_hold": 4.0,
    "split": true
+  },
+  "INDA:1793923200000": {
+   "key": "INDA:1793923200000",
+   "coin": "INDA",
+   "symbol": "INDA_USDT",
+   "kind": "stock",
+   "name": "INDA USDT (INDA, stock breakout)",
+   "day": 1793923200000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $5.09",
+   "time": 1794000547100
   }
  },
  "flags": {
