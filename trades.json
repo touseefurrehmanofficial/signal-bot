@@ -2266,14 +2266,16 @@
    "kind": "dip",
    "name": "PLTRSTOCK USDT (PLTR, stock dip)",
    "day": 1793923200000,
-   "status": "opening",
+   "status": "failed",
    "time": 1794000549330,
    "leverage": 23,
    "vol": 1.0,
    "sl": 130.511,
    "tp1": 169.3407,
    "tp2": 175.3145,
-   "entry_signal": 160.38
+   "entry_signal": 160.38,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2343,7 +2345,8 @@
   "PGSTOCK_USDT",
   "MCDSTOCK_USDT",
   "OXYSTOCK_USDT",
-  "DIASTOCK_USDT"
+  "DIASTOCK_USDT",
+  "PLTRSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
