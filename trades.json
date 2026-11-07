@@ -2289,6 +2289,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794000554364
+  },
+  "dip:NTAP:1793923200000": {
+   "key": "dip:NTAP:1793923200000",
+   "coin": "NTAP",
+   "symbol": "NTAPSTOCK_USDT",
+   "kind": "dip",
+   "name": "NTAPSTOCK USDT (NTAP, stock dip)",
+   "day": 1793923200000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.69",
+   "time": 1794034527657
   }
  },
  "flags": {
