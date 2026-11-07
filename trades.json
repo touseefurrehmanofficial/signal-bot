@@ -2300,6 +2300,26 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.69",
    "time": 1794034527657
+  },
+  "dip:COP:1793836800000": {
+   "key": "dip:COP:1793836800000",
+   "coin": "COP",
+   "symbol": "COPSTOCK_USDT",
+   "kind": "dip",
+   "name": "COPSTOCK USDT (COP, stock dip)",
+   "day": 1793836800000,
+   "status": "opening",
+   "time": 1794040279946,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 123.184,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 135.46,
+   "intel": {
+    "at": 1794040279,
+    "ok": false
+   }
   }
  },
  "flags": {
