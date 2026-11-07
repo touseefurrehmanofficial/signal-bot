@@ -2308,7 +2308,7 @@
    "kind": "dip",
    "name": "COPSTOCK USDT (COP, stock dip)",
    "day": 1793836800000,
-   "status": "opening",
+   "status": "failed",
    "time": 1794040279946,
    "leverage": 20,
    "vol": 1.0,
@@ -2319,7 +2319,9 @@
    "intel": {
     "at": 1794040279,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2390,7 +2392,8 @@
   "MCDSTOCK_USDT",
   "OXYSTOCK_USDT",
   "DIASTOCK_USDT",
-  "PLTRSTOCK_USDT"
+  "PLTRSTOCK_USDT",
+  "COPSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
