@@ -504,16 +504,22 @@ def watch_levels():
         seen.update(f"{key}:{lv}" for lv in fresh)
         if stopped:
             seen.add(f"{key}:sl")
-        if baseline or (allowed is not None and key not in allowed):   # marked as seen either way: no backlog if turned on later
-            continue
+        bot_opened = bool((ft.load_book()["trades"].get((f"dip:{name}" if kind == "dip" else name) + f":{t['day']}") or {}).get("position_id"))
+        if baseline or bot_opened or (allowed is not None and key not in allowed):   # marked as seen either way: no backlog if turned on later
+            continue                                           # bot-opened trades: only the trade's own messages (its real entry, TP, SL)
         pair, shown = pair_name(name, kind, mexc.get(name) if kind != "crypto" else None), dict(t, hits={lv: 1 for lv in hit})
         if stopped and len(hit) < len(levels):
             send(sl_card(pair, levels, shown))
         elif fresh:
             send(update_card(pair, levels, {lv: 1 for lv in hit if lv not in fresh}, shown)[0] + (f"\nPrice now: {fmt(price)}" if price else ""))
-    stale = {k for k in seen if k.rsplit(":", 1)[0] not in live}
-    if stale and len(live) > 20:                               # forget plans the scanner no longer lists
-        seen -= stale
+    def _day(k):
+        try:
+            return int(k.split(":")[2])
+        except (IndexError, ValueError):
+            return 0
+    stale = {k for k in seen if _day(k) < (time.time() - 60 * 86_400) * 1000}
+    if stale:                                                  # forget alerts older than 60 days (never because a plan left the list:
+        seen -= stale                                          # a plan that comes back must not repeat old alerts)
         changed = True
     if changed or baseline:
         save_notified()

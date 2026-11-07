@@ -349,10 +349,32 @@ def est_liquidation(eq, total_notional, entry):
 # --------------------------------------------------------------------------------------------- orders
 def place_tpsl(pid, vol, tp, sl, cinfo):
     unit = cinfo["priceUnit"]
-    body = {"positionId": pid, "vol": vol, "lossTrend": 1, "profitTrend": 1, "volType": 1, "profitLossVolType": "SAME", "priceProtect": "0",
-            "takeProfitPrice": to_unit(tp, unit, ROUND_HALF_UP), "takeProfitType": 1, "takeProfitOrderPrice": to_unit(tp, unit, ROUND_HALF_UP),
+    body = {"positionId": pid, "vol": vol, "lossTrend": 1, "volType": 1, "profitLossVolType": "SAME", "priceProtect": "0",
             "stopLossPrice": to_unit(sl, unit, ROUND_HALF_UP), "stopLossType": 1, "stopLossOrderPrice": to_unit(sl * (1 - SL_LIMIT_OFFSET), unit)}
+    if tp:                                                      # dips carry no take-profit (they leave by the daily rule)
+        body.update(profitTrend=1, takeProfitPrice=to_unit(tp, unit, ROUND_HALF_UP), takeProfitType=1, takeProfitOrderPrice=to_unit(tp, unit, ROUND_HALF_UP))
     return api_post("/api/v1/private/stoporder/place", body)
+
+
+def remove_tp(t):
+    """Take the take-profit off an open trade's exchange TP/SL orders, keeping each order's stop loss.
+    Returns True only if no take-profit is left afterwards and every remaining order still has a stop loss."""
+    for o in tpsl_orders(t["symbol"]):
+        if str(o.get("positionId")) != str(t["position_id"]) or o.get("isFinished") or int(o.get("state") or 1) != 1:
+            continue
+        if not float(o.get("takeProfitPrice") or 0):
+            continue
+        body = {"stopPlanOrderId": o["id"], "stopLossPrice": float(o.get("stopLossPrice") or t["sl"]), "lossTrend": 1}
+        try:
+            api_post("/api/v1/private/stoporder/change_plan_price", body)
+        except ApiError:
+            if str(o.get("orderId") or "0") == "0":
+                raise
+            body.pop("stopPlanOrderId")
+            api_post("/api/v1/private/stoporder/change_price", dict(body, orderId=o["orderId"]))
+    left = [o for o in tpsl_orders(t["symbol"]) if str(o.get("positionId")) == str(t["position_id"]) and not o.get("isFinished")
+            and int(o.get("state") or 1) == 1]
+    return bool(left) and all(not float(o.get("takeProfitPrice") or 0) and float(o.get("stopLossPrice") or 0) > 0 for o in left)
 
 
 def move_sl_to_breakeven(t):
@@ -410,8 +432,8 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
     name = label(coin, sym, kind)
     cinfo, price = cinfo_all[sym], prices[sym]
     r = t["entry"] - t["stop"]
-    k1, k2 = (0.3, 0.5) if kind == "dip" else (0.5, 1.0)
-    tp1, tp2, sl = t["entry"] + k1 * r, t["entry"] + k2 * r, t["stop"]
+    dip = kind == "dip"                                         # dips: no TP; they exit by the tested daily rule (see follow)
+    tp1, tp2, sl = (None, None, t["stop"]) if dip else (t["entry"] + 0.5 * r, t["entry"] + r, t["stop"])
     # Owner's choice: only the bot's own open positions count toward the liquidation-0 room; manual positions are ignored.
     bot_pids = {t.get("position_id") for t in b["trades"].values() if t.get("status") == "open"}
     other = sum(notional(p, cinfo_all, prices) for pid, p in pos.items() if pid in bot_pids)
@@ -431,15 +453,16 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
         unit, min_vol = cinfo["priceUnit"], float(cinfo.get("minVol") or 1)
         trade["tp1_share"] = share = tp1_share(kind)
         vol_a = to_unit(vol * share, cinfo.get("volUnit") or 1)
-        split = vol_a >= min_vol and vol - vol_a >= min_vol
+        split = not dip and vol_a >= min_vol and vol - vol_a >= min_vol
         legs = [(vol_a, tp1, "a"), (vol - vol_a, tp2, "b")] if split else [(vol, tp1, "a")]
         filled, cost, pid, err = 0.0, 0.0, None, None
         for v, tp, tag in legs:
             try:
-                oid = api_post("/api/v1/private/order/create", {
-                    "symbol": sym, "price": price, "vol": v, "leverage": lev, "side": 1, "type": 5, "openType": 2,
-                    "stopLossPrice": to_unit(sl, unit, ROUND_HALF_UP), "takeProfitPrice": to_unit(tp, unit, ROUND_HALF_UP),
-                    "lossTrend": 1, "profitTrend": 1, "externalOid": ("sb" + key.replace(":", "") + tag)[:32]})["orderId"]
+                body = {"symbol": sym, "price": price, "vol": v, "leverage": lev, "side": 1, "type": 5, "openType": 2,
+                        "stopLossPrice": to_unit(sl, unit, ROUND_HALF_UP), "lossTrend": 1, "externalOid": ("sb" + key.replace(":", "") + tag)[:32]}
+                if tp:
+                    body.update(takeProfitPrice=to_unit(tp, unit, ROUND_HALF_UP), profitTrend=1)
+                oid = api_post("/api/v1/private/order/create", body)["orderId"]
             except ApiError as e:
                 err = e
                 break
@@ -493,7 +516,8 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
         liq_text = ("Liquidation: none" if liq is None else
                     f"Liquidation ≈ {liq:g} (cross-margin estimate)" + (" ⚠️ BEFORE the SL" if liq >= sl else ""))
         send(f"\U0001F7E2 TRADE OPENED — {name}\n\nDirection: LONG · Cross {lev}X\nEntry: {avg:g}\nSize: {filled:g} contracts ≈ ${value:,.2f} (margin ${margin:,.2f})\n"
-             + (f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} ({vol_a / filled:.0%})\n\U0001F3AF TP2: {to_unit(tp2, cinfo['priceUnit'], ROUND_HALF_UP):g} ({1 - vol_a / filled:.0%})\n" if trade["split"] and filled > vol_a
+             + (f"\U0001F3C1 Exit: first daily close above the 20-day average" + (f" (now {t['ma20']:g})" if t.get("ma20") else "") + ", or after 20 trading days\n" if dip
+                else f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} ({vol_a / filled:.0%})\n\U0001F3AF TP2: {to_unit(tp2, cinfo['priceUnit'], ROUND_HALF_UP):g} ({1 - vol_a / filled:.0%})\n" if trade["split"] and filled > vol_a
                 else f"\U0001F3AF TP1: {to_unit(tp1, cinfo['priceUnit'], ROUND_HALF_UP):g} (100%)\n")
              + f"\U0001F6E1 SL: {to_unit(sl, cinfo['priceUnit'], ROUND_HALF_UP):g} (on the exchange)\nLoss if SL is hit ≈ ${loss_at_sl:,.2f} · {liq_text}\n\n" + stats_line(eq))
     except ApiError as e:
@@ -538,7 +562,10 @@ def follow(eq, pos, prices, send, persist, state=None):
                 send(f"✖ {t['name']} closed by you · result ≈ {t['pnl']:+.2f}$\n\n" + stats_line(eq))
             persist()
             continue
-        hit_tp = price >= ((t["tp2"] if t.get("be_moved") else t["tp1"]) + t["sl"]) / 2   # which side of the range price is on when the size dropped
+        if t.get("tp1") is None:                                # no take-profit (dips): a drop that is not the bot's own exit is the stop
+            hit_tp = False
+        else:
+            hit_tp = price >= ((t["tp2"] if t.get("be_moved") else t["tp1"]) + t["sl"]) / 2   # which side of the range price is on when the size dropped
         gain = (t["tp2"] if t.get("tp1_hit") else t["tp1"]) if hit_tp else t["sl"]
         t["pnl"] = round((t.get("pnl") or 0) + (gain - t["entry"]) * part * float(contracts()[t["symbol"]]["contractSize"]), 4)
         t["last_hold"] = hold
@@ -597,6 +624,15 @@ def manual(key, coin, t, kind, sym, reason, eq, send, persist, record=True):
     send(f"✋ TAKE THIS TRADE MANUALLY\nThe bot could not open it: {reason}.\nThe bot will not open it later, so there is no risk of a double trade.\n\n" + card + extra)
 
 
+def settle_time(day_ms):
+    """18:00 New York time on the signal's trading day (2 h after the US close): before that, the day's closing prices
+    from the data source can still be revised, and a stock signal may disappear."""
+    from datetime import datetime, timezone
+    from zoneinfo import ZoneInfo
+    d = datetime.fromtimestamp(day_ms / 1000, timezone.utc).date()
+    return datetime(d.year, d.month, d.day, 18, 0, tzinfo=ZoneInfo("America/New_York")).timestamp()
+
+
 def candidates(state, pos_symbols):
     """(key, name, plan, kind, contract symbol) for every signal that can still be entered.
     kind: "crypto" (breakout), "stock" (breakout on a US stock MEXC lists), "dip" (dip rule on a US stock MEXC lists)."""
@@ -642,6 +678,23 @@ def tick(state, send, persist):
                     send(f"\U0001F512 {t.get('name', t['coin'])}: SL moved to breakeven {t['sl']:g} (TP 1 was already hit).")
                 except ApiError:
                     pass
+        for t in [x for x in b["trades"].values() if x["status"] == "open" and x.get("kind") == "dip" and x.get("tp1") is not None and not x.get("tp_switch_tried")]:
+            if not pos.get(t["position_id"]):
+                continue
+            t["tp_switch_tried"] = True                         # one attempt per trade, never a loop
+            err = None
+            try:
+                ok = remove_tp(t)
+            except ApiError as e:
+                ok, err = False, e
+            if ok:
+                t["tp1"] = t["tp2"] = None
+                send(f"\U0001F501 {t.get('name', t['coin'])}: take-profit removed. This dip trade now leaves by the tested rule: the first daily close "
+                     f"above the 20-day average, or after 20 trading days. SL {t['sl']:g} stays on the exchange.")
+            else:
+                send(f"\u26A0\uFE0F {t.get('name', t['coin'])}: could not remove the take-profit" + (f" ({err})" if err else "")
+                     + f"; it keeps TP {t['tp1']:g}. The daily exit rule still applies as well.")
+            persist()
         follow(eq, pos, prices, send, persist, state)
         if b["paused"]:
             return
@@ -672,8 +725,10 @@ def tick(state, send, persist):
                 continue
             if sym not in cinfo or not cinfo[sym].get("apiAllowed") or sym not in prices:
                 continue
+            if kind in ("stock", "dip") and time.time() < settle_time(t["day"]):
+                continue                                        # US data settles ~2 h after the close; act only after that
             r = t["entry"] - t["stop"]
-            ceiling = t["entry"] + (0.1 if kind == "dip" else 0.25) * r    # dips: TP1 is only +0.3R away
+            ceiling = t["entry"] + (0.1 if kind == "dip" else 0.25) * r    # no chasing far above the signal close
             if not (t["stop"] < prices[sym] <= ceiling):
                 continue                                        # outside the entry zone right now; checked again next time
             bid, ask = book(sym)                                # a market buy pays the ASK, not the last price
@@ -816,7 +871,9 @@ def run_confirmed(token):
                 t = next((t for t in b["trades"].values() if t.get("position_id") == pid and t["status"] == "open"), None)
                 body = {"symbol": sym, "price": price, "vol": vol, "leverage": lev, "side": 1, "type": 5, "openType": 2}
                 if t:                                           # the added part gets the trade's own SL and TP1
-                    body.update(stopLossPrice=to_unit(t["sl"], c["priceUnit"], ROUND_HALF_UP), takeProfitPrice=to_unit(t["tp1"], c["priceUnit"], ROUND_HALF_UP), lossTrend=1, profitTrend=1)
+                    body.update(stopLossPrice=to_unit(t["sl"], c["priceUnit"], ROUND_HALF_UP), lossTrend=1)
+                    if t.get("tp1"):
+                        body.update(takeProfitPrice=to_unit(t["tp1"], c["priceUnit"], ROUND_HALF_UP), profitTrend=1)
                 oid = api_post("/api/v1/private/order/create", body)["orderId"]
                 o = wait_fill(oid)
                 filled = float(o.get("dealVol") or 0)
