@@ -1587,13 +1587,714 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1793340399605
+  },
+  "dip:SPY:1793318400000": {
+   "key": "dip:SPY:1793318400000",
+   "coin": "SPY",
+   "symbol": "SPY_USDT",
+   "kind": "dip",
+   "name": "SPY USDT (SPY, stock dip)",
+   "day": 1793318400000,
+   "status": "closed",
+   "time": 1793395823244,
+   "leverage": 89,
+   "vol": 7.0,
+   "sl": 758.98,
+   "tp1": 762.4709,
+   "tp2": 766.9715000000001,
+   "entry_signal": 755.72,
+   "tp1_share": 0.8,
+   "order_ids": [
+    "871263582359476480",
+    "871263584985109760"
+   ],
+   "position_id": 1530303261,
+   "entry": 757.7699999999999,
+   "last_hold": 0.0,
+   "split": true,
+   "pnl": 0.0259,
+   "tp1_hit": true,
+   "be_moved": true,
+   "closed": 1793641535162,
+   "result": "TP1 + breakeven"
+  },
+  "dip:MSFT:1793318400000": {
+   "key": "dip:MSFT:1793318400000",
+   "coin": "MSFT",
+   "symbol": "MSFTSTOCK_USDT",
+   "kind": "dip",
+   "name": "MSFTSTOCK USDT (MSFT, stock dip)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793395831027
+  },
+  "PFE:1793318400000": {
+   "key": "PFE:1793318400000",
+   "coin": "PFE",
+   "symbol": "PFESTOCK_USDT",
+   "kind": "stock",
+   "name": "PFESTOCK USDT (PFE, stock breakout)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793395832697
+  },
+  "dip:CRM:1793318400000": {
+   "key": "dip:CRM:1793318400000",
+   "coin": "CRM",
+   "symbol": "CRMSTOCK_USDT",
+   "kind": "dip",
+   "name": "CRMSTOCK USDT (CRM, stock dip)",
+   "day": 1793318400000,
+   "status": "failed",
+   "time": 1793395834402,
+   "leverage": 36,
+   "vol": 1.0,
+   "sl": 202.738,
+   "tp1": 237.09959999999998,
+   "tp2": 242.38599999999997,
+   "entry_signal": 229.17,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "XOM:1793318400000": {
+   "key": "XOM:1793318400000",
+   "coin": "XOM",
+   "symbol": "XOMSTOCK_USDT",
+   "kind": "stock",
+   "name": "XOMSTOCK USDT (XOM, stock breakout)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793395839237
+  },
+  "CVX:1793318400000": {
+   "key": "CVX:1793318400000",
+   "coin": "CVX",
+   "symbol": "CVXSTOCK_USDT",
+   "kind": "stock",
+   "name": "CVXSTOCK USDT (CVX, stock breakout)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793395840800
+  },
+  "WMT:1793318400000": {
+   "key": "WMT:1793318400000",
+   "coin": "WMT",
+   "symbol": "WMTSTOCK_USDT",
+   "kind": "stock",
+   "name": "WMTSTOCK USDT (WMT, stock breakout)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793395842678
+  },
+  "dip:HPQ:1793318400000": {
+   "key": "dip:HPQ:1793318400000",
+   "coin": "HPQ",
+   "symbol": "HPQSTOCK_USDT",
+   "kind": "dip",
+   "name": "HPQSTOCK USDT (HPQ, stock dip)",
+   "day": 1793318400000,
+   "status": "failed",
+   "time": 1793399724821,
+   "leverage": 11,
+   "vol": 2.0,
+   "sl": 24.487,
+   "tp1": 30.0679,
+   "tp2": 30.926500000000004,
+   "entry_signal": 28.78,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:IGV:1793318400000": {
+   "key": "dip:IGV:1793318400000",
+   "coin": "IGV",
+   "symbol": "IGV_USDT",
+   "kind": "dip",
+   "name": "IGV USDT (IGV, stock dip)",
+   "day": 1793318400000,
+   "status": "closed",
+   "time": 1793636287980,
+   "leverage": 6,
+   "vol": 1.0,
+   "sl": 95.4595,
+   "tp1": 106.93915000000001,
+   "tp2": 108.70525,
+   "entry_signal": 104.29,
+   "tp1_share": 0.8,
+   "order_ids": [
+    "872272165584564992"
+   ],
+   "position_id": 1531488398,
+   "entry": 104.36,
+   "last_hold": 0.0,
+   "split": false,
+   "pnl": 0.0026,
+   "tp1_hit": true,
+   "closed": 1793641689019,
+   "result": "TP1"
+  },
+  "dip:CSCO:1793318400000": {
+   "key": "dip:CSCO:1793318400000",
+   "coin": "CSCO",
+   "symbol": "CSCOSTOCK_USDT",
+   "kind": "dip",
+   "name": "CSCOSTOCK USDT (CSCO, stock dip)",
+   "day": 1793318400000,
+   "status": "failed",
+   "time": 1793636295688,
+   "leverage": 60,
+   "vol": 1.0,
+   "sl": 94.8905,
+   "tp1": 107.39585000000001,
+   "tp2": 109.31975,
+   "entry_signal": 104.51,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:PLTR:1793318400000": {
+   "key": "dip:PLTR:1793318400000",
+   "coin": "PLTR",
+   "symbol": "PLTRSTOCK_USDT",
+   "kind": "dip",
+   "name": "PLTRSTOCK USDT (PLTR, stock dip)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $0.27 at the SL (14% away), more than your 10% limit of $0.18",
+   "time": 1793636300974
+  },
+  "dip:DDOG:1793318400000": {
+   "key": "dip:DDOG:1793318400000",
+   "coin": "DDOG",
+   "symbol": "DDOGSTOCK_USDT",
+   "kind": "dip",
+   "name": "DDOGSTOCK USDT (DDOG, stock dip)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $0.35 at the SL (16% away), more than your 10% limit of $0.18",
+   "time": 1793636303841
+  },
+  "dip:ILMN:1793318400000": {
+   "key": "dip:ILMN:1793318400000",
+   "coin": "ILMN",
+   "symbol": "ILMNSTOCK_USDT",
+   "kind": "dip",
+   "name": "ILMNSTOCK USDT (ILMN, stock dip)",
+   "day": 1793318400000,
+   "status": "failed",
+   "time": 1793636307124,
+   "leverage": 13,
+   "vol": 1.0,
+   "sl": 183.051,
+   "tp1": 251.8717,
+   "tp2": 262.45950000000005,
+   "entry_signal": 235.99,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:NTAP:1793318400000": {
+   "key": "dip:NTAP:1793318400000",
+   "coin": "NTAP",
+   "symbol": "NTAPSTOCK_USDT",
+   "kind": "dip",
+   "name": "NTAPSTOCK USDT (NTAP, stock dip)",
+   "day": 1793318400000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $0.23 at the SL (12% away), more than your 10% limit of $0.17",
+   "time": 1793636520793
+  },
+  "KO:1793577600000": {
+   "key": "KO:1793577600000",
+   "coin": "KO",
+   "symbol": "KOSTOCK_USDT",
+   "kind": "stock",
+   "name": "KOSTOCK USDT (KO, stock breakout)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793717394425
+  },
+  "PFE:1793577600000": {
+   "key": "PFE:1793577600000",
+   "coin": "PFE",
+   "symbol": "PFESTOCK_USDT",
+   "kind": "stock",
+   "name": "PFESTOCK USDT (PFE, stock breakout)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793717396306
+  },
+  "COST:1793577600000": {
+   "key": "COST:1793577600000",
+   "coin": "COST",
+   "symbol": "COSTSTOCK_USDT",
+   "kind": "stock",
+   "name": "COSTSTOCK USDT (COST, stock breakout)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793717398190
+  },
+  "dip:MPC:1793577600000": {
+   "key": "dip:MPC:1793577600000",
+   "coin": "MPC",
+   "symbol": "MPCSTOCK_USDT",
+   "kind": "dip",
+   "name": "MPCSTOCK USDT (MPC, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.23",
+   "time": 1793717399887
+  },
+  "V:1793577600000": {
+   "key": "V:1793577600000",
+   "coin": "V",
+   "symbol": "VSTOCK_USDT",
+   "kind": "stock",
+   "name": "VSTOCK USDT (V, stock breakout)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793717403294
+  },
+  "WMT:1793577600000": {
+   "key": "WMT:1793577600000",
+   "coin": "WMT",
+   "symbol": "WMTSTOCK_USDT",
+   "kind": "stock",
+   "name": "WMTSTOCK USDT (WMT, stock breakout)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793717406311
+  },
+  "dip:PANW:1793577600000": {
+   "key": "dip:PANW:1793577600000",
+   "coin": "PANW",
+   "symbol": "PANWSTOCK_USDT",
+   "kind": "dip",
+   "name": "PANWSTOCK USDT (PANW, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793717795375
+  },
+  "dip:EWT:1793577600000": {
+   "key": "dip:EWT:1793577600000",
+   "coin": "EWT",
+   "symbol": "EWT_USDT",
+   "kind": "dip",
+   "name": "EWT USDT (EWT, stock dip)",
+   "day": 1793577600000,
+   "status": "closed",
+   "time": 1793730292342,
+   "leverage": 50,
+   "vol": 5.0,
+   "sl": 92.6095,
+   "tp1": 103.07515,
+   "tp2": 104.68525,
+   "entry_signal": 100.66,
+   "tp1_share": 0.8,
+   "order_ids": [
+    "872666538278319808",
+    "872666540685847252"
+   ],
+   "position_id": 1532096308,
+   "entry": 98.74,
+   "last_hold": 0.0,
+   "split": true,
+   "pnl": -0.3065,
+   "closed": 1793842279876,
+   "result": "SL"
+  },
+  "dip:DVN:1793577600000": {
+   "key": "dip:DVN:1793577600000",
+   "coin": "DVN",
+   "symbol": "DVNSTOCK_USDT",
+   "kind": "dip",
+   "name": "DVNSTOCK USDT (DVN, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.81",
+   "time": 1793730324170
+  },
+  "dip:MU:1793577600000": {
+   "key": "dip:MU:1793577600000",
+   "coin": "MU",
+   "symbol": "MUSTOCK_USDT",
+   "kind": "dip",
+   "name": "MUSTOCK USDT (MU, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $1.69 at the SL (20% away), more than your 10% limit of $1.08",
+   "time": 1793735670842
+  },
+  "dip:AAPL:1793664000000": {
+   "key": "dip:AAPL:1793664000000",
+   "coin": "AAPL",
+   "symbol": "AAPLSTOCK_USDT",
+   "kind": "dip",
+   "name": "AAPLSTOCK USDT (AAPL, stock dip)",
+   "day": 1793664000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793741333287
+  },
+  "DIS:1793664000000": {
+   "key": "DIS:1793664000000",
+   "coin": "DIS",
+   "symbol": "DISSTOCK_USDT",
+   "kind": "stock",
+   "name": "DISSTOCK USDT (DIS, stock breakout)",
+   "day": 1793664000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793741335251
+  },
+  "dip:DELL:1793577600000": {
+   "key": "dip:DELL:1793577600000",
+   "coin": "DELL",
+   "symbol": "DELLSTOCK_USDT",
+   "kind": "dip",
+   "name": "DELLSTOCK USDT (DELL, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $1.08 at the SL (27% away), more than your 10% limit of $1.02",
+   "time": 1793755871814
+  },
+  "dip:AMD:1793664000000": {
+   "key": "dip:AMD:1793664000000",
+   "coin": "AMD",
+   "symbol": "AMDSTOCK_USDT",
+   "kind": "dip",
+   "name": "AMDSTOCK USDT (AMD, stock dip)",
+   "day": 1793664000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793794254601
+  },
+  "dip:PSX:1793664000000": {
+   "key": "dip:PSX:1793664000000",
+   "coin": "PSX",
+   "symbol": "PSXSTOCK_USDT",
+   "kind": "dip",
+   "name": "PSXSTOCK USDT (PSX, stock dip)",
+   "day": 1793664000000,
+   "status": "failed",
+   "time": 1793802649974,
+   "leverage": 20,
+   "vol": 8.0,
+   "sl": 242.34,
+   "tp1": 280.82,
+   "tp2": 286.74,
+   "entry_signal": 271.94,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "AAPL:1793750400000": {
+   "key": "AAPL:1793750400000",
+   "coin": "AAPL",
+   "symbol": "AAPLSTOCK_USDT",
+   "kind": "stock",
+   "name": "AAPLSTOCK USDT (AAPL, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793827791337
+  },
+  "MSFT:1793750400000": {
+   "key": "MSFT:1793750400000",
+   "coin": "MSFT",
+   "symbol": "MSFTSTOCK_USDT",
+   "kind": "stock",
+   "name": "MSFTSTOCK USDT (MSFT, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793827793258
+  },
+  "PFE:1793750400000": {
+   "key": "PFE:1793750400000",
+   "coin": "PFE",
+   "symbol": "PFESTOCK_USDT",
+   "kind": "stock",
+   "name": "PFESTOCK USDT (PFE, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793827795066
+  },
+  "COST:1793750400000": {
+   "key": "COST:1793750400000",
+   "coin": "COST",
+   "symbol": "COSTSTOCK_USDT",
+   "kind": "stock",
+   "name": "COSTSTOCK USDT (COST, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793827796954
+  },
+  "DIS:1793750400000": {
+   "key": "DIS:1793750400000",
+   "coin": "DIS",
+   "symbol": "DISSTOCK_USDT",
+   "kind": "stock",
+   "name": "DISSTOCK USDT (DIS, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793827798767
+  },
+  "PG:1793750400000": {
+   "key": "PG:1793750400000",
+   "coin": "PG",
+   "symbol": "PGSTOCK_USDT",
+   "kind": "stock",
+   "name": "PGSTOCK USDT (PG, stock breakout)",
+   "day": 1793750400000,
+   "status": "failed",
+   "time": 1793827801109,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 146.84786987304688,
+   "tp1": 177.5560760498047,
+   "tp2": 187.79214477539062,
+   "entry_signal": 167.32000732421875,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "V:1793750400000": {
+   "key": "V:1793750400000",
+   "coin": "V",
+   "symbol": "VSTOCK_USDT",
+   "kind": "stock",
+   "name": "VSTOCK USDT (V, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793827806283
+  },
+  "WMT:1793750400000": {
+   "key": "WMT:1793750400000",
+   "coin": "WMT",
+   "symbol": "WMTSTOCK_USDT",
+   "kind": "stock",
+   "name": "WMTSTOCK USDT (WMT, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793827808084
+  },
+  "MCD:1793750400000": {
+   "key": "MCD:1793750400000",
+   "coin": "MCD",
+   "symbol": "MCDSTOCK_USDT",
+   "kind": "stock",
+   "name": "MCDSTOCK USDT (MCD, stock breakout)",
+   "day": 1793750400000,
+   "status": "failed",
+   "time": 1793827810015,
+   "leverage": 47,
+   "vol": 1.0,
+   "sl": 230.8800048828125,
+   "tp1": 304.88999938964844,
+   "tp2": 329.55999755859375,
+   "entry_signal": 280.2200012207031,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "HD:1793750400000": {
+   "key": "HD:1793750400000",
+   "coin": "HD",
+   "symbol": "HDSTOCK_USDT",
+   "kind": "stock",
+   "name": "HDSTOCK USDT (HD, stock breakout)",
+   "day": 1793750400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.55",
+   "time": 1793827814763
+  },
+  "dip:XLE:1793750400000": {
+   "key": "dip:XLE:1793750400000",
+   "coin": "XLE",
+   "symbol": "XLE_USDT",
+   "kind": "dip",
+   "name": "XLE USDT (XLE, stock dip)",
+   "day": 1793750400000,
+   "status": "open",
+   "time": 1793896493305,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 58.6855,
+   "tp1": 64.97035000000001,
+   "tp2": 65.93725,
+   "entry_signal": 63.52,
+   "tp1_share": 0.8,
+   "order_ids": [
+    "873363546080996044"
+   ],
+   "position_id": 1533428983,
+   "entry": 63.99,
+   "last_hold": 1.0,
+   "split": false
+  },
+  "dip:OXY:1793750400000": {
+   "key": "dip:OXY:1793750400000",
+   "coin": "OXY",
+   "symbol": "OXYSTOCK_USDT",
+   "kind": "dip",
+   "name": "OXYSTOCK USDT (OXY, stock dip)",
+   "day": 1793750400000,
+   "status": "failed",
+   "time": 1793897085475,
+   "leverage": 50,
+   "vol": 2.0,
+   "sl": 52.212,
+   "tp1": 58.865399999999994,
+   "tp2": 59.888999999999996,
+   "entry_signal": 57.33,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "COST:1793836800000": {
+   "key": "COST:1793836800000",
+   "coin": "COST",
+   "symbol": "COSTSTOCK_USDT",
+   "kind": "stock",
+   "name": "COSTSTOCK USDT (COST, stock breakout)",
+   "day": 1793836800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793914131288
+  },
+  "dip:TWLO:1793577600000": {
+   "key": "dip:TWLO:1793577600000",
+   "coin": "TWLO",
+   "symbol": "TWLOSTOCK_USDT",
+   "kind": "dip",
+   "name": "TWLOSTOCK USDT (TWLO, stock dip)",
+   "day": 1793577600000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.02",
+   "time": 1793986810350
+  },
+  "dip:DIA:1793836800000": {
+   "key": "dip:DIA:1793836800000",
+   "coin": "DIA",
+   "symbol": "DIASTOCK_USDT",
+   "kind": "dip",
+   "name": "DIASTOCK USDT (DIA, stock dip)",
+   "day": 1793836800000,
+   "status": "failed",
+   "time": 1793989335502,
+   "leverage": 20,
+   "vol": 28.0,
+   "sl": 494.268,
+   "tp1": 520.2706,
+   "tp2": 524.271,
+   "entry_signal": 514.27,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:XOM:1793836800000": {
+   "key": "dip:XOM:1793836800000",
+   "coin": "XOM",
+   "symbol": "XOMSTOCK_USDT",
+   "kind": "dip",
+   "name": "XOMSTOCK USDT (XOM, stock dip)",
+   "day": 1793836800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793989340068
+  },
+  "dip:CVX:1793836800000": {
+   "key": "dip:CVX:1793836800000",
+   "coin": "CVX",
+   "symbol": "CVXSTOCK_USDT",
+   "kind": "dip",
+   "name": "CVXSTOCK USDT (CVX, stock dip)",
+   "day": 1793836800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1793991120095
+  },
+  "dip:SPY:1793923200000": {
+   "key": "dip:SPY:1793923200000",
+   "coin": "SPY",
+   "symbol": "SPY_USDT",
+   "kind": "dip",
+   "name": "SPY USDT (SPY, stock dip)",
+   "day": 1793923200000,
+   "status": "open",
+   "time": 1794000539452,
+   "leverage": 45,
+   "vol": 4.0,
+   "sl": 705.312,
+   "tp1": 744.3744,
+   "tp2": 750.384,
+   "entry_signal": 735.36,
+   "tp1_share": 0.8,
+   "order_ids": [
+    "873799945365575424",
+    "873799948519692544"
+   ],
+   "position_id": 1534184624,
+   "entry": 736.9,
+   "last_hold": 4.0,
+   "split": true
+  },
+  "INDA:1793923200000": {
+   "key": "INDA:1793923200000",
+   "coin": "INDA",
+   "symbol": "INDA_USDT",
+   "kind": "stock",
+   "name": "INDA USDT (INDA, stock breakout)",
+   "day": 1793923200000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $5.09",
+   "time": 1794000547100
+  },
+  "dip:PLTR:1793923200000": {
+   "key": "dip:PLTR:1793923200000",
+   "coin": "PLTR",
+   "symbol": "PLTRSTOCK_USDT",
+   "kind": "dip",
+   "name": "PLTRSTOCK USDT (PLTR, stock dip)",
+   "day": 1793923200000,
+   "status": "failed",
+   "time": 1794000549330,
+   "leverage": 23,
+   "vol": 1.0,
+   "sl": 130.511,
+   "tp1": 169.3407,
+   "tp2": 175.3145,
+   "entry_signal": 160.38,
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:HPE:1793923200000": {
+   "key": "dip:HPE:1793923200000",
+   "coin": "HPE",
+   "symbol": "HPESTOCK_USDT",
+   "kind": "dip",
+   "name": "HPESTOCK USDT (HPE, stock dip)",
+   "day": 1793923200000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794000554364
   }
  },
  "flags": {
   "connected": true,
   "key_seen": 1791959928921,
   "ledger_start": 1791548462925,
-  "start_equity": 7.4241
+  "start_equity": 7.4241,
+  "low": false
  },
  "skips": {
   "APT:1791676800000": "no leverage keeps liquidation at 0 (equity $6.17, open positions $35.16, margin $0.06)",
@@ -1646,7 +2347,17 @@
   "ADISTOCK_USDT",
   "FCXSTOCK_USDT",
   "PSTOCK_USDT",
-  "TGTSTOCK_USDT"
+  "TGTSTOCK_USDT",
+  "CRMSTOCK_USDT",
+  "HPQSTOCK_USDT",
+  "CSCOSTOCK_USDT",
+  "ILMNSTOCK_USDT",
+  "PSXSTOCK_USDT",
+  "PGSTOCK_USDT",
+  "MCDSTOCK_USDT",
+  "OXYSTOCK_USDT",
+  "DIASTOCK_USDT",
+  "PLTRSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
@@ -1686,6 +2397,16 @@
     1793232000000,
     "AAPL:1793232000000",
     "stock"
+   ],
+   [
+    1793664000000,
+    "dip:AAPL:1793664000000",
+    "dip"
+   ],
+   [
+    1793750400000,
+    "AAPL:1793750400000",
+    "stock"
    ]
   ],
   "CVXSTOCK_USDT": [
@@ -1713,6 +2434,16 @@
     1792713600000,
     "CVX:1792713600000",
     "stock"
+   ],
+   [
+    1793318400000,
+    "CVX:1793318400000",
+    "stock"
+   ],
+   [
+    1793836800000,
+    "dip:CVX:1793836800000",
+    "dip"
    ]
   ],
   "KOSTOCK_USDT": [
@@ -1739,6 +2470,11 @@
    [
     1792627200000,
     "KO:1792627200000",
+    "stock"
+   ],
+   [
+    1793577600000,
+    "KO:1793577600000",
     "stock"
    ]
   ],
@@ -1772,6 +2508,21 @@
     1792627200000,
     "PFE:1792627200000",
     "stock"
+   ],
+   [
+    1793318400000,
+    "PFE:1793318400000",
+    "stock"
+   ],
+   [
+    1793577600000,
+    "PFE:1793577600000",
+    "stock"
+   ],
+   [
+    1793750400000,
+    "PFE:1793750400000",
+    "stock"
    ]
   ],
   "DISSTOCK_USDT": [
@@ -1793,6 +2544,16 @@
    [
     1792627200000,
     "DIS:1792627200000",
+    "stock"
+   ],
+   [
+    1793664000000,
+    "DIS:1793664000000",
+    "stock"
+   ],
+   [
+    1793750400000,
+    "DIS:1793750400000",
     "stock"
    ]
   ],
@@ -1830,6 +2591,21 @@
    [
     1792627200000,
     "COST:1792627200000",
+    "stock"
+   ],
+   [
+    1793577600000,
+    "COST:1793577600000",
+    "stock"
+   ],
+   [
+    1793750400000,
+    "COST:1793750400000",
+    "stock"
+   ],
+   [
+    1793836800000,
+    "COST:1793836800000",
     "stock"
    ]
   ],
@@ -1880,6 +2656,16 @@
     1792627200000,
     "V:1792627200000",
     "stock"
+   ],
+   [
+    1793577600000,
+    "V:1793577600000",
+    "stock"
+   ],
+   [
+    1793750400000,
+    "V:1793750400000",
+    "stock"
    ]
   ],
   "WMTSTOCK_USDT": [
@@ -1912,6 +2698,21 @@
     1793232000000,
     "WMT:1793232000000",
     "stock"
+   ],
+   [
+    1793318400000,
+    "WMT:1793318400000",
+    "stock"
+   ],
+   [
+    1793577600000,
+    "WMT:1793577600000",
+    "stock"
+   ],
+   [
+    1793750400000,
+    "WMT:1793750400000",
+    "stock"
    ]
   ],
   "MUSTOCK_USD1": [
@@ -1932,6 +2733,11 @@
    [
     1791936000000,
     "dip:DELL:1791936000000",
+    "dip"
+   ],
+   [
+    1793577600000,
+    "dip:DELL:1793577600000",
     "dip"
    ]
   ],
@@ -1967,6 +2773,16 @@
     1792972800000,
     "XOM:1792972800000",
     "stock"
+   ],
+   [
+    1793318400000,
+    "XOM:1793318400000",
+    "stock"
+   ],
+   [
+    1793836800000,
+    "dip:XOM:1793836800000",
+    "dip"
    ]
   ],
   "SWKSSTOCK_USDT": [
@@ -2010,6 +2826,11 @@
     1792022400000,
     "dip:AMD:1792022400000",
     "dip"
+   ],
+   [
+    1793664000000,
+    "dip:AMD:1793664000000",
+    "dip"
    ]
   ],
   "MSFTSTOCK_USDT": [
@@ -2022,12 +2843,27 @@
     1791849600000,
     "MSFT:1791849600000",
     "stock"
+   ],
+   [
+    1793318400000,
+    "dip:MSFT:1793318400000",
+    "dip"
+   ],
+   [
+    1793750400000,
+    "MSFT:1793750400000",
+    "stock"
    ]
   ],
   "ANETSTOCK_USDT": [
    [
     1792022400000,
     "dip:ANET:1792022400000",
+    "dip"
+   ],
+   [
+    1793664000000,
+    "dip:ANET:1793664000000",
     "dip"
    ]
   ],
@@ -2067,6 +2903,11 @@
     1792627200000,
     "PG:1792627200000",
     "stock"
+   ],
+   [
+    1793750400000,
+    "PG:1793750400000",
+    "stock"
    ]
   ],
   "APHSTOCK_USDT": [
@@ -2102,6 +2943,11 @@
     1792108800000,
     "dip:HPE:1792108800000",
     "dip"
+   ],
+   [
+    1793923200000,
+    "dip:HPE:1793923200000",
+    "dip"
    ]
   ],
   "INJ_USDT": [
@@ -2115,6 +2961,11 @@
    [
     1792108800000,
     "dip:VUG:1792108800000",
+    "dip"
+   ],
+   [
+    1793577600000,
+    "dip:VUG:1793577600000",
     "dip"
    ]
   ],
@@ -2137,12 +2988,22 @@
     1792108800000,
     "dip:PANW:1792108800000",
     "dip"
+   ],
+   [
+    1793577600000,
+    "dip:PANW:1793577600000",
+    "dip"
    ]
   ],
   "TWLOSTOCK_USDT": [
    [
     1792108800000,
     "dip:TWLO:1792108800000",
+    "dip"
+   ],
+   [
+    1793577600000,
+    "dip:TWLO:1793577600000",
     "dip"
    ]
   ],
@@ -2191,6 +3052,16 @@
    [
     1792713600000,
     "dip:SPY:1792713600000",
+    "dip"
+   ],
+   [
+    1793318400000,
+    "dip:SPY:1793318400000",
+    "dip"
+   ],
+   [
+    1793923200000,
+    "dip:SPY:1793923200000",
     "dip"
    ]
   ],
@@ -2255,6 +3126,168 @@
     1793232000000,
     "TRX:1793232000000",
     "crypto"
+   ]
+  ],
+  "CRMSTOCK_USDT": [
+   [
+    1793318400000,
+    "dip:CRM:1793318400000",
+    "dip"
+   ]
+  ],
+  "HPQSTOCK_USDT": [
+   [
+    1793318400000,
+    "dip:HPQ:1793318400000",
+    "dip"
+   ]
+  ],
+  "IGV_USDT": [
+   [
+    1793318400000,
+    "dip:IGV:1793318400000",
+    "dip"
+   ]
+  ],
+  "CSCOSTOCK_USDT": [
+   [
+    1793318400000,
+    "dip:CSCO:1793318400000",
+    "dip"
+   ]
+  ],
+  "PLTRSTOCK_USDT": [
+   [
+    1793318400000,
+    "dip:PLTR:1793318400000",
+    "dip"
+   ],
+   [
+    1793923200000,
+    "dip:PLTR:1793923200000",
+    "dip"
+   ]
+  ],
+  "NTAPSTOCK_USDT": [
+   [
+    1793318400000,
+    "dip:NTAP:1793318400000",
+    "dip"
+   ],
+   [
+    1793923200000,
+    "dip:NTAP:1793923200000",
+    "dip"
+   ]
+  ],
+  "DDOGSTOCK_USDT": [
+   [
+    1793318400000,
+    "dip:DDOG:1793318400000",
+    "dip"
+   ]
+  ],
+  "ILMNSTOCK_USDT": [
+   [
+    1793318400000,
+    "dip:ILMN:1793318400000",
+    "dip"
+   ]
+  ],
+  "MPCSTOCK_USDT": [
+   [
+    1793577600000,
+    "dip:MPC:1793577600000",
+    "dip"
+   ],
+   [
+    1793923200000,
+    "dip:MPC:1793923200000",
+    "dip"
+   ]
+  ],
+  "EWT_USDT": [
+   [
+    1793577600000,
+    "dip:EWT:1793577600000",
+    "dip"
+   ]
+  ],
+  "DVNSTOCK_USDT": [
+   [
+    1793577600000,
+    "dip:DVN:1793577600000",
+    "dip"
+   ]
+  ],
+  "MUSTOCK_USDT": [
+   [
+    1793577600000,
+    "dip:MU:1793577600000",
+    "dip"
+   ]
+  ],
+  "PSXSTOCK_USDT": [
+   [
+    1793664000000,
+    "dip:PSX:1793664000000",
+    "dip"
+   ]
+  ],
+  "MCDSTOCK_USDT": [
+   [
+    1793750400000,
+    "MCD:1793750400000",
+    "stock"
+   ]
+  ],
+  "HDSTOCK_USDT": [
+   [
+    1793750400000,
+    "HD:1793750400000",
+    "stock"
+   ]
+  ],
+  "XLE_USDT": [
+   [
+    1793750400000,
+    "dip:XLE:1793750400000",
+    "dip"
+   ]
+  ],
+  "OXYSTOCK_USDT": [
+   [
+    1793750400000,
+    "dip:OXY:1793750400000",
+    "dip"
+   ]
+  ],
+  "DIASTOCK_USDT": [
+   [
+    1793836800000,
+    "dip:DIA:1793836800000",
+    "dip"
+   ]
+  ],
+  "COPSTOCK_USDT": [
+   [
+    1793836800000,
+    "dip:COP:1793836800000",
+    "dip"
+   ]
+  ],
+  "PMSTOCK_USDT": [
+   [
+    1793923200000,
+    "dip:PM:1793923200000",
+    "dip"
+   ]
+  ],
+  "INDA_USDT": [
+   [
+    1793923200000,
+    "INDA:1793923200000",
+    "stock"
    ]
   ]
  },
