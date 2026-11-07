@@ -2131,8 +2131,8 @@
    "leverage": 20,
    "vol": 1.0,
    "sl": 58.6855,
-   "tp1": 64.97035000000001,
-   "tp2": 65.93725,
+   "tp1": null,
+   "tp2": null,
    "entry_signal": 63.52,
    "tp1_share": 0.8,
    "order_ids": [
@@ -2141,7 +2141,8 @@
    "position_id": 1533428983,
    "entry": 63.99,
    "last_hold": 1.0,
-   "split": false
+   "split": false,
+   "tp_switch_tried": true
   },
   "dip:OXY:1793750400000": {
    "key": "dip:OXY:1793750400000",
