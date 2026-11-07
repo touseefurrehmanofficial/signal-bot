@@ -42,6 +42,7 @@ jobs:
           MEXC_API_SECRET: ${{ secrets.MEXC_API_SECRET }}
           MARGIN_PCT: ${{ vars.MARGIN_PCT || '1' }}
           MAX_LOSS_PCT: '10'
+          INTEL_TOKEN: ${{ secrets.INTEL_TOKEN }}   # read-only access to the intel bot's state (shadow test)
         run: DASHBOARD_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/" python commands.py
       - name: Start the next listener
         if: always()

@@ -105,6 +105,9 @@ def mexc_stocks():
         if name.endswith("STOCK") and len(name) > 5:            # a few are named like the contract: CVXSTOCK -> CVX
             name = name[:-5]
         out.setdefault(fix.get(name, name), x["symbol"])
+    gold = next((x for x in data if x["symbol"] == "XAU_USDT" and x.get("state") == 0 and x.get("apiAllowed")), None)
+    if gold:                                                    # gold dips (pipeline/84: the one TradFi rule that passed)
+        out["GC=F"] = "XAU_USDT"
     return out
 
 

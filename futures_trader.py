@@ -33,6 +33,8 @@ from pathlib import Path
 
 import requests
 
+import intel
+
 from core import signal_card
 
 HERE = Path(__file__).resolve().parent
@@ -424,6 +426,8 @@ def wait_fill(order_id):
 
 
 def label(coin, sym, kind):
+    if coin == "GC=F":
+        return "XAU USDT (gold dip)"
     return f"{coin} USDT" if kind == "crypto" else f"{sym.replace('_', ' ')} ({coin}, {'stock dip' if kind == 'dip' else 'stock breakout'})"
 
 
@@ -442,7 +446,8 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
         manual(key, coin, t, kind, sym, why, eq, send, persist)
         return
     b["trades"][key] = trade = {"key": key, "coin": coin, "symbol": sym, "kind": kind, "name": name, "day": t["day"], "status": "opening", "time": int(time.time() * 1000), "leverage": lev, "vol": vol,
-                                "sl": sl, "tp1": tp1, "tp2": tp2, "entry_signal": t["entry"]}
+                                "sl": sl, "tp1": tp1, "tp2": tp2, "entry_signal": t["entry"],
+                                "intel": intel.snapshot(btc_price=prices.get("BTC_USDT"))}   # shadow only: recorded, never used to decide
     persist()                                                   # recorded before ordering, so a restart can never order twice
     try:
         try:
@@ -526,6 +531,27 @@ def open_trade(key, coin, t, eq, cinfo_all, prices, pos, send, persist, sym=None
         send(f"⚠️ {name}: could not open the trade ({e}).")
 
 
+def close_price(t):
+    """average closing price of a bot position from MEXC's position history (None if not found)."""
+    rows = api_get("/api/v1/private/position/list/history_positions", {"page_num": 1, "page_size": 50, "start_time": int(t.get("time") or 0) - 60_000})
+    rows = (rows.get("resultList") if isinstance(rows, dict) else rows) or []
+    for r in rows:
+        if str(r.get("positionId")) == str(t.get("position_id")):
+            px = float(r.get("closeAvgPrice") or 0)
+            return px or None
+    return None
+
+
+def closed_by_owner(t, cp):
+    """True if a long closed BETWEEN its stop and its take-profit(s): neither exchange order did it, so the owner did.
+    At or below the stop (also a gap through it) = stop; at or above a TP = take-profit."""
+    tol = max(0.002 * t["entry"], 0.1 * abs(t["entry"] - t["sl"]))
+    if cp <= t["sl"] + tol:
+        return False
+    tps = [x for x in (t.get("tp1"), t.get("tp2")) if x]
+    return not any(cp >= x - tol for x in tps)
+
+
 def follow(eq, pos, prices, send, persist, state=None):
     """Detect TP / SL fills on the bot's open trades, and close dip trades when their daily exit rule fires."""
     b = load_book()
@@ -555,6 +581,17 @@ def follow(eq, pos, prices, send, persist, state=None):
             continue
         price = prices.get(t["symbol"], 0)
         part = t["last_hold"] - hold
+        if hold <= 0 and not t.get("manual_close"):             # fully closed: by its SL / TP, or by the owner in the MEXC app?
+            try:
+                cp = close_price(t)
+            except ApiError:
+                cp = None
+            if cp and closed_by_owner(t, cp):
+                t["pnl"] = round((t.get("pnl") or 0) + (cp - t["entry"]) * part * float(contracts()[t["symbol"]]["contractSize"]), 4)
+                t.update(last_hold=0, status="closed", closed=int(time.time() * 1000), result="closed by you (app)")
+                send(f"✖ {t['name']} closed by you in the MEXC app at {cp:g} · result ≈ {t['pnl']:+.2f}$\n\n" + stats_line(eq))
+                persist()
+                continue
         if t.get("manual_close"):                               # closed from /positions: report it as that, at the current price
             t["pnl"] = round((t.get("pnl") or 0) + (price - t["entry"]) * part * float(contracts()[t["symbol"]]["contractSize"]), 4)
             t.update(last_hold=hold, status="closed" if hold <= 0 else "open", closed=int(time.time() * 1000), result="closed by you")
@@ -645,7 +682,9 @@ def candidates(state, pos_symbols):
     for c, p in (state.get("dips") or {}).items():
         t = p.get("last")
         if usable(t) and c in mexc:
-            out.append((f"dip:{c}:{t['day']}", c, dict(t, ma20=p.get("ma20")), "dip", mexc[c]))
+            k = p.get("basis") or 1.0                           # gold: GC=F futures levels -> MEXC XAU (spot) levels
+            t = dict(t, entry=t["entry"] * k, stop=t["stop"] * k, ma20=(p.get("ma20") or 0) * k or None)
+            out.append((f"dip:{c}:{t['day']}", c, t, "dip", mexc[c]))
     out = [x for x in out if x[0] not in b["trades"] and x[4] not in pos_symbols]   # blocked contracts are handed over in tick()
     return sorted(out, key=lambda x: (x[3] != "crypto", x[2]["age_days"], x[2]["risk_pct"]))
 
@@ -714,8 +753,14 @@ def tick(state, send, persist):
             send("\U0001F511 Your MEXC API key is about 80 days old. Keys without a linked IP expire after 90 days: renew it under API Management → My API Key → Renew.")
         open_syms = {p["symbol"] for p in pos.values()}
         noted = False
+        ilog = b.setdefault("intel_log", {})
         for key, coin, t, kind, sym, *_ in [c for c in candidates(state, set())]:   # every signal, so manual trades can be matched
             noted = note_signal(sym, t["day"], key, kind) or noted
+            if key not in ilog:                                 # shadow test: intel readings when the signal is first seen
+                ilog[key] = dict(intel.snapshot(btc_price=prices.get("BTC_USDT")), kind=kind, entry=t["entry"], stop=t["stop"])
+                noted = True
+                for old in sorted(ilog, key=lambda k: ilog[k].get("at", 0))[:-400]:
+                    ilog.pop(old)
         if noted:
             persist()
         for key, coin, t, kind, sym in candidates(state, open_syms):

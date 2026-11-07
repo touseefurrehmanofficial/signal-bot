@@ -87,7 +87,7 @@ def main():
         mkt = market_z(frames["SPY"]) if "SPY" in frames else {}
         for ticker, df in frames.items():
             try:
-                p = dip_plan(ticker, df, mkt)
+                p = dip_plan(ticker, df, None if ticker == "GC=F" else mkt)   # gold was tested with the 2-sd rule only
                 if p and p["recent"]:
                     dips[ticker] = p
             except Exception:
@@ -98,6 +98,12 @@ def main():
         mexc = mexc_stocks()
     except Exception:
         mexc = old.get("mexc") or {}
+    if "GC=F" in dips:                                          # gold futures trade above spot: MEXC XAU / GC=F, both now
+        try:
+            xau = float(requests.get("https://contract.mexc.com/api/v1/contract/ticker", params={"symbol": "XAU_USDT"}, timeout=20).json()["data"]["lastPrice"])
+            dips["GC=F"]["basis"] = round(xau / dips["GC=F"]["price"], 5)
+        except Exception:
+            dips["GC=F"]["basis"] = ((old.get("dips") or {}).get("GC=F") or {}).get("basis")
     if old_dips is not None:
         prev_last = lambda t: (old_dips.get(t) or {}).get("last") or {}
         fresh = [(t, p["last"]) for t, p in dips.items() if p["last"]["status"] == "open" and p["last"]["age_days"] <= 1 and prev_last(t).get("day") != p["last"]["day"]
