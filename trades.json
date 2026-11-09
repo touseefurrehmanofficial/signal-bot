@@ -2410,6 +2410,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $5.14",
    "time": 1794265226619
+  },
+  "AMZN:1794182400000": {
+   "key": "AMZN:1794182400000",
+   "coin": "AMZN",
+   "symbol": "AMZNSTOCK_USDT",
+   "kind": "stock",
+   "name": "AMZNSTOCK USDT (AMZN, stock breakout)",
+   "day": 1794182400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794265228658
   }
  },
  "flags": {
