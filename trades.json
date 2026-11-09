@@ -2432,6 +2432,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794265230267
+  },
+  "MCD:1794182400000": {
+   "key": "MCD:1794182400000",
+   "coin": "MCD",
+   "symbol": "MCDSTOCK_USDT",
+   "kind": "stock",
+   "name": "MCDSTOCK USDT (MCD, stock breakout)",
+   "day": 1794182400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794265231820
   }
  },
  "flags": {
