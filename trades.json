@@ -2333,6 +2333,26 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.77",
    "time": 1794205642151
+  },
+  "dip:PM:1793923200000": {
+   "key": "dip:PM:1793923200000",
+   "coin": "PM",
+   "symbol": "PMSTOCK_USDT",
+   "kind": "dip",
+   "name": "PMSTOCK USDT (PM, stock dip)",
+   "day": 1793923200000,
+   "status": "opening",
+   "time": 1794233148549,
+   "leverage": 4,
+   "vol": 1.0,
+   "sl": 180.342,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 197.88,
+   "intel": {
+    "at": 1794233148,
+    "ok": false
+   }
   }
  },
  "flags": {
