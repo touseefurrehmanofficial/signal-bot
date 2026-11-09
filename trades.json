@@ -2322,6 +2322,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:MPC:1793923200000": {
+   "key": "dip:MPC:1793923200000",
+   "coin": "MPC",
+   "symbol": "MPCSTOCK_USDT",
+   "kind": "dip",
+   "name": "MPCSTOCK USDT (MPC, stock dip)",
+   "day": 1793923200000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.77",
+   "time": 1794205642151
   }
  },
  "flags": {
