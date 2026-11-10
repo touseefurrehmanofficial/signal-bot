@@ -2231,7 +2231,7 @@
    "kind": "dip",
    "name": "SPY USDT (SPY, stock dip)",
    "day": 1793923200000,
-   "status": "open",
+   "status": "closed",
    "time": 1794000539452,
    "leverage": 45,
    "vol": 4.0,
@@ -2246,9 +2246,12 @@
    ],
    "position_id": 1534184624,
    "entry": 736.9,
-   "last_hold": 4.0,
+   "last_hold": 0,
    "split": true,
-   "tp_switch_tried": true
+   "tp_switch_tried": true,
+   "pnl": 0.0693,
+   "closed": 1794312923563,
+   "result": "closed by you (app)"
   },
   "INDA:1793923200000": {
    "key": "INDA:1793923200000",
