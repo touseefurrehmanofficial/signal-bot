@@ -2501,6 +2501,26 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794351611064
+  },
+  "PEP:1794268800000": {
+   "key": "PEP:1794268800000",
+   "coin": "PEP",
+   "symbol": "PEPSTOCK_USDT",
+   "kind": "stock",
+   "name": "PEPSTOCK USDT (PEP, stock breakout)",
+   "day": 1794268800000,
+   "status": "opening",
+   "time": 1794351612592,
+   "leverage": 20,
+   "vol": 2.0,
+   "sl": 127.30000305175781,
+   "tp1": 151.76499938964844,
+   "tp2": 159.9199981689453,
+   "entry_signal": 143.61000061035156,
+   "intel": {
+    "at": 1794351612,
+    "ok": false
+   }
   }
  },
  "flags": {
