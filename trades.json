@@ -2523,6 +2523,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "MCD:1794268800000": {
+   "key": "MCD:1794268800000",
+   "coin": "MCD",
+   "symbol": "MCDSTOCK_USDT",
+   "kind": "stock",
+   "name": "MCDSTOCK USDT (MCD, stock breakout)",
+   "day": 1794268800000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794351616683
   }
  },
  "flags": {
