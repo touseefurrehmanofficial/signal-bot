@@ -2509,7 +2509,7 @@
    "kind": "stock",
    "name": "PEPSTOCK USDT (PEP, stock breakout)",
    "day": 1794268800000,
-   "status": "opening",
+   "status": "failed",
    "time": 1794351612592,
    "leverage": 20,
    "vol": 2.0,
@@ -2520,7 +2520,9 @@
    "intel": {
     "at": 1794351612,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2593,7 +2595,8 @@
   "DIASTOCK_USDT",
   "PLTRSTOCK_USDT",
   "COPSTOCK_USDT",
-  "PMSTOCK_USDT"
+  "PMSTOCK_USDT",
+  "PEPSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
