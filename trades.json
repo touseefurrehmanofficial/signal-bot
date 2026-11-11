@@ -2534,6 +2534,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794351616683
+  },
+  "KO:1794355200000": {
+   "key": "KO:1794355200000",
+   "coin": "KO",
+   "symbol": "KOSTOCK_USDT",
+   "kind": "stock",
+   "name": "KOSTOCK USDT (KO, stock breakout)",
+   "day": 1794355200000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794438010972
   }
  },
  "flags": {
