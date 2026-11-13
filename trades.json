@@ -2633,6 +2633,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794610808127
+  },
+  "PEP:1794528000000": {
+   "key": "PEP:1794528000000",
+   "coin": "PEP",
+   "symbol": "PEPSTOCK_USDT",
+   "kind": "stock",
+   "name": "PEPSTOCK USDT (PEP, stock breakout)",
+   "day": 1794528000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794610809794
   }
  },
  "flags": {
