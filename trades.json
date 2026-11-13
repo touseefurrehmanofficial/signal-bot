@@ -2622,6 +2622,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794610806413
+  },
+  "PG:1794528000000": {
+   "key": "PG:1794528000000",
+   "coin": "PG",
+   "symbol": "PGSTOCK_USDT",
+   "kind": "stock",
+   "name": "PGSTOCK USDT (PG, stock breakout)",
+   "day": 1794528000000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794610808127
   }
  },
  "flags": {
