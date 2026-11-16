@@ -2732,6 +2732,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794870019053
+  },
+  "COST:1794787200000": {
+   "key": "COST:1794787200000",
+   "coin": "COST",
+   "symbol": "COSTSTOCK_USDT",
+   "kind": "stock",
+   "name": "COSTSTOCK USDT (COST, stock breakout)",
+   "day": 1794787200000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794870020802
   }
  },
  "flags": {
