@@ -2655,6 +2655,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794610812035
+  },
+  "JNJ:1794528000000": {
+   "key": "JNJ:1794528000000",
+   "coin": "JNJ",
+   "symbol": "JNJSTOCK_USDT",
+   "kind": "stock",
+   "name": "JNJSTOCK USDT (JNJ, stock breakout)",
+   "day": 1794528000000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.90",
+   "time": 1794833808259
   }
  },
  "flags": {
