@@ -2688,6 +2688,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794870012490
+  },
+  "dip:VEEV:1794787200000": {
+   "key": "dip:VEEV:1794787200000",
+   "coin": "VEEV",
+   "symbol": "VEEVSTOCK_USDT",
+   "kind": "dip",
+   "name": "VEEVSTOCK USDT (VEEV, stock dip)",
+   "day": 1794787200000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.00",
+   "time": 1794870013987
   }
  },
  "flags": {
