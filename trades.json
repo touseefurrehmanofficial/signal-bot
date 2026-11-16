@@ -2666,6 +2666,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.90",
    "time": 1794833808259
+  },
+  "dip:PFE:1794787200000": {
+   "key": "dip:PFE:1794787200000",
+   "coin": "PFE",
+   "symbol": "PFESTOCK_USDT",
+   "kind": "dip",
+   "name": "PFESTOCK USDT (PFE, stock dip)",
+   "day": 1794787200000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794870010863
   }
  },
  "flags": {
