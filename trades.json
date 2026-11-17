@@ -2894,7 +2894,7 @@
    "kind": "dip",
    "name": "MRKSTOCK USDT (MRK, stock dip)",
    "day": 1794873600000,
-   "status": "opening",
+   "status": "failed",
    "time": 1794956422140,
    "leverage": 20,
    "vol": 16.0,
@@ -2905,7 +2905,9 @@
    "intel": {
     "at": 1794956422,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2983,7 +2985,8 @@
   "CTSHSTOCK_USDT",
   "EMRSTOCK_USDT",
   "DHRSTOCK_USDT",
-  "EBAYSTOCK_USDT"
+  "EBAYSTOCK_USDT",
+  "MRKSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
