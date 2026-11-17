@@ -2806,7 +2806,7 @@
    "kind": "dip",
    "name": "IBB USDT (IBB, stock dip)",
    "day": 1794787200000,
-   "status": "opening",
+   "status": "failed",
    "time": 1794932179196,
    "leverage": 20,
    "vol": 1.0,
@@ -2817,7 +2817,9 @@
    "intel": {
     "at": 1794932179,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 11444: This feature is temporarily unavailable. For details, please refer to our official announcement. Thank you for your understanding and cooperation."
   }
  },
  "flags": {
