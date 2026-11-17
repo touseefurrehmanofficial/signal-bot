@@ -2765,6 +2765,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:EMR:1794787200000": {
+   "key": "dip:EMR:1794787200000",
+   "coin": "EMR",
+   "symbol": "EMRSTOCK_USDT",
+   "kind": "dip",
+   "name": "EMRSTOCK USDT (EMR, stock dip)",
+   "day": 1794787200000,
+   "status": "opening",
+   "time": 1794925853728,
+   "leverage": 20,
+   "vol": 13.0,
+   "sl": 144.26,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 160.65,
+   "intel": {
+    "at": 1794925853,
+    "ok": false
+   }
   }
  },
  "flags": {
