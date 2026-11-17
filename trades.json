@@ -2751,7 +2751,7 @@
    "kind": "dip",
    "name": "CTSHSTOCK USDT (CTSH, stock dip)",
    "day": 1794787200000,
-   "status": "opening",
+   "status": "failed",
    "time": 1794873690567,
    "leverage": 20,
    "vol": 3.0,
@@ -2762,7 +2762,9 @@
    "intel": {
     "at": 1794873690,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2836,7 +2838,8 @@
   "PLTRSTOCK_USDT",
   "COPSTOCK_USDT",
   "PMSTOCK_USDT",
-  "PEPSTOCK_USDT"
+  "PEPSTOCK_USDT",
+  "CTSHSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
