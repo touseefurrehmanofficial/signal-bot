@@ -2850,7 +2850,7 @@
    "kind": "dip",
    "name": "DHRSTOCK USDT (DHR, stock dip)",
    "day": 1794873600000,
-   "status": "opening",
+   "status": "failed",
    "time": 1794956413648,
    "leverage": 20,
    "vol": 10.0,
@@ -2861,7 +2861,9 @@
    "intel": {
     "at": 1794956413,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -2937,7 +2939,8 @@
   "PMSTOCK_USDT",
   "PEPSTOCK_USDT",
   "CTSHSTOCK_USDT",
-  "EMRSTOCK_USDT"
+  "EMRSTOCK_USDT",
+  "DHRSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
