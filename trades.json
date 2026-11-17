@@ -2820,6 +2820,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 11444: This feature is temporarily unavailable. For details, please refer to our official announcement. Thank you for your understanding and cooperation."
+  },
+  "dip:XBI:1794787200000": {
+   "key": "dip:XBI:1794787200000",
+   "coin": "XBI",
+   "symbol": "XBI_USDT",
+   "kind": "dip",
+   "name": "XBI USDT (XBI, stock dip)",
+   "day": 1794787200000,
+   "status": "opening",
+   "time": 1794932193474,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 130.6,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 145.88,
+   "intel": {
+    "at": 1794932193,
+    "ok": false
+   }
   }
  },
  "flags": {
