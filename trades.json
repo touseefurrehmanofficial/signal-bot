@@ -2919,6 +2919,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $5.19",
    "time": 1794956426259
+  },
+  "dip:ISRG:1794873600000": {
+   "key": "dip:ISRG:1794873600000",
+   "coin": "ISRG",
+   "symbol": "ISRGSTOCK_USDT",
+   "kind": "dip",
+   "name": "ISRGSTOCK USDT (ISRG, stock dip)",
+   "day": 1794873600000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.30",
+   "time": 1794956428061
   }
  },
  "flags": {
