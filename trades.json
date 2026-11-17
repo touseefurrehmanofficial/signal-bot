@@ -2743,6 +2743,26 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794870020802
+  },
+  "dip:CTSH:1794787200000": {
+   "key": "dip:CTSH:1794787200000",
+   "coin": "CTSH",
+   "symbol": "CTSHSTOCK_USDT",
+   "kind": "dip",
+   "name": "CTSHSTOCK USDT (CTSH, stock dip)",
+   "day": 1794787200000,
+   "status": "opening",
+   "time": 1794873690567,
+   "leverage": 20,
+   "vol": 3.0,
+   "sl": 54.1727,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 62.29,
+   "intel": {
+    "at": 1794873690,
+    "ok": false
+   }
   }
  },
  "flags": {
