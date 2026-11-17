@@ -2908,6 +2908,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "INDA:1794873600000": {
+   "key": "INDA:1794873600000",
+   "coin": "INDA",
+   "symbol": "INDA_USDT",
+   "kind": "stock",
+   "name": "INDA USDT (INDA, stock breakout)",
+   "day": 1794873600000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $5.19",
+   "time": 1794956426259
   }
  },
  "flags": {
