@@ -2787,6 +2787,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:DIA:1794787200000": {
+   "key": "dip:DIA:1794787200000",
+   "coin": "DIA",
+   "symbol": "DIASTOCK_USDT",
+   "kind": "dip",
+   "name": "DIASTOCK USDT (DIA, stock dip)",
+   "day": 1794787200000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1794932174150
   }
  },
  "flags": {
