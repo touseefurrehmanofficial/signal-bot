@@ -2930,6 +2930,26 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.30",
    "time": 1794956428061
+  },
+  "dip:ACN:1794873600000": {
+   "key": "dip:ACN:1794873600000",
+   "coin": "ACN",
+   "symbol": "ACNSTOCK_USDT",
+   "kind": "dip",
+   "name": "ACNSTOCK USDT (ACN, stock dip)",
+   "day": 1794873600000,
+   "status": "opening",
+   "time": 1794956429816,
+   "leverage": 20,
+   "vol": 9.0,
+   "sl": 207.231,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 239.28,
+   "intel": {
+    "at": 1794956429,
+    "ok": false
+   }
   }
  },
  "flags": {
