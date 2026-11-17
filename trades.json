@@ -2952,6 +2952,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:MRNA:1794873600000": {
+   "key": "dip:MRNA:1794873600000",
+   "coin": "MRNA",
+   "symbol": "MRNASTOCK_USDT",
+   "kind": "dip",
+   "name": "MRNASTOCK USDT (MRNA, stock dip)",
+   "day": 1794873600000,
+   "status": "opening",
+   "time": 1794956433639,
+   "leverage": 32,
+   "vol": 18.0,
+   "sl": 143.268,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 206.8,
+   "intel": {
+    "at": 1794956433,
+    "ok": false
+   }
   }
  },
  "flags": {
