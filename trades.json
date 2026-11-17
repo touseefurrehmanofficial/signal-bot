@@ -2864,6 +2864,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:EBAY:1794873600000": {
+   "key": "dip:EBAY:1794873600000",
+   "coin": "EBAY",
+   "symbol": "EBAYSTOCK_USDT",
+   "kind": "dip",
+   "name": "EBAYSTOCK USDT (EBAY, stock dip)",
+   "day": 1794873600000,
+   "status": "opening",
+   "time": 1794956417715,
+   "leverage": 50,
+   "vol": 4.0,
+   "sl": 107.622,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 118.59,
+   "intel": {
+    "at": 1794956417,
+    "ok": false
+   }
   }
  },
  "flags": {
