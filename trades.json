@@ -2798,6 +2798,26 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1794932174150
+  },
+  "dip:IBB:1794787200000": {
+   "key": "dip:IBB:1794787200000",
+   "coin": "IBB",
+   "symbol": "IBB_USDT",
+   "kind": "dip",
+   "name": "IBB USDT (IBB, stock dip)",
+   "day": 1794787200000,
+   "status": "opening",
+   "time": 1794932179196,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 191.379,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 207.98,
+   "intel": {
+    "at": 1794932179,
+    "ok": false
+   }
   }
  },
  "flags": {
