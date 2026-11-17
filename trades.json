@@ -2960,7 +2960,7 @@
    "kind": "dip",
    "name": "MRNASTOCK USDT (MRNA, stock dip)",
    "day": 1794873600000,
-   "status": "opening",
+   "status": "failed",
    "time": 1794956433639,
    "leverage": 32,
    "vol": 18.0,
@@ -2971,7 +2971,9 @@
    "intel": {
     "at": 1794956433,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3051,7 +3053,8 @@
   "DHRSTOCK_USDT",
   "EBAYSTOCK_USDT",
   "MRKSTOCK_USDT",
-  "ACNSTOCK_USDT"
+  "ACNSTOCK_USDT",
+  "MRNASTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
