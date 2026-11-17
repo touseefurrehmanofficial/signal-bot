@@ -2842,6 +2842,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 11444: This feature is temporarily unavailable. For details, please refer to our official announcement. Thank you for your understanding and cooperation."
+  },
+  "dip:DHR:1794873600000": {
+   "key": "dip:DHR:1794873600000",
+   "coin": "DHR",
+   "symbol": "DHRSTOCK_USDT",
+   "kind": "dip",
+   "name": "DHRSTOCK USDT (DHR, stock dip)",
+   "day": 1794873600000,
+   "status": "opening",
+   "time": 1794956413648,
+   "leverage": 20,
+   "vol": 10.0,
+   "sl": 205.33,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 225.77,
+   "intel": {
+    "at": 1794956413,
+    "ok": false
+   }
   }
  },
  "flags": {
