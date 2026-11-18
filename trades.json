@@ -3114,7 +3114,7 @@
    "kind": "dip",
    "name": "DESTOCK USDT (DE, stock dip)",
    "day": 1794960000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795042816000,
    "leverage": 20,
    "vol": 32.0,
@@ -3125,7 +3125,9 @@
    "intel": {
     "at": 1795042816,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3211,7 +3213,8 @@
   "WATSTOCK_USDT",
   "AMTSTOCK_USDT",
   "WDAYSTOCK_USDT",
-  "ELSTOCK_USDT"
+  "ELSTOCK_USDT",
+  "DESTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
