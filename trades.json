@@ -3205,6 +3205,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 11444: This feature is temporarily unavailable. For details, please refer to our official announcement. Thank you for your understanding and cooperation."
+  },
+  "dip:SPGI:1794960000000": {
+   "key": "dip:SPGI:1794960000000",
+   "coin": "SPGI",
+   "symbol": "SPGISTOCK_USDT",
+   "kind": "dip",
+   "name": "SPGISTOCK USDT (SPGI, stock dip)",
+   "day": 1794960000000,
+   "status": "opening",
+   "time": 1795045945932,
+   "leverage": 20,
+   "vol": 47.0,
+   "sl": 411.643,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 446.38,
+   "intel": {
+    "at": 1795045945,
+    "ok": false
+   }
   }
  },
  "flags": {
