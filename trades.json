@@ -3161,6 +3161,26 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1795042823940
+  },
+  "dip:LMT:1794960000000": {
+   "key": "dip:LMT:1794960000000",
+   "coin": "LMT",
+   "symbol": "LMTSTOCK_USDT",
+   "kind": "dip",
+   "name": "LMTSTOCK USDT (LMT, stock dip)",
+   "day": 1794960000000,
+   "status": "opening",
+   "time": 1795042825236,
+   "leverage": 50,
+   "vol": 9.0,
+   "sl": 510.799,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 578.19,
+   "intel": {
+    "at": 1795042825,
+    "ok": false
+   }
   }
  },
  "flags": {
