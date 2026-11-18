@@ -3128,6 +3128,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:KMB:1794960000000": {
+   "key": "dip:KMB:1794960000000",
+   "coin": "KMB",
+   "symbol": "KMBSTOCK_USDT",
+   "kind": "dip",
+   "name": "KMBSTOCK USDT (KMB, stock dip)",
+   "day": 1794960000000,
+   "status": "opening",
+   "time": 1795042820128,
+   "leverage": 20,
+   "vol": 19.0,
+   "sl": 96.959,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 107.24,
+   "intel": {
+    "at": 1795042820,
+    "ok": false
+   }
   }
  },
  "flags": {
