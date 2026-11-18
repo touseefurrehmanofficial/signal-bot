@@ -3018,6 +3018,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:JPM:1794873600000": {
+   "key": "dip:JPM:1794873600000",
+   "coin": "JPM",
+   "symbol": "JPMSTOCK_USDT",
+   "kind": "dip",
+   "name": "JPMSTOCK USDT (JPM, stock dip)",
+   "day": 1794873600000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.27",
+   "time": 1795017065086
   }
  },
  "flags": {
