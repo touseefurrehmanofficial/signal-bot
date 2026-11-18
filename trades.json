@@ -3136,7 +3136,7 @@
    "kind": "dip",
    "name": "KMBSTOCK USDT (KMB, stock dip)",
    "day": 1794960000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795042820128,
    "leverage": 20,
    "vol": 19.0,
@@ -3147,7 +3147,9 @@
    "intel": {
     "at": 1795042820,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3234,7 +3236,8 @@
   "AMTSTOCK_USDT",
   "WDAYSTOCK_USDT",
   "ELSTOCK_USDT",
-  "DESTOCK_USDT"
+  "DESTOCK_USDT",
+  "KMBSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
