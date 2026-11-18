@@ -3029,6 +3029,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.27",
    "time": 1795017065086
+  },
+  "dip:UNH:1794873600000": {
+   "key": "dip:UNH:1794873600000",
+   "coin": "UNH",
+   "symbol": "UNHSTOCK_USDT",
+   "kind": "dip",
+   "name": "UNHSTOCK USDT (UNH, stock dip)",
+   "day": 1794873600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1795017067156
   }
  },
  "flags": {
