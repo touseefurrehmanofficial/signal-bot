@@ -3048,7 +3048,7 @@
    "kind": "dip",
    "name": "AMTSTOCK USDT (AMT, stock dip)",
    "day": 1794873600000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795017068857,
    "leverage": 20,
    "vol": 11.0,
@@ -3059,7 +3059,9 @@
    "intel": {
     "at": 1795017068,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3142,7 +3144,8 @@
   "ACNSTOCK_USDT",
   "MRNASTOCK_USDT",
   "BMYSTOCK_USDT",
-  "WATSTOCK_USDT"
+  "WATSTOCK_USDT",
+  "AMTSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
