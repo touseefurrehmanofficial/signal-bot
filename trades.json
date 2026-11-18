@@ -3004,7 +3004,7 @@
    "kind": "dip",
    "name": "WATSTOCK USDT (WAT, stock dip)",
    "day": 1794873600000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795001541460,
    "leverage": 20,
    "vol": 50.0,
@@ -3015,7 +3015,9 @@
    "intel": {
     "at": 1795001541,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3097,7 +3099,8 @@
   "MRKSTOCK_USDT",
   "ACNSTOCK_USDT",
   "MRNASTOCK_USDT",
-  "BMYSTOCK_USDT"
+  "BMYSTOCK_USDT",
+  "WATSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
