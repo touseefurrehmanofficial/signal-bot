@@ -3169,7 +3169,7 @@
    "kind": "dip",
    "name": "LMTSTOCK USDT (LMT, stock dip)",
    "day": 1794960000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795042825236,
    "leverage": 50,
    "vol": 9.0,
@@ -3180,7 +3180,9 @@
    "intel": {
     "at": 1795042825,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3268,7 +3270,8 @@
   "WDAYSTOCK_USDT",
   "ELSTOCK_USDT",
   "DESTOCK_USDT",
-  "KMBSTOCK_USDT"
+  "KMBSTOCK_USDT",
+  "LMTSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
