@@ -3040,6 +3040,26 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1795017067156
+  },
+  "dip:AMT:1794873600000": {
+   "key": "dip:AMT:1794873600000",
+   "coin": "AMT",
+   "symbol": "AMTSTOCK_USDT",
+   "kind": "dip",
+   "name": "AMTSTOCK USDT (AMT, stock dip)",
+   "day": 1794873600000,
+   "status": "opening",
+   "time": 1795017068857,
+   "leverage": 20,
+   "vol": 11.0,
+   "sl": 166.008,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 183.18,
+   "intel": {
+    "at": 1795017068,
+    "ok": false
+   }
   }
  },
  "flags": {
