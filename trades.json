@@ -3062,6 +3062,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:WDAY:1794873600000": {
+   "key": "dip:WDAY:1794873600000",
+   "coin": "WDAY",
+   "symbol": "WDAYSTOCK_USDT",
+   "kind": "dip",
+   "name": "WDAYSTOCK USDT (WDAY, stock dip)",
+   "day": 1794873600000,
+   "status": "opening",
+   "time": 1795017074250,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 160.935,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 182.8,
+   "intel": {
+    "at": 1795017074,
+    "ok": false
+   }
   }
  },
  "flags": {
