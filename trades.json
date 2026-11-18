@@ -2996,6 +2996,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:WAT:1794873600000": {
+   "key": "dip:WAT:1794873600000",
+   "coin": "WAT",
+   "symbol": "WATSTOCK_USDT",
+   "kind": "dip",
+   "name": "WATSTOCK USDT (WAT, stock dip)",
+   "day": 1794873600000,
+   "status": "opening",
+   "time": 1795001541460,
+   "leverage": 20,
+   "vol": 50.0,
+   "sl": 402.956,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 449.78,
+   "intel": {
+    "at": 1795001541,
+    "ok": false
+   }
   }
  },
  "flags": {
