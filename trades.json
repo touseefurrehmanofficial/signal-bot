@@ -3257,7 +3257,7 @@
    "kind": "dip",
    "name": "MNSTSTOCK USDT (MNST, stock dip)",
    "day": 1794873600000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795099328192,
    "leverage": 20,
    "vol": 51.0,
@@ -3268,7 +3268,9 @@
    "intel": {
     "at": 1795099328,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3359,7 +3361,8 @@
   "KMBSTOCK_USDT",
   "LMTSTOCK_USDT",
   "SPGISTOCK_USDT",
-  "CCISTOCK_USDT"
+  "CCISTOCK_USDT",
+  "MNSTSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
