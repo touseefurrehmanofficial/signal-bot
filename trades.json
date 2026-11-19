@@ -3403,6 +3403,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:ADI:1795046400000": {
+   "key": "dip:ADI:1795046400000",
+   "coin": "ADI",
+   "symbol": "ADISTOCK_USDT",
+   "kind": "dip",
+   "name": "ADISTOCK USDT (ADI, stock dip)",
+   "day": 1795046400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1795129225672
   }
  },
  "flags": {
