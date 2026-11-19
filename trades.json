@@ -3422,7 +3422,7 @@
    "kind": "dip",
    "name": "KDPSTOCK USDT (KDP, stock dip)",
    "day": 1795046400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795131945246,
    "leverage": 20,
    "vol": 5.0,
@@ -3433,7 +3433,9 @@
    "intel": {
     "at": 1795131945,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3528,7 +3530,8 @@
   "MNSTSTOCK_USDT",
   "ELVSTOCK_USDT",
   "HUMSTOCK_USDT",
-  "FOXASTOCK_USDT"
+  "FOXASTOCK_USDT",
+  "KDPSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
