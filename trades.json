@@ -3359,6 +3359,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.04",
    "time": 1795129212683
+  },
+  "dip:JNJ:1795046400000": {
+   "key": "dip:JNJ:1795046400000",
+   "coin": "JNJ",
+   "symbol": "JNJSTOCK_USDT",
+   "kind": "dip",
+   "name": "JNJSTOCK USDT (JNJ, stock dip)",
+   "day": 1795046400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.67",
+   "time": 1795129215701
   }
  },
  "flags": {
