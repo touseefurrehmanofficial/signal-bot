@@ -3271,6 +3271,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:ABBV:1794960000000": {
+   "key": "dip:ABBV:1794960000000",
+   "coin": "ABBV",
+   "symbol": "ABBVSTOCK_USDT",
+   "kind": "dip",
+   "name": "ABBVSTOCK USDT (ABBV, stock dip)",
+   "day": 1794960000000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.81",
+   "time": 1795103740214
   }
  },
  "flags": {
