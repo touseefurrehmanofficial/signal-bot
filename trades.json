@@ -3227,6 +3227,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:CCI:1794960000000": {
+   "key": "dip:CCI:1794960000000",
+   "coin": "CCI",
+   "symbol": "CCISTOCK_USDT",
+   "kind": "dip",
+   "name": "CCISTOCK USDT (CCI, stock dip)",
+   "day": 1794960000000,
+   "status": "opening",
+   "time": 1795098997694,
+   "leverage": 20,
+   "vol": 28.0,
+   "sl": 73.905,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 83.94,
+   "intel": {
+    "at": 1795098997,
+    "ok": false
+   }
   }
  },
  "flags": {
