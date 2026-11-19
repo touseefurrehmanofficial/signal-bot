@@ -3235,7 +3235,7 @@
    "kind": "dip",
    "name": "CCISTOCK USDT (CCI, stock dip)",
    "day": 1794960000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795098997694,
    "leverage": 20,
    "vol": 28.0,
@@ -3246,7 +3246,9 @@
    "intel": {
     "at": 1795098997,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3336,7 +3338,8 @@
   "DESTOCK_USDT",
   "KMBSTOCK_USDT",
   "LMTSTOCK_USDT",
-  "SPGISTOCK_USDT"
+  "SPGISTOCK_USDT",
+  "CCISTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
