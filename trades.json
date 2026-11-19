@@ -3389,7 +3389,7 @@
    "kind": "dip",
    "name": "FOXASTOCK USDT (FOXA, stock dip)",
    "day": 1795046400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795129221051,
    "leverage": 20,
    "vol": 3.0,
@@ -3400,7 +3400,9 @@
    "intel": {
     "at": 1795129221,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3494,7 +3496,8 @@
   "CCISTOCK_USDT",
   "MNSTSTOCK_USDT",
   "ELVSTOCK_USDT",
-  "HUMSTOCK_USDT"
+  "HUMSTOCK_USDT",
+  "FOXASTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
