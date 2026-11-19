@@ -3301,7 +3301,7 @@
    "kind": "dip",
    "name": "ELVSTOCK USDT (ELV, stock dip)",
    "day": 1794960000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795103744588,
    "leverage": 20,
    "vol": 5.0,
@@ -3312,7 +3312,9 @@
    "intel": {
     "at": 1795103744,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3404,7 +3406,8 @@
   "LMTSTOCK_USDT",
   "SPGISTOCK_USDT",
   "CCISTOCK_USDT",
-  "MNSTSTOCK_USDT"
+  "MNSTSTOCK_USDT",
+  "ELVSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
