@@ -3414,6 +3414,26 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1795129225672
+  },
+  "dip:KDP:1795046400000": {
+   "key": "dip:KDP:1795046400000",
+   "coin": "KDP",
+   "symbol": "KDPSTOCK_USDT",
+   "kind": "dip",
+   "name": "KDPSTOCK USDT (KDP, stock dip)",
+   "day": 1795046400000,
+   "status": "opening",
+   "time": 1795131945246,
+   "leverage": 20,
+   "vol": 5.0,
+   "sl": 30.6277,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 34.41,
+   "intel": {
+    "at": 1795131945,
+    "ok": false
+   }
   }
  },
  "flags": {
