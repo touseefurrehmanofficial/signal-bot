@@ -3334,7 +3334,7 @@
    "kind": "dip",
    "name": "HUMSTOCK USDT (HUM, stock dip)",
    "day": 1794960000000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795103751140,
    "leverage": 20,
    "vol": 5.0,
@@ -3345,7 +3345,9 @@
    "intel": {
     "at": 1795103751,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3438,7 +3440,8 @@
   "SPGISTOCK_USDT",
   "CCISTOCK_USDT",
   "MNSTSTOCK_USDT",
-  "ELVSTOCK_USDT"
+  "ELVSTOCK_USDT",
+  "HUMSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
