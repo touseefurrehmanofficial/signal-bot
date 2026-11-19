@@ -3293,6 +3293,26 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.38",
    "time": 1795103742083
+  },
+  "dip:ELV:1794960000000": {
+   "key": "dip:ELV:1794960000000",
+   "coin": "ELV",
+   "symbol": "ELVSTOCK_USDT",
+   "kind": "dip",
+   "name": "ELVSTOCK USDT (ELV, stock dip)",
+   "day": 1794960000000,
+   "status": "opening",
+   "time": 1795103744588,
+   "leverage": 20,
+   "vol": 5.0,
+   "sl": 357.019,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 400.84,
+   "intel": {
+    "at": 1795103744,
+    "ok": false
+   }
   }
  },
  "flags": {
