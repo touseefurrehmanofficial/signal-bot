@@ -3348,6 +3348,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:APD:1795046400000": {
+   "key": "dip:APD:1795046400000",
+   "coin": "APD",
+   "symbol": "APDSTOCK_USDT",
+   "kind": "dip",
+   "name": "APDSTOCK USDT (APD, stock dip)",
+   "day": 1795046400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.04",
+   "time": 1795129212683
   }
  },
  "flags": {
