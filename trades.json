@@ -3326,6 +3326,26 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1795103749389
+  },
+  "dip:HUM:1794960000000": {
+   "key": "dip:HUM:1794960000000",
+   "coin": "HUM",
+   "symbol": "HUMSTOCK_USDT",
+   "kind": "dip",
+   "name": "HUMSTOCK USDT (HUM, stock dip)",
+   "day": 1794960000000,
+   "status": "opening",
+   "time": 1795103751140,
+   "leverage": 20,
+   "vol": 5.0,
+   "sl": 328.749,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 385.78,
+   "intel": {
+    "at": 1795103751,
+    "ok": false
+   }
   }
  },
  "flags": {
