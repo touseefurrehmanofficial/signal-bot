@@ -3282,6 +3282,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.81",
    "time": 1795103740214
+  },
+  "dip:AMGN:1794960000000": {
+   "key": "dip:AMGN:1794960000000",
+   "coin": "AMGN",
+   "symbol": "AMGNSTOCK_USDT",
+   "kind": "dip",
+   "name": "AMGNSTOCK USDT (AMGN, stock dip)",
+   "day": 1794960000000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $4.38",
+   "time": 1795103742083
   }
  },
  "flags": {
