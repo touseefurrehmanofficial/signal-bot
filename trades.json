@@ -3491,6 +3491,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:PYPL:1795046400000": {
+   "key": "dip:PYPL:1795046400000",
+   "coin": "PYPL",
+   "symbol": "PYPLSTOCK_USDT",
+   "kind": "dip",
+   "name": "PYPLSTOCK USDT (PYPL, stock dip)",
+   "day": 1795046400000,
+   "status": "opening",
+   "time": 1795189161268,
+   "leverage": 20,
+   "vol": 2.0,
+   "sl": 51.5182,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 56.37,
+   "intel": {
+    "at": 1795189161,
+    "ok": false
+   }
   }
  },
  "flags": {
