@@ -3565,7 +3565,7 @@
    "kind": "dip",
    "name": "XYZSTOCK USDT (XYZ, stock dip)",
    "day": 1795046400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795189175019,
    "leverage": 20,
    "vol": 2.0,
@@ -3576,7 +3576,9 @@
    "intel": {
     "at": 1795189175,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3677,7 +3679,8 @@
   "GPNSTOCK_USDT",
   "PYPLSTOCK_USDT",
   "BLKSTOCK_USDT",
-  "URISTOCK_USDT"
+  "URISTOCK_USDT",
+  "XYZSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
