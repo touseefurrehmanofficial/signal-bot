@@ -3557,6 +3557,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:XYZ:1795046400000": {
+   "key": "dip:XYZ:1795046400000",
+   "coin": "XYZ",
+   "symbol": "XYZSTOCK_USDT",
+   "kind": "dip",
+   "name": "XYZSTOCK USDT (XYZ, stock dip)",
+   "day": 1795046400000,
+   "status": "opening",
+   "time": 1795189175019,
+   "leverage": 20,
+   "vol": 2.0,
+   "sl": 63.2677,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 74.23,
+   "intel": {
+    "at": 1795189175,
+    "ok": false
+   }
   }
  },
  "flags": {
