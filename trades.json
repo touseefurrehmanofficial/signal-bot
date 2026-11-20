@@ -3458,6 +3458,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:BIIB:1795046400000": {
+   "key": "dip:BIIB:1795046400000",
+   "coin": "BIIB",
+   "symbol": "BIIBSTOCK_USDT",
+   "kind": "dip",
+   "name": "BIIBSTOCK USDT (BIIB, stock dip)",
+   "day": 1795046400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.47",
+   "time": 1795157680531
   }
  },
  "flags": {
