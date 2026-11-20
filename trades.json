@@ -3656,6 +3656,26 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1795193314539
+  },
+  "dip:UNP:1795046400000": {
+   "key": "dip:UNP:1795046400000",
+   "coin": "UNP",
+   "symbol": "UNPSTOCK_USDT",
+   "kind": "dip",
+   "name": "UNPSTOCK USDT (UNP, stock dip)",
+   "day": 1795046400000,
+   "status": "opening",
+   "time": 1795194720652,
+   "leverage": 20,
+   "vol": 5.0,
+   "sl": 270.17,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 290.63,
+   "intel": {
+    "at": 1795194720,
+    "ok": false
+   }
   }
  },
  "flags": {
