@@ -3535,6 +3535,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:URI:1795046400000": {
+   "key": "dip:URI:1795046400000",
+   "coin": "URI",
+   "symbol": "URISTOCK_USDT",
+   "kind": "dip",
+   "name": "URISTOCK USDT (URI, stock dip)",
+   "day": 1795046400000,
+   "status": "opening",
+   "time": 1795189170352,
+   "leverage": 20,
+   "vol": 15.0,
+   "sl": 919.088,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 1059.56,
+   "intel": {
+    "at": 1795189170,
+    "ok": false
+   }
   }
  },
  "flags": {
