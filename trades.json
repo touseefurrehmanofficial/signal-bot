@@ -3477,7 +3477,7 @@
    "kind": "dip",
    "name": "GPNSTOCK USDT (GPN, stock dip)",
    "day": 1795046400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795186465869,
    "leverage": 20,
    "vol": 20.0,
@@ -3488,7 +3488,9 @@
    "intel": {
     "at": 1795186465,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3585,7 +3587,8 @@
   "HUMSTOCK_USDT",
   "FOXASTOCK_USDT",
   "KDPSTOCK_USDT",
-  "ABTSTOCK_USDT"
+  "ABTSTOCK_USDT",
+  "GPNSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
