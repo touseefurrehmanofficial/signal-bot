@@ -3711,6 +3711,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.65",
    "time": 1795204218840
+  },
+  "INDA:1795132800000": {
+   "key": "INDA:1795132800000",
+   "coin": "INDA",
+   "symbol": "INDA_USDT",
+   "kind": "stock",
+   "name": "INDA USDT (INDA, stock breakout)",
+   "day": 1795132800000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $5.30",
+   "time": 1795215609143
   }
  },
  "flags": {
