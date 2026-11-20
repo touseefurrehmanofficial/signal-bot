@@ -3601,6 +3601,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:CCL:1795046400000": {
+   "key": "dip:CCL:1795046400000",
+   "coin": "CCL",
+   "symbol": "CCLSTOCK_USDT",
+   "kind": "dip",
+   "name": "CCLSTOCK USDT (CCL, stock dip)",
+   "day": 1795046400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.74",
+   "time": 1795189381027
   }
  },
  "flags": {
