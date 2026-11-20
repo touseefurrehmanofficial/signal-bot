@@ -3612,6 +3612,26 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $2.74",
    "time": 1795189381027
+  },
+  "dip:XLF:1795046400000": {
+   "key": "dip:XLF:1795046400000",
+   "coin": "XLF",
+   "symbol": "XLF_USDT",
+   "kind": "dip",
+   "name": "XLF USDT (XLF, stock dip)",
+   "day": 1795046400000,
+   "status": "opening",
+   "time": 1795189457194,
+   "leverage": 20,
+   "vol": 28.0,
+   "sl": 52.6385,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 55.58,
+   "intel": {
+    "at": 1795189457,
+    "ok": false
+   }
   }
  },
  "flags": {
