@@ -3620,7 +3620,7 @@
    "kind": "dip",
    "name": "XLF USDT (XLF, stock dip)",
    "day": 1795046400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795189457194,
    "leverage": 20,
    "vol": 28.0,
@@ -3631,7 +3631,9 @@
    "intel": {
     "at": 1795189457,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 11444: This feature is temporarily unavailable. For details, please refer to our official announcement. Thank you for your understanding and cooperation."
   }
  },
  "flags": {
