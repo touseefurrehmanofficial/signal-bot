@@ -3689,6 +3689,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.78",
    "time": 1795195617747
+  },
+  "dip:V:1795046400000": {
+   "key": "dip:V:1795046400000",
+   "coin": "V",
+   "symbol": "VSTOCK_USDT",
+   "kind": "dip",
+   "name": "VSTOCK USDT (V, stock dip)",
+   "day": 1795046400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1795202893203
   }
  },
  "flags": {
