@@ -3634,6 +3634,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 11444: This feature is temporarily unavailable. For details, please refer to our official announcement. Thank you for your understanding and cooperation."
+  },
+  "dip:VRTX:1795046400000": {
+   "key": "dip:VRTX:1795046400000",
+   "coin": "VRTX",
+   "symbol": "VRTXSTOCK_USDT",
+   "kind": "dip",
+   "name": "VRTXSTOCK USDT (VRTX, stock dip)",
+   "day": 1795046400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $5.25",
+   "time": 1795189979161
   }
  },
  "flags": {
