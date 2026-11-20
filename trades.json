@@ -3645,6 +3645,17 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $5.25",
    "time": 1795189979161
+  },
+  "dip:EBAY:1795046400000": {
+   "key": "dip:EBAY:1795046400000",
+   "coin": "EBAY",
+   "symbol": "EBAYSTOCK_USDT",
+   "kind": "dip",
+   "name": "EBAYSTOCK USDT (EBAY, stock dip)",
+   "day": 1795046400000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1795193314539
   }
  },
  "flags": {
