@@ -3444,7 +3444,7 @@
    "kind": "dip",
    "name": "ABTSTOCK USDT (ABT, stock dip)",
    "day": 1795046400000,
-   "status": "opening",
+   "status": "failed",
    "time": 1795147553655,
    "leverage": 20,
    "vol": 1.0,
@@ -3455,7 +3455,9 @@
    "intel": {
     "at": 1795147553,
     "ok": false
-   }
+   },
+   "tp1_share": 0.8,
+   "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
   }
  },
  "flags": {
@@ -3551,7 +3553,8 @@
   "ELVSTOCK_USDT",
   "HUMSTOCK_USDT",
   "FOXASTOCK_USDT",
-  "KDPSTOCK_USDT"
+  "KDPSTOCK_USDT",
+  "ABTSTOCK_USDT"
  ],
  "signals": {
   "PYTH_USDT": [
