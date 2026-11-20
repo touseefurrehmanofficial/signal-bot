@@ -3436,6 +3436,26 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:ABT:1795046400000": {
+   "key": "dip:ABT:1795046400000",
+   "coin": "ABT",
+   "symbol": "ABTSTOCK_USDT",
+   "kind": "dip",
+   "name": "ABTSTOCK USDT (ABT, stock dip)",
+   "day": 1795046400000,
+   "status": "opening",
+   "time": 1795147553655,
+   "leverage": 20,
+   "vol": 1.0,
+   "sl": 95.0365,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 103.87,
+   "intel": {
+    "at": 1795147553,
+    "ok": false
+   }
   }
  },
  "flags": {
