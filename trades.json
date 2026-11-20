@@ -3678,6 +3678,17 @@
    },
    "tp1_share": 0.8,
    "reason": "code 8950: For risk management reasons, opening positions for this trading pair is unavailable in your country or region. You may only close existing positions."
+  },
+  "dip:XLV:1795046400000": {
+   "key": "dip:XLV:1795046400000",
+   "coin": "XLV",
+   "symbol": "XLV_USDT",
+   "kind": "dip",
+   "name": "XLV USDT (XLV, stock dip)",
+   "day": 1795046400000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $1.78",
+   "time": 1795195617747
   }
  },
  "flags": {
