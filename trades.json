@@ -3722,6 +3722,26 @@
    "status": "manual",
    "reason": "even at this contract's maximum 20X the order would be below its minimum of about $5.30",
    "time": 1795215609143
+  },
+  "dip:MA:1795132800000": {
+   "key": "dip:MA:1795132800000",
+   "coin": "MA",
+   "symbol": "MASTOCK_USDT",
+   "kind": "dip",
+   "name": "MASTOCK USDT (MA, stock dip)",
+   "day": 1795132800000,
+   "status": "opening",
+   "time": 1795219450357,
+   "leverage": 50,
+   "vol": 6.0,
+   "sl": 578.178,
+   "tp1": null,
+   "tp2": null,
+   "entry_signal": 625.59,
+   "intel": {
+    "at": 1795219450,
+    "ok": false
+   }
   }
  },
  "flags": {
