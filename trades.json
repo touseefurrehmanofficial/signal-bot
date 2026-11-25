@@ -3821,6 +3821,17 @@
    "status": "manual",
    "reason": "MEXC's smallest order would lose about $0.64 at the SL (12% away), more than your 10% limit of $0.62",
    "time": 1795647612871
+  },
+  "HD:1795564800000": {
+   "key": "HD:1795564800000",
+   "coin": "HD",
+   "symbol": "HDSTOCK_USDT",
+   "kind": "stock",
+   "name": "HDSTOCK USDT (HD, stock breakout)",
+   "day": 1795564800000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.62",
+   "time": 1795647615068
   }
  },
  "flags": {
