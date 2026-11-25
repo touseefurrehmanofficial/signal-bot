@@ -3810,6 +3810,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1795647610907
+  },
+  "INDA:1795564800000": {
+   "key": "INDA:1795564800000",
+   "coin": "INDA",
+   "symbol": "INDA_USDT",
+   "kind": "stock",
+   "name": "INDA USDT (INDA, stock breakout)",
+   "day": 1795564800000,
+   "status": "manual",
+   "reason": "MEXC's smallest order would lose about $0.64 at the SL (12% away), more than your 10% limit of $0.62",
+   "time": 1795647612871
   }
  },
  "flags": {
