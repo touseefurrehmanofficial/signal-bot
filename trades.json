@@ -3854,6 +3854,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1795820401971
+  },
+  "WMT:1795737600000": {
+   "key": "WMT:1795737600000",
+   "coin": "WMT",
+   "symbol": "WMTSTOCK_USDT",
+   "kind": "stock",
+   "name": "WMTSTOCK USDT (WMT, stock breakout)",
+   "day": 1795737600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1795820404082
   }
  },
  "flags": {
