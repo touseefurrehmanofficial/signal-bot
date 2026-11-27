@@ -3843,6 +3843,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1795647617584
+  },
+  "AAPL:1795737600000": {
+   "key": "AAPL:1795737600000",
+   "coin": "AAPL",
+   "symbol": "AAPLSTOCK_USDT",
+   "kind": "stock",
+   "name": "AAPLSTOCK USDT (AAPL, stock breakout)",
+   "day": 1795737600000,
+   "status": "manual",
+   "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
+   "time": 1795820401971
   }
  },
  "flags": {
