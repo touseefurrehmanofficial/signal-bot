@@ -3865,6 +3865,17 @@
    "status": "manual",
    "reason": "MEXC does not let the bot open this contract from its server's region (you can, from Pakistan)",
    "time": 1795820404082
+  },
+  "HD:1795737600000": {
+   "key": "HD:1795737600000",
+   "coin": "HD",
+   "symbol": "HDSTOCK_USDT",
+   "kind": "stock",
+   "name": "HDSTOCK USDT (HD, stock breakout)",
+   "day": 1795737600000,
+   "status": "manual",
+   "reason": "even at this contract's maximum 20X the order would be below its minimum of about $3.64",
+   "time": 1795820405892
   }
  },
  "flags": {
